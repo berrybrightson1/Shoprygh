@@ -78,7 +78,16 @@ export default function CreatorStudio() {
                             type="text"
                             placeholder="e.g. Pampers Premium Care"
                             required
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none placeholder:text-gray-500"
+                            // 1. Product Name Input
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
+                            // 2. Price Input
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
+                            // 3. Category Select
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 bg-white text-gray-900 font-medium"
+                            // 4. Description Textarea
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 h-[50px] focus:ring-2 focus:ring-brand-cyan/20 outline-none resize-none text-gray-900 placeholder:text-gray-400 font-medium"
+                            // 5. Stock Input
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
                         />
                     </div>
                     <div>
@@ -89,7 +98,16 @@ export default function CreatorStudio() {
                             step="0.01"
                             placeholder="0.00"
                             required
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none placeholder:text-gray-500"
+                            // 1. Product Name Input
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
+                            // 2. Price Input
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
+                            // 3. Category Select
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 bg-white text-gray-900 font-medium"
+                            // 4. Description Textarea
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 h-[50px] focus:ring-2 focus:ring-brand-cyan/20 outline-none resize-none text-gray-900 placeholder:text-gray-400 font-medium"
+                            // 5. Stock Input
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
                         />
                     </div>
                     <div>
@@ -122,7 +140,16 @@ export default function CreatorStudio() {
                             type="number"
                             placeholder="10"
                             defaultValue="10"
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none placeholder:text-gray-500"
+                            // 1. Product Name Input
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
+                            // 2. Price Input
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
+                            // 3. Category Select
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 bg-white text-gray-900 font-medium"
+                            // 4. Description Textarea
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 h-[50px] focus:ring-2 focus:ring-brand-cyan/20 outline-none resize-none text-gray-900 placeholder:text-gray-400 font-medium"
+                            // 5. Stock Input
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
                         />
                     </div>
                 </div>
