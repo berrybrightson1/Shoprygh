@@ -153,7 +153,7 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
                                         // 3. Clear & Redirect
                                         clearCart();
                                         onClose();
-                                        window.open(`https://wa.me/233551171353?text=${encodeURIComponent(msg)}`, '_blank');
+                                        window.location.href = `https://wa.me/233551171353?text=${encodeURIComponent(msg)}`;
 
                                     } catch (err) {
                                         console.error(err);

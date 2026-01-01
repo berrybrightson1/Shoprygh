@@ -118,18 +118,18 @@ export default function InventoryTable({ products }: { products: any[] }) {
                 <table className="w-full text-left min-w-[600px]">
                     <thead className="bg-gray-50 border-b border-gray-100">
                         <tr>
-                            <th className="p-4 text-xs font-bold text-black uppercase w-1/3">Product</th>
-                            <th className="p-4 text-xs font-bold text-black uppercase">Category</th>
-                            <th className="p-4 text-xs font-bold text-black uppercase">Price</th>
-                            <th className="p-4 text-xs font-bold text-black uppercase">Stock / Status</th>
-                            <th className="p-4 text-xs font-bold text-black uppercase">Date Added</th>
-                            {isOwner && <th className="p-4 text-xs font-bold text-black uppercase text-right">Actions</th>}
+                            <th className="p-3 md:p-4 text-xs font-bold text-black uppercase w-1/3">Product</th>
+                            <th className="hidden md:table-cell p-4 text-xs font-bold text-black uppercase">Category</th>
+                            <th className="p-3 md:p-4 text-xs font-bold text-black uppercase">Price</th>
+                            <th className="p-3 md:p-4 text-xs font-bold text-black uppercase">Stock / Status</th>
+                            <th className="hidden md:table-cell p-4 text-xs font-bold text-black uppercase">Date Added</th>
+                            {isOwner && <th className="p-3 md:p-4 text-xs font-bold text-black uppercase text-right">Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {products.map((p) => (
                             <tr key={p.id} className="border-b border-gray-100 hover:bg-gray-50 transition group">
-                                <td className="p-4">
+                                <td className="p-3 md:p-4">
                                     <div className="flex items-center gap-3">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img
@@ -145,7 +145,7 @@ export default function InventoryTable({ products }: { products: any[] }) {
                                 </td>
 
                                 {/* Category */}
-                                <td className="p-4">
+                                <td className="hidden md:table-cell p-4">
                                     {isOwner ? (
                                         <form action={updateCategory} id={`cat-${p.id}`}>
                                             <input type="hidden" name="id" value={p.id} />
@@ -171,7 +171,7 @@ export default function InventoryTable({ products }: { products: any[] }) {
                                 </td>
 
                                 {/* Price */}
-                                <td className="p-4">
+                                <td className="p-3 md:p-4">
                                     {isOwner ? (
                                         <form action={updatePrice} id={`price-${p.id}`}>
                                             <input type="hidden" name="id" value={p.id} />
@@ -196,7 +196,7 @@ export default function InventoryTable({ products }: { products: any[] }) {
                                 </td>
 
                                 {/* Stock */}
-                                <td className="p-4">
+                                <td className="p-3 md:p-4">
                                     {isOwner ? (
                                         <form action={updateStock} className="flex items-center gap-2">
                                             <input type="hidden" name="id" value={p.id} />
@@ -219,7 +219,7 @@ export default function InventoryTable({ products }: { products: any[] }) {
                                 </td>
 
                                 {/* Date Added */}
-                                <td className="p-4">
+                                <td className="hidden md:table-cell p-4">
                                     <span className="text-xs font-medium text-gray-500">
                                         {p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "-"}
                                     </span>
@@ -227,7 +227,7 @@ export default function InventoryTable({ products }: { products: any[] }) {
 
                                 {/* Delete (Owner Only) */}
                                 {isOwner && (
-                                    <td className="p-4 text-right">
+                                    <td className="p-3 md:p-4 text-right">
                                         <form action={deleteProduct}>
                                             <input type="hidden" name="id" value={p.id} />
                                             <button

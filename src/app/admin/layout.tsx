@@ -14,7 +14,7 @@ export default async function AdminLayout({
             {/* Sidebar (Client Component) - Only show if logged in */}
             {session && <AdminSidebar user={session} />}
 
-            <main className={`flex-1 transition-all duration-300 ${session ? "ml-0 md:ml-64" : ""}`}>
+            <main className={`flex-1 transition-all duration-300 ${session ? "ml-0 md:ml-64 pt-16 md:pt-0" : ""}`}>
                 {children}
             </main>
         </div>
