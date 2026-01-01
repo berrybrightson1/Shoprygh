@@ -38,6 +38,7 @@ export default async function OrdersPage() {
                             <tr>
                                 <th className="px-6 py-4 font-semibold">Order ID</th>
                                 <th className="px-6 py-4 font-semibold">Date</th>
+                                <th className="px-6 py-4 font-semibold">Customer</th>
                                 <th className="px-6 py-4 font-semibold">Items</th>
                                 <th className="px-6 py-4 font-semibold">Total</th>
                                 <th className="px-6 py-4 font-semibold">Status</th>
@@ -51,6 +52,18 @@ export default async function OrdersPage() {
                                     <td className="px-6 py-4 text-gray-600">
                                         {new Date(order.createdAt).toLocaleDateString()}
                                         <div className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleTimeString()}</div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {order.customerPhone ? (
+                                            <a
+                                                href={`tel:${order.customerPhone}`}
+                                                className="font-bold text-gray-900 hover:text-brand-cyan hover:underline"
+                                            >
+                                                {order.customerPhone}
+                                            </a>
+                                        ) : (
+                                            <span className="text-gray-400 text-xs italic">N/A</span>
+                                        )}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="space-y-1">
