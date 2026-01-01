@@ -18,17 +18,9 @@ export async function createProduct(formData: FormData) {
     let imagePath = "https://images.unsplash.com/photo-1515488042361-25f4682ae2ed?w=400"; // Default
 
     if (file && file.size > 0) {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        // Create unique filename
-        const filename = `${Date.now()}-${file.name.replace(/\s/g, '-')}`;
-        const uploadDir = join(process.cwd(), "public", "products");
-
-        // Ensure directory exists (Node 10+ recursive)
-        await import("node:fs/promises").then(fs => fs.mkdir(uploadDir, { recursive: true }));
-
-        // Write file
-        await writeFile(join(uploadDir, filename), buffer);
-        imagePath = `/products/${filename}`; // This path is correct for public folder access
+        const buffer = await file.arrayBuffer();
+        const base64String = Buffer.from(buffer).toString('base64');
+        imagePath = `data:${file.type};base64,${base64String}`;
     }
 
     await prisma.product.create({
