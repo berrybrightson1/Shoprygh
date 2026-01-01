@@ -9,6 +9,7 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
     const { items, addItem, decreaseItem, removeItem, clearCart } = useCartStore();
     const [mounted, setMounted] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
+    const [phone, setPhone] = useState("");
 
     useEffect(() => {
         setMounted(true);
@@ -109,20 +110,37 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
                     {/* Footer (Total & Checkout) */}
                     {items.length > 0 && (
                         <div className="p-6 bg-white border-t border-gray-100 pb-8">
+                            <div className="mb-4">
+                                <label className="text-xs font-bold text-gray-800 uppercase block mb-1">Your Contact Number</label>
+                                <input
+                                    type="tel"
+                                    placeholder="Enter your phone number..."
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 text-gray-900 font-medium placeholder:text-gray-400"
+                                />
+                            </div>
+
                             <div className="flex justify-between items-center mb-4">
                                 <span className="text-black font-bold text-sm">Total Estimate</span>
                                 <span className="text-2xl font-black text-black">₵{total.toFixed(2)}</span>
                             </div>
                             <button
                                 onClick={async () => {
+                                    if (!phone) {
+                                        alert("Please enter your phone number so we can contact you!");
+                                        return;
+                                    }
+
                                     setIsCheckingOut(true);
                                     try {
                                         // 1. Save "Ghost" Order
-                                        const { orderId } = await createOrder(items, total);
+                                        const { orderId } = await createOrder(items, total, phone);
 
                                         // 2. Construct Message
                                         let msg = `Hello Anaya's! I'd like to place an order:\n`;
                                         msg += `Order #${orderId.slice(-6).toUpperCase()}\n\n`;
+                                        msg += `*Customer Contact:* ${phone}\n\n`;
                                         msg += `*Items:*\n`;
 
                                         items.forEach((item, index) => {
@@ -138,6 +156,7 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
                                         window.open(`https://wa.me/233551171353?text=${encodeURIComponent(msg)}`, '_blank');
 
                                     } catch (err) {
+                                        console.error(err);
                                         alert("Something went wrong. Please try again.");
                                     } finally {
                                         setIsCheckingOut(false);

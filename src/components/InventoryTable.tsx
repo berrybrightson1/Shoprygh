@@ -78,7 +78,7 @@ export default function InventoryTable({ products }: { products: any[] }) {
     const CATEGORIES = ["Diapers", "Feeding", "Clothing", "Toys", "Health", "Bedding", "Bundles"];
 
     const handleExport = () => {
-        const headers = ["ID", "Name", "Category", "Price", "Stock", "Description"];
+        const headers = ["ID", "Name", "Category", "Price", "Stock", "Date Added", "Description"];
         const csvContent = [
             headers.join(","),
             ...products.map(p => [
@@ -87,6 +87,7 @@ export default function InventoryTable({ products }: { products: any[] }) {
                 p.category,
                 p.priceRetail,
                 p.stockQty,
+                p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "",
                 `"${(p.description || "").replace(/"/g, '""')}"`
             ].join(","))
         ].join("\n");
@@ -121,6 +122,7 @@ export default function InventoryTable({ products }: { products: any[] }) {
                             <th className="p-4 text-xs font-bold text-black uppercase">Category</th>
                             <th className="p-4 text-xs font-bold text-black uppercase">Price</th>
                             <th className="p-4 text-xs font-bold text-black uppercase">Stock / Status</th>
+                            <th className="p-4 text-xs font-bold text-black uppercase">Date Added</th>
                             {isOwner && <th className="p-4 text-xs font-bold text-black uppercase text-right">Actions</th>}
                         </tr>
                     </thead>
@@ -214,6 +216,13 @@ export default function InventoryTable({ products }: { products: any[] }) {
                                             {p.stockQty} in stock
                                         </span>
                                     )}
+                                </td>
+
+                                {/* Date Added */}
+                                <td className="p-4">
+                                    <span className="text-xs font-medium text-gray-500">
+                                        {p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "-"}
+                                    </span>
                                 </td>
 
                                 {/* Delete (Owner Only) */}

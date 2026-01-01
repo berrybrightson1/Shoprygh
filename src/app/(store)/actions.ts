@@ -10,7 +10,7 @@ export type CartItemSnapshot = {
     quantity: number;
 };
 
-export async function createOrder(items: CartItemSnapshot[], totalEstimate: number) {
+export async function createOrder(items: CartItemSnapshot[], totalEstimate: number, customerPhone?: string) {
     if (!items.length) throw new Error("Cart is empty");
 
     // 1. Create the Order in DB
@@ -18,6 +18,7 @@ export async function createOrder(items: CartItemSnapshot[], totalEstimate: numb
         data: {
             total: totalEstimate,
             status: "PENDING",
+            customerPhone: customerPhone || null,
             items: {
                 create: items.map(item => ({
                     productId: item.id,
