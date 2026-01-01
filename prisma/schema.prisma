@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+model Product {
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  image          String?  // Changed from images String[] for SQLite simplicity/prototype
+  
+  // Pricing
+  priceRetail    Decimal
+  priceWholesale Decimal?
+  
+  // Logistics
+  sku            String?
+  weight         Float?
+  dimensions     String?
+  
+  // Organization
+  category       String   @default("General")
+  tags           String?  // Changed from String[] for SQLite (comma separated)
+  stockQty       Int      @default(0)
+  
+  // Bundle Logic
+  isBundle       Boolean  @default(false)
+  bundleItems    BundleItem[] @relation("ParentBundle")
+  
+  createdAt      DateTime @default(now())
+  orderItems     OrderItem[]
+}
+
+model BundleItem {
+  id        String  @id @default(cuid())
+  bundleId  String
+  bundle    Product @relation("ParentBundle", fields: [bundleId], references: [id])
+  productId String  // The child item
+  quantity  Int     @default(1)
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  status    String      @default("PENDING") // PENDING, PAID, DELIVERED, CANCELLED
+  customerName String?
+  customerPhone String?
+  
+  total     Decimal
+  items     OrderItem[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  
+  name      String  // Snapshot in case product changes
+  quantity  Int
+  price     Decimal // Price at time of purchase
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hashed
+  name      String
+  role      String   @default("STAFF") // "OWNER" | "STAFF"
+  createdAt DateTime @default(now())
+}
