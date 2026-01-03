@@ -71,7 +71,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                     className="hidden"
                                 />
                             </label>
-                            <p className="text-xs text-gray-500 mt-2">PNG, JPG up to 2MB</p>
+                            <p className="text-xs text-gray-500 mt-2">PNG, JPG up to 30KB</p>
                         </div>
                     </div>
                 </div>
