@@ -31,20 +31,23 @@ export default async function AdminLayout({
             redirect('/login');
         }
 
-        if (session.storeId !== store.id && session.role !== 'PLATFORM_ADMIN') {
-            // User is logged in but trying to access a different store
+        // Check for matching store or Platform Admin privileges
+        // We use !session.isPlatformAdmin because the 'role' field might be 'OWNER' even for platform admins
+        if (session.storeId !== store.id && !session.isPlatformAdmin) {
+            console.log(`[AdminLayout] Access Denied: User ${session.email} (Store: ${session.storeSlug}) tried to access ${storeSlug}`);
             redirect(`/${session.storeSlug}/admin/inventory`);
         }
     }
+}
 
-    return (
-        <div className="flex min-h-screen bg-gray-50 font-sans">
-            {/* Sidebar (Client Component) - Only show if logged in */}
-            {session && <AdminSidebar user={session} storeTier={store.tier} />}
+return (
+    <div className="flex min-h-screen bg-gray-50 font-sans">
+        {/* Sidebar (Client Component) - Only show if logged in */}
+        {session && <AdminSidebar user={session} storeTier={store.tier} />}
 
-            <main className={`flex-1 transition-all duration-300 ${session ? "ml-0 md:ml-64 pt-16 md:pt-0" : ""}`}>
-                {children}
-            </main>
-        </div>
-    );
+        <main className={`flex-1 transition-all duration-300 ${session ? "ml-0 md:ml-64 pt-16 md:pt-0" : ""}`}>
+            {children}
+        </main>
+    </div>
+);
 }
