@@ -112,8 +112,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                         label="Settings"
                         active={pathname?.startsWith(`/${storeSlug}/admin/settings`)}
                     />
-                    active={pathname?.startsWith(`/${storeSlug}/admin/settings`)}
-                    />
+
 
                     {/* Platform Admin Link - Only for Super Admins */}
                     {currentUser.isPlatformAdmin && (

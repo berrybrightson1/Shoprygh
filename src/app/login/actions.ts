@@ -21,16 +21,16 @@ export async function login(formData: FormData) {
         include: { store: true } // Crucial: Fetch the linked store
     });
 
-    if (!user || !user.store) {
-        // Security: Don't reveal if user exists
-        return;
-    }
-
     // 2. Verify Password
     const isValid = await compare(password, user.password);
     if (!isValid) return;
 
-    // 3. Create Session (Standardized Flat Payload)
+    // Check for Store OR Platform Admin privileges
+    if (!user.store && !user.isPlatformAdmin) {
+        return; // Regular users must have a store
+    }
+
+    // 3. Create Session
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
     const sessionPayload = {
         id: user.id,
@@ -38,8 +38,8 @@ export async function login(formData: FormData) {
         name: user.name,
         role: user.role,
         isPlatformAdmin: user.isPlatformAdmin,
-        storeId: user.store.id,
-        storeSlug: user.store.slug,
+        storeId: user.store?.id,
+        storeSlug: user.store?.slug,
         expires
     };
 
@@ -47,6 +47,13 @@ export async function login(formData: FormData) {
 
     (await cookies()).set("session", session, { expires, httpOnly: true });
 
-    // 4. Redirect to Store Dashboard
-    redirect(`/${user.store.slug}/admin/inventory`);
+    // 4. Redirect based on Role
+    if (user.isPlatformAdmin) {
+        redirect('/platform-admin');
+    } else if (user.store) {
+        redirect(`/${user.store.slug}/admin/inventory`);
+    } else {
+        // Fallback (shouldn't happen given check above)
+        redirect('/login');
+    }
 }
