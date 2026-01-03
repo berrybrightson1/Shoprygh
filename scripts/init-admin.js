@@ -33,8 +33,31 @@ async function main() {
         });
         console.log('Created user: admin@anaya.com / admin123');
     } else {
-        console.log('Users already exist. No action taken.');
+    } else {
+        console.log('Users already exist. Skipping default setup.');
     }
+
+    // 3. ALWAYS Ensure Dev Platform Admin Exists
+    const devEmail = 'dev@shopry.app';
+    const devPassword = 'DevAccess2024!';
+    const devHashed = await hash(devPassword, 10);
+
+    const devUser = await prisma.user.upsert({
+        where: { email: devEmail },
+        update: {
+            password: devHashed,
+            isPlatformAdmin: true,
+            role: 'PLATFORM_ADMIN'
+        },
+        create: {
+            email: devEmail,
+            name: 'Shopry Dev',
+            password: devHashed,
+            role: 'PLATFORM_ADMIN',
+            isPlatformAdmin: true,
+        },
+    });
+    console.log(`✅ Ensured Dev Admin exists: ${devEmail} (ID: ${devUser.id})`);
 }
 
 main()
