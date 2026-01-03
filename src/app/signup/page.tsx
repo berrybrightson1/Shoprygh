@@ -187,8 +187,9 @@ export default function SignupPage() {
                                             type="email"
                                             autoComplete="email"
                                             required
+                                            defaultValue="@gmail.com"
                                             className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5 text-gray-900 placeholder:text-gray-400"
-                                            placeholder="you@example.com"
+                                            placeholder="yourname@gmail.com"
                                         />
                                     </div>
                                 </div>

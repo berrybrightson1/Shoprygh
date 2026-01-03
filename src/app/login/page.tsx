@@ -25,7 +25,8 @@ export default function LoginPage() {
                                 name="email"
                                 type="email"
                                 required
-                                placeholder="name@example.com"
+                                defaultValue="@gmail.com"
+                                placeholder="yourname@gmail.com"
                                 className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 outline-none focus:ring-2 focus:ring-black/5 bg-gray-50 font-bold text-gray-900 placeholder:font-normal"
                             />
                         </div>
