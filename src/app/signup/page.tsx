@@ -71,7 +71,7 @@ export default function SignupPage() {
                                     </div>
                                     <div className="ml-3 text-sm">
                                         <label htmlFor="plan-hustler" className="font-bold text-gray-900 block">Hustler (Free)</label>
-                                        <span className="text-gray-500 block">Basic inventory, standard support.</span>
+                                        <span className="text-gray-700 block">Basic inventory, standard support.</span>
                                     </div>
                                 </label>
                                 <label className="relative flex items-start p-4 border rounded-lg cursor-pointer hover:border-black transition-colors has-[:checked]:border-black has-[:checked]:bg-gray-50">
@@ -86,7 +86,7 @@ export default function SignupPage() {
                                     </div>
                                     <div className="ml-3 text-sm">
                                         <label htmlFor="plan-pro" className="font-bold text-gray-900 block">Pro (₵50/mo)</label>
-                                        <span className="text-gray-500 block">Multiple staff, advanced reports, custom domain.</span>
+                                        <span className="text-gray-700 block">Multiple staff, advanced reports, custom domain.</span>
                                     </div>
                                 </label>
                                 <label className="relative flex items-start p-4 border rounded-lg cursor-pointer hover:border-black transition-colors has-[:checked]:border-black has-[:checked]:bg-gray-50">
@@ -101,7 +101,7 @@ export default function SignupPage() {
                                     </div>
                                     <div className="ml-3 text-sm">
                                         <label htmlFor="plan-wholesaler" className="font-bold text-gray-900 block">Wholesaler (₵200/mo)</label>
-                                        <span className="text-gray-500 block">Wholesale pricing, SKU tracking, bulk tools.</span>
+                                        <span className="text-gray-700 block">Wholesale pricing, SKU tracking, bulk tools.</span>
                                     </div>
                                 </label>
                             </div>
