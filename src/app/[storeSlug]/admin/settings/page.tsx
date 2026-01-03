@@ -6,6 +6,7 @@ import { ArrowLeft, Crown, Camera, Building2, Phone, MapPin } from "lucide-react
 import { updateStoreTier } from "./actions";
 import { updateStoreProfile } from "./profile-actions";
 import ProfileEditor from "./ProfileEditor";
+import PasswordUpdateForm from "./PasswordUpdateForm";
 
 export default async function SettingsPage({ params }: { params: Promise<{ storeSlug: string }> }) {
     const session = await getSession();
@@ -145,6 +146,9 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                         </button>
                     </form>
 
+                    {/* Password Update */}
+                    <PasswordUpdateForm userEmail={session.email} />
+
                     {/* Payment Instructions */}
                     <div className="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
                         <h3 className="font-bold text-gray-900 mb-2">Payment Instructions</h3>
@@ -152,7 +156,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                             After selecting your plan, you'll be redirected to Paystack to complete payment via Mobile Money, Card, or Bank Transfer.
                         </p>
                         <p className="text-xs text-gray-500">
-                            <strong>Note:</strong> Paystack integration coming soon! For now, manual payment is required.
+                            <strong>Note:</strong> Integrations are being processed. For now, manual payment is required.
                             Contact support@shopry.app with your payment reference.
                         </p>
                     </div>
