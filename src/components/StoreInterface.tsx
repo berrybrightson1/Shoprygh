@@ -226,7 +226,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug }: 
                 {/* Grid */}
                 <div className="grid grid-cols-2 gap-y-8 gap-x-5 pb-10">
                     {filteredProducts.map(p => (
-                        <ProductCard key={p.id} product={p} />
+                        <ProductCard key={p.id} product={p} storeSlug={storeSlug} />
                     ))}
                     {filteredProducts.length === 0 && (
                         <div className="col-span-2 text-center py-20 text-gray-400">

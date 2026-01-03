@@ -5,8 +5,8 @@ import { notFound } from "next/navigation";
 import AddToCartBar from "@/components/AddToCartBar";
 import CartHeaderButton from "@/components/CartHeaderButton";
 
-export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
+export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string; storeSlug: string }> }) {
+    const { id, storeSlug } = await params;
     const product = await prisma.product.findUnique({
         where: { id }
     });
@@ -17,7 +17,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
         <div className="min-h-screen bg-white pb-24">
             {/* Header */}
             <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md px-4 py-4 flex items-center gap-4 border-b border-gray-100">
-                <Link href="/" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                <Link href={`/${storeSlug}`} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
                     <ArrowLeft size={20} className="text-gray-700" />
                 </Link>
                 <div className="flex-1">
