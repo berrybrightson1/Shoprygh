@@ -41,6 +41,18 @@ async function main() {
     const devPassword = 'DevAccess2024!';
     const devHashed = await hash(devPassword, 10);
 
+    // Ensure Platform HQ Store exists (Required by Schema: User -> Store relation is mandatory)
+    const hqStore = await prisma.store.upsert({
+        where: { slug: 'shopry-hq' },
+        update: {},
+        create: {
+            name: 'Shopry HQ',
+            slug: 'shopry-hq',
+            tier: 'WHOLESALER',
+            ownerPhone: '0000000000'
+        }
+    });
+
     const devUser = await prisma.user.upsert({
         where: { email: devEmail },
         update: {
@@ -54,9 +66,10 @@ async function main() {
             password: devHashed,
             role: 'PLATFORM_ADMIN',
             isPlatformAdmin: true,
+            storeId: hqStore.id
         },
     });
-    console.log(`✅ Ensured Dev Admin exists: ${devEmail} (ID: ${devUser.id})`);
+    console.log(`✅ Ensured Dev Admin exists: ${devEmail} (ID: ${devUser.id}) linked to ${hqStore.name}`);
 }
 
 main()
