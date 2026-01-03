@@ -68,7 +68,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                     <div className="px-4 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Menu</div>
 
                     <NavLink
-                        href="/"
+                        href={`/${storeSlug}`}
                         icon={<Store size={20} />}
                         label="Front Store"
                         active={false}
