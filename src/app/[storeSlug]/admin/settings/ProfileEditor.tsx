@@ -140,10 +140,9 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-brand-orange text-white py-4 rounded-xl font-black hover:bg-orange-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-brand-orange text-white py-4 rounded-xl font-black hover:bg-orange-600 transition shadow-lg"
                 >
-                    {isSubmitting ? "Saving..." : "Save Profile"}
+                    Save Profile
                 </button>
             </form>
         </div>
