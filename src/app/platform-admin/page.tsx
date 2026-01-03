@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Shield, Store, Ban, Trash2, CheckCircle, AlertCircle } from "lucide-react";
 import { suspendStore, unsuspendStore, deleteStore } from "./actions";
 
+// Platform Admin Dashboard - Force rebuild
 export default async function PlatformAdminPage() {
     const session = await getSession();
     if (!session) redirect("/login");
@@ -112,10 +113,10 @@ export default async function PlatformAdminPage() {
                                         <td className="px-6 py-4">
                                             <span
                                                 className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${store.tier === "WHOLESALER"
-                                                        ? "bg-orange-100 text-orange-800"
-                                                        : store.tier === "PRO"
-                                                            ? "bg-purple-100 text-purple-800"
-                                                            : "bg-gray-100 text-gray-800"
+                                                    ? "bg-orange-100 text-orange-800"
+                                                    : store.tier === "PRO"
+                                                        ? "bg-purple-100 text-purple-800"
+                                                        : "bg-gray-100 text-gray-800"
                                                     }`}
                                             >
                                                 {store.tier}
@@ -124,10 +125,10 @@ export default async function PlatformAdminPage() {
                                         <td className="px-6 py-4">
                                             <span
                                                 className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${store.status === "ACTIVE"
-                                                        ? "bg-green-100 text-green-800"
-                                                        : store.status === "SUSPENDED"
-                                                            ? "bg-red-100 text-red-800"
-                                                            : "bg-gray-100 text-gray-800"
+                                                    ? "bg-green-100 text-green-800"
+                                                    : store.status === "SUSPENDED"
+                                                        ? "bg-red-100 text-red-800"
+                                                        : "bg-gray-100 text-gray-800"
                                                     }`}
                                             >
                                                 {store.status === "ACTIVE" ? <CheckCircle size={12} /> : <Ban size={12} />}
