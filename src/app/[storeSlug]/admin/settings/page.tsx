@@ -74,6 +74,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                     <p className="text-gray-700 mb-8">Manage your subscription and account settings</p>
 
                     {/* Store Profile Editor */}
+                    {/* Build: 2026-01-03 19:48 */}
                     <ProfileEditor store={store} />
 
                     {/* Current Plan */}
