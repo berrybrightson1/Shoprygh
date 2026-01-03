@@ -61,8 +61,8 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                             <p className="text-gray-700 mt-1 font-semibold">{store.name}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-xs font-bold text-gray-600 uppercase">Store URL</p>
-                            <p className="text-sm text-brand-orange font-bold">shopry.app/{store.slug}</p>
+                            <p className="text-xs font-extrabold text-gray-800 uppercase tracking-wide">Store URL</p>
+                            <p className="text-sm text-black font-black">shopry.app/{store.slug}</p>
                         </div>
                     </div>
                     <p className="text-gray-700 mb-8">Manage your subscription and account settings</p>
@@ -71,9 +71,9 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                     <div className="mb-8 p-6 bg-brand-cyan/5 border border-brand-cyan/20 rounded-xl">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-bold text-gray-600 uppercase mb-1">Current Plan</p>
+                                <p className="text-xs font-extrabold text-gray-800 uppercase tracking-wide mb-1">Current Plan</p>
                                 <p className="text-2xl font-black text-gray-900">{tierInfo[store.tier as keyof typeof tierInfo].name}</p>
-                                <p className="text-gray-800 mt-1 font-semibold">{tierInfo[store.tier as keyof typeof tierInfo].price}</p>
+                                <p className="text-black mt-1 font-black text-lg">{tierInfo[store.tier as keyof typeof tierInfo].price}</p>
                             </div>
                             <Crown className="text-brand-orange" size={40} />
                         </div>
