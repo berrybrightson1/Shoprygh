@@ -20,7 +20,9 @@ export async function middleware(request: NextRequest) {
         // 2. Protect Admin Routes
         if (!isLogin) {
             if (!session) {
-                return NextResponse.redirect(new URL(`/${storeSlug}/admin/login`, request.url));
+                // Redirect to central login instead of /anaya-store/admin/login
+                // We could pass a 'next' param if we wanted deep linking later
+                return NextResponse.redirect(new URL(`/login`, request.url));
             }
         }
 

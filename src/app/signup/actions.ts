@@ -46,5 +46,5 @@ export async function createStore(formData: FormData) {
         });
     });
 
-    redirect(`/${storeSlug}/admin/login`);
+    redirect('/login');
 }
