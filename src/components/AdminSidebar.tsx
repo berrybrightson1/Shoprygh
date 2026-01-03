@@ -143,8 +143,8 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                             {initials}
                         </div>
                         <div className="text-left flex-1 min-w-0">
-                            <p className="text-sm font-bold text-white leading-tight truncate">{currentUser.name}</p>
-                            <p className="text-xs text-brand-cyan font-medium truncate">{currentUser.role}</p>
+                            <p className="text-sm font-bold text-white leading-tight truncate">{currentUser.name || "User"}</p>
+                            <p className="text-xs text-brand-cyan font-medium truncate">{currentUser.role || "Admin"}</p>
                         </div>
                         <ChevronUp size={16} className={`text-gray-500 transition-transform duration-300 ${isSwitcherOpen ? "rotate-0" : "rotate-180"}`} />
                     </button>
