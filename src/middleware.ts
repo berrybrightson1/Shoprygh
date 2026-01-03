@@ -8,7 +8,12 @@ export async function middleware(request: NextRequest) {
     // Allow platform-admin route (requires login but different check)
     if (pathname.startsWith('/platform-admin')) {
         const cookie = request.cookies.get('session')?.value;
-        const session = cookie ? await decrypt(cookie) : null;
+        let session = null;
+        try {
+            session = cookie ? await decrypt(cookie) : null;
+        } catch (e) {
+            // Invalid token
+        }
 
         if (!session) {
             return NextResponse.redirect(new URL('/login', request.url));
@@ -26,7 +31,12 @@ export async function middleware(request: NextRequest) {
         const isLogin = pathname.startsWith(`/${storeSlug}/admin/login`);
 
         const cookie = request.cookies.get('session')?.value;
-        const session = cookie ? await decrypt(cookie) : null;
+        let session = null;
+        try {
+            session = cookie ? await decrypt(cookie) : null;
+        } catch (e) {
+            // Invalid token
+        }
 
         // 2. Protect Admin Routes
         if (!isLogin) {
