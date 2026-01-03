@@ -38,16 +38,15 @@ export default async function AdminLayout({
             redirect(`/${session.storeSlug}/admin/inventory`);
         }
     }
-}
 
-return (
-    <div className="flex min-h-screen bg-gray-50 font-sans">
-        {/* Sidebar (Client Component) - Only show if logged in */}
-        {session && <AdminSidebar user={session} storeTier={store.tier} />}
+    return (
+        <div className="flex min-h-screen bg-gray-50 font-sans">
+            {/* Sidebar (Client Component) - Only show if logged in */}
+            {session && <AdminSidebar user={session} storeTier={store.tier} />}
 
-        <main className={`flex-1 transition-all duration-300 ${session ? "ml-0 md:ml-64 pt-16 md:pt-0" : ""}`}>
-            {children}
-        </main>
-    </div>
-);
+            <main className={`flex-1 transition-all duration-300 ${session ? "ml-0 md:ml-64 pt-16 md:pt-0" : ""}`}>
+                {children}
+            </main>
+        </div>
+    );
 }
