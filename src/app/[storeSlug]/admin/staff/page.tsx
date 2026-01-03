@@ -2,11 +2,23 @@ import { Users, Trash2, Plus, ShieldCheck, Mail } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { createUser, deleteUser } from "./actions";
 
-export default async function StaffPage() {
-    // In production, we should filter out the current user or handle self-deletion gracefully
+export default async function StaffPage({ params }: { params: Promise<{ storeSlug: string }> }) {
+
+    const { storeSlug } = await params;
+    const store = await prisma.store.findUnique({
+        where: { slug: storeSlug }
+    });
+
+    if (!store) return <div>Store not found</div>;
+
+    // Filter users by storeId
     const users = await prisma.user.findMany({
+        where: { storeId: store.id },
         orderBy: { createdAt: 'desc' }
     });
+
+    const createUserWithStore = createUser.bind(null, store.id);
+    const deleteUserWithStore = deleteUser.bind(null, store.id);
 
     return (
         <div className="p-8 max-w-7xl mx-auto space-y-8">
@@ -16,7 +28,7 @@ export default async function StaffPage() {
                         <Users className="text-brand-cyan" />
                         Staff Management
                     </h1>
-                    <p className="text-gray-500 mt-1">Manage team access and permissions.</p>
+                    <p className="text-gray-500 mt-1">Manage team access and permissions for {store.name}.</p>
                 </div>
             </header>
 
@@ -26,7 +38,7 @@ export default async function StaffPage() {
                     <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                         <Plus size={18} className="text-brand-orange" /> Invite New Member
                     </h3>
-                    <form action={createUser} className="space-y-4">
+                    <form action={createUserWithStore} className="space-y-4">
                         <div>
                             <label className="text-xs font-bold text-gray-700 uppercase">Full Name</label>
                             <input name="name" type="text" required placeholder="e.g. Sarah Jones" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none focus:ring-2 focus:ring-brand-cyan/20" />
@@ -39,7 +51,7 @@ export default async function StaffPage() {
                             <label className="text-xs font-bold text-gray-700 uppercase">Role</label>
                             <select name="role" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none focus:ring-2 focus:ring-brand-cyan/20 bg-white">
                                 <option value="Inventory Staff">Inventory Staff</option>
-                                <option value="Owner Access">Owner Access</option>
+                                <option value="OWNER">Owner Access</option>
                             </select>
                             <p className="text-[10px] text-gray-400 mt-1">Owners can manage staff and view financials.</p>
                         </div>
@@ -68,21 +80,21 @@ export default async function StaffPage() {
                             {users.map((user) => (
                                 <div key={user.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between group">
                                     <div className="flex items-center gap-4">
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm ${user.role === 'Owner Access' ? 'bg-gradient-to-tr from-purple-500 to-indigo-600' : 'bg-gradient-to-tr from-brand-cyan to-blue-500'}`}>
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm ${user.role === 'OWNER' ? 'bg-gradient-to-tr from-purple-500 to-indigo-600' : 'bg-gradient-to-tr from-brand-cyan to-blue-500'}`}>
                                             {user.name.charAt(0)}
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-gray-900">{user.name}</h4>
                                             <div className="flex items-center gap-3 text-xs text-gray-500">
                                                 <span className="flex items-center gap-1"><Mail size={12} /> {user.email}</span>
-                                                <span className={`px-2 py-0.5 rounded-full font-bold ${user.role === 'Owner Access' ? 'bg-purple-50 text-purple-700' : 'bg-cyan-50 text-cyan-700'}`}>
+                                                <span className={`px-2 py-0.5 rounded-full font-bold ${user.role === 'OWNER' ? 'bg-purple-50 text-purple-700' : 'bg-cyan-50 text-cyan-700'}`}>
                                                     {user.role}
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <form action={deleteUser}>
+                                    <form action={deleteUserWithStore}>
                                         <input type="hidden" name="id" value={user.id} />
                                         <button
                                             title="Delete User"

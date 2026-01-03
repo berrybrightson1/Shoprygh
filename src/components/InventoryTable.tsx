@@ -153,7 +153,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                 {/* Category */}
                                 <td className="hidden md:table-cell p-4">
                                     {isOwner ? (
-                                        <form action={updateCategory} id={`cat-${p.id}`}>
+                                        <form action={updateCategoryBound} id={`cat-${p.id}`}>
                                             <input type="hidden" name="id" value={p.id} />
                                             <input type="hidden" name="category" id={`cat-input-${p.id}`} />
                                             <EditableCell
@@ -179,7 +179,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                 {/* Price */}
                                 <td className="p-3 md:p-4">
                                     {isOwner ? (
-                                        <form action={updatePrice} id={`price-${p.id}`}>
+                                        <form action={updatePriceBound} id={`price-${p.id}`}>
                                             <input type="hidden" name="id" value={p.id} />
                                             <input type="hidden" name="price" id={`price-input-${p.id}`} />
                                             <EditableCell
@@ -204,7 +204,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                 {/* Stock */}
                                 <td className="p-3 md:p-4">
                                     {isOwner ? (
-                                        <form action={updateStock} className="flex items-center gap-2">
+                                        <form action={updateStockBound} className="flex items-center gap-2">
                                             <input type="hidden" name="id" value={p.id} />
                                             <input
                                                 name="stockQty"
@@ -234,7 +234,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                 {/* Delete (Owner Only) */}
                                 {isOwner && (
                                     <td className="p-3 md:p-4 text-right">
-                                        <form action={deleteProduct}>
+                                        <form action={deleteProductBound}>
                                             <input type="hidden" name="id" value={p.id} />
                                             <button
                                                 type="submit"

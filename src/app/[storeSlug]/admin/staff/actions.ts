@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma';
 import { hash } from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
 
-export async function createUser(formData: FormData) {
+export async function createUser(storeId: string, formData: FormData) {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     const name = formData.get('name') as string;
@@ -19,14 +19,15 @@ export async function createUser(formData: FormData) {
             name,
             password: hashedPassword,
             role,
+            storeId,
         }
     });
 
-    revalidatePath('/admin/staff');
+    revalidatePath(`/${storeId}/admin/staff`);
 }
 
-export async function deleteUser(formData: FormData) {
+export async function deleteUser(storeId: string, formData: FormData) {
     const id = formData.get('id') as string;
-    await prisma.user.delete({ where: { id } });
-    revalidatePath('/admin/staff');
+    await prisma.user.delete({ where: { id, storeId } }); // Ensure we only delete users from this store
+    revalidatePath(`/${storeId}/admin/staff`);
 }
