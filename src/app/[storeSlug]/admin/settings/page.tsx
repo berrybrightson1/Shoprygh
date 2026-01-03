@@ -2,8 +2,10 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { ArrowLeft, Crown } from "lucide-react";
+import { ArrowLeft, Crown, Camera, Building2, Phone, MapPin } from "lucide-react";
 import { updateStoreTier } from "./actions";
+import { updateStoreProfile } from "./profile-actions";
+import ProfileEditor from "./ProfileEditor";
 
 export default async function SettingsPage({ params }: { params: Promise<{ storeSlug: string }> }) {
     const session = await getSession();
@@ -20,6 +22,10 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
             slug: true,
             tier: true,
             status: true,
+            logo: true,
+            ownerPhone: true,
+            address: true,
+            description: true,
         },
     });
 
@@ -66,6 +72,9 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                         </div>
                     </div>
                     <p className="text-gray-700 mb-8">Manage your subscription and account settings</p>
+
+                    {/* Store Profile Editor */}
+                    <ProfileEditor store={store} />
 
                     {/* Current Plan */}
                     <div className="mb-8 p-6 bg-brand-cyan/5 border border-brand-cyan/20 rounded-xl">

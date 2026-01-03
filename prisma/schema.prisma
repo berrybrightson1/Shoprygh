@@ -17,6 +17,11 @@ model Store {
   tier        StoreTier @default(HUSTLER)
   ownerPhone  String?
   
+  // Profile Information
+  logo        String?   // URL to logo image
+  description String?   // Store bio/description
+  address     String?   // Physical business address
+  
   // Account Status
   status           StoreStatus @default(ACTIVE)
   suspensionReason String?
