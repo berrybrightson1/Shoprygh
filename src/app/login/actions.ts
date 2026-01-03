@@ -7,12 +7,11 @@ import { encrypt } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export async function login(formData: FormData) {
-    const email = formData.get("email") as string;
+    const email = (formData.get("email") as string).trim().toLowerCase();
     const password = formData.get("password") as string;
 
     if (!email || !password) {
-        // In a real app, returning state with error is better, using redirect for simplicity per current pattern
-        return;
+        return { error: "Email and password are required" };
     }
 
     // 1. Find User
@@ -22,7 +21,7 @@ export async function login(formData: FormData) {
     });
 
     if (!user) {
-        return { error: "User not found" };
+        return { error: `User not found: "${email}"` };
     }
 
     // 2. Verify Password
