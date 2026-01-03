@@ -81,7 +81,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                         href={`/${storeSlug}/admin/inventory`}
                         icon={<Package size={20} />}
                         label="Inventory"
-                        active={pathname?.startsWith("/admin/inventory")}
+                        active={pathname?.startsWith(`/${storeSlug}/admin/inventory`)}
                     />
 
                     {/* Show these for ALL admin users */}
