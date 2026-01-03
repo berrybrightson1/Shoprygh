@@ -11,6 +11,7 @@ export async function createStore(formData: FormData) {
     const ownerName = formData.get("ownerName") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const tier = (formData.get("tier") as StoreTier) || StoreTier.HUSTLER;
 
     if (!storeName || !storeSlug || !ownerName || !email || !password) {
         throw new Error("All fields are required");
@@ -31,7 +32,7 @@ export async function createStore(formData: FormData) {
             data: {
                 name: storeName,
                 slug: storeSlug,
-                tier: StoreTier.HUSTLER, // Default to free tier
+                tier: tier,
             }
         });
 

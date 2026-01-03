@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createStore } from "./actions";
-import { Loader2, Store, User, Mail, Lock, LayoutDashboard, AlertCircle } from "lucide-react";
+import { Loader2, Store, User, Mail, Lock, LayoutDashboard, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
@@ -35,9 +35,12 @@ export default function SignupPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md text-center relative">
+                <Link href="/" className="absolute top-0 left-0 text-gray-400 hover:text-gray-600 transition p-2 hover:bg-white rounded-full sm:-ml-16">
+                    <ArrowLeft size={24} />
+                </Link>
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-black text-white mb-4">
-                    <span className="font-bold text-xl">A</span>
+                    <span className="font-bold text-xl">S</span>
                 </div>
                 <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
                     Start your 14-day free trial
@@ -50,6 +53,61 @@ export default function SignupPage() {
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100">
                     <form className="space-y-6" onSubmit={handleSubmit}>
+
+                        {/* Plan Selection */}
+                        <div>
+                            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Select Plan</h3>
+                            <div className="grid grid-cols-1 gap-3">
+                                <label className="relative flex items-start p-4 border rounded-lg cursor-pointer hover:border-black transition-colors has-[:checked]:border-black has-[:checked]:bg-gray-50">
+                                    <div className="flex items-center h-5">
+                                        <input
+                                            id="plan-hustler"
+                                            name="tier"
+                                            type="radio"
+                                            value="HUSTLER"
+                                            defaultChecked
+                                            className="focus:ring-black h-4 w-4 text-black border-gray-300"
+                                        />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="plan-hustler" className="font-bold text-gray-900 block">Hustler (Free)</label>
+                                        <span className="text-gray-500 block">Basic inventory, standard support.</span>
+                                    </div>
+                                </label>
+                                <label className="relative flex items-start p-4 border rounded-lg cursor-pointer hover:border-black transition-colors has-[:checked]:border-black has-[:checked]:bg-gray-50">
+                                    <div className="flex items-center h-5">
+                                        <input
+                                            id="plan-pro"
+                                            name="tier"
+                                            type="radio"
+                                            value="PRO"
+                                            className="focus:ring-black h-4 w-4 text-black border-gray-300"
+                                        />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="plan-pro" className="font-bold text-gray-900 block">Pro (₵50/mo)</label>
+                                        <span className="text-gray-500 block">Multiple staff, advanced reports, custom domain.</span>
+                                    </div>
+                                </label>
+                                <label className="relative flex items-start p-4 border rounded-lg cursor-pointer hover:border-black transition-colors has-[:checked]:border-black has-[:checked]:bg-gray-50">
+                                    <div className="flex items-center h-5">
+                                        <input
+                                            id="plan-wholesaler"
+                                            name="tier"
+                                            type="radio"
+                                            value="WHOLESALER"
+                                            className="focus:ring-black h-4 w-4 text-black border-gray-300"
+                                        />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="plan-wholesaler" className="font-bold text-gray-900 block">Wholesaler (₵200/mo)</label>
+                                        <span className="text-gray-500 block">Wholesale pricing, SKU tracking, bulk tools.</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className="border-t border-gray-100 pt-4"></div>
 
                         {/* Store Section */}
                         <div>
