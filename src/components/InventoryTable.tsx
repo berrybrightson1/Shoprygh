@@ -36,7 +36,7 @@ function EditableCell({
         <div className="relative group/cell flex items-center gap-1">
             <span className="text-gray-400 text-xs font-bold">{prefix}</span>
             {type === 'select' ? (
-                <select
+                <select title="Edit field"
                     value={value}
                     onChange={(e) => {
                         handleChange(e);
@@ -49,7 +49,7 @@ function EditableCell({
                     {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
             ) : (
-                <input
+                <input title="Edit value" aria-label="Edit value"
                     type={type}
                     value={value}
                     onChange={handleChange}
@@ -59,7 +59,7 @@ function EditableCell({
 
             {/* Save Button (only if dirty/input) */}
             {isDirty && type !== 'select' && (
-                <button
+                <button title="Save changes"
                     onClick={() => { onSave(value); setIsDirty(false); }}
                     className="text-brand-cyan hover:text-cyan-700 animate-in fade-in"
                 >
@@ -207,6 +207,8 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                         <form action={updateStockBound} className="flex items-center gap-2">
                                             <input type="hidden" name="id" value={p.id} />
                                             <input
+                                                title="Stock Quantity"
+                                                aria-label="Stock Quantity"
                                                 name="stockQty"
                                                 type="number"
                                                 defaultValue={p.stockQty}

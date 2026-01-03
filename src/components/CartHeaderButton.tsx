@@ -15,7 +15,7 @@ export default function CartHeaderButton() {
     // Prevent hydration mismatch
     if (!mounted) {
         return (
-            <button className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center relative">
+            <button title="Shopping cart" className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center relative">
                 <ShoppingBag size={18} />
             </button>
         );
