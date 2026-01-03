@@ -65,38 +65,61 @@ export default async function StaffPage({ params }: { params: Promise<{ storeSlu
                     </form>
                 </div>
 
-                {/* User List */}
+                {/* Staff Members Card */}
                 <div className="lg:col-span-2 space-y-4">
-                    <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                        <ShieldCheck size={18} className="text-green-600" /> Active Team Members
-                    </h3>
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="p-6 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-brand-cyan/10 rounded-lg">
+                                    <Users size={24} className="text-brand-cyan" />
+                                </div>
+                                <div>
+                                    <h3 className="font-black text-gray-900">Team Members</h3>
+                                    <p className="text-xs text-gray-500">{staffMembers.length} active members</p>
+                                </div>
+                            </div>
+                        </div>
 
-                    <h4 className="font-bold text-gray-900">{user.name}</h4>
-                    <div className="flex items-center gap-3 text-xs text-gray-500">
-                        <span className="flex items-center gap-1"><Mail size={12} /> {user.email}</span>
-                        <span className={`px-2 py-0.5 rounded-full font-bold ${user.role === 'OWNER' ? 'bg-purple-50 text-purple-700' : 'bg-cyan-50 text-cyan-700'}`}>
-                            {user.role}
-                        </span>
+                        {/* Members Table */}
+                        <div className="divide-y divide-gray-100">
+                            {staffMembers.length === 0 ? (
+                                <div className="p-12 text-center text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                                    No staff members found.
+                                </div>
+                            ) : (
+                                staffMembers.map((user: any) => (
+                                    <div key={user.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between group">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm ${user.role === 'OWNER' ? 'bg-gradient-to-tr from-purple-500 to-indigo-600' : 'bg-gradient-to-tr from-brand-cyan to-blue-500'}`}>
+                                                {user.name.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-gray-900">{user.name}</h4>
+                                                <div className="flex items-center gap-3 text-xs text-gray-500">
+                                                    <span className="flex items-center gap-1"><Mail size={12} /> {user.email}</span>
+                                                    <span className={`px-2 py-0.5 rounded-full font-bold ${user.role === 'OWNER' ? 'bg-purple-50 text-purple-700' : 'bg-cyan-50 text-cyan-700'}`}>
+                                                        {user.role}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <form action={deleteUserWithStore}>
+                                            <input type="hidden" name="id" value={user.id} />
+                                            <button
+                                                title="Delete User"
+                                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition opacity-0 group-hover:opacity-100"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </form>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <form action={deleteUserWithStore}>
-                <input type="hidden" name="id" value={user.id} />
-                <button
-                    title="Delete User"
-                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition opacity-0 group-hover:opacity-100"
-                >
-                    <Trash2 size={18} />
-                </button>
-            </form>
         </div>
-    ))
-}
-                        </div >
-                    )}
-                </div >
-            </div >
-        </div >
     );
 }
+```
