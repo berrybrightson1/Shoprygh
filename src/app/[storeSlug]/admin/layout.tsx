@@ -20,6 +20,15 @@ export default async function AdminLayout({
 
     if (!store) return notFound();
 
+    // Security Check: Ensure the logged-in user belongs to this store
+    // We allow PLATFORM_ADMIN to access any store (optional, but good for support)
+    if (session && session.storeId !== store.id && session.role !== 'PLATFORM_ADMIN') {
+        // User is logged in but trying to access a different store
+        // Redirect them to their own store or show unauthorized
+        // For now, redirect to their own inventory
+        redirect(`/${session.storeSlug}/admin/inventory`);
+    }
+
     return (
         <div className="flex min-h-screen bg-gray-50 font-sans">
             {/* Sidebar (Client Component) - Only show if logged in */}
