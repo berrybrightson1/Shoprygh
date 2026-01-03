@@ -1,8 +1,32 @@
+"use client";
+
 import Link from "next/link";
-import { Lock, ArrowLeft } from "lucide-react";
+import { Lock, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import { login } from "./actions";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    async function handleSubmit(formData: FormData) {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const res = await login(formData);
+            if (res?.error) {
+                setError(res.error);
+                toast.error(res.error);
+            }
+        } catch (e) {
+            setError("Something went wrong. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
@@ -18,14 +42,20 @@ export default function LoginPage() {
                 </div>
 
                 <div className="p-8">
-                    <form action={login} className="space-y-4">
+                    {error && (
+                        <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-xl text-sm font-bold flex items-center gap-2">
+                            <AlertCircle size={18} /> {error}
+                        </div>
+                    )}
+
+                    <form action={handleSubmit} className="space-y-4">
                         <div>
                             <label className="text-xs font-bold text-gray-700 uppercase ml-1">Email Address</label>
                             <input
                                 name="email"
                                 type="email"
                                 required
-                                defaultValue="@gmail.com"
+                                defaultValue=""
                                 placeholder="yourname@gmail.com"
                                 className="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 outline-none focus:ring-2 focus:ring-black/5 bg-gray-50 font-bold text-gray-900 placeholder:font-normal"
                             />
@@ -44,9 +74,16 @@ export default function LoginPage() {
 
                         <button
                             type="submit"
-                            className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition shadow-lg mt-4 active:scale-95 duration-200"
+                            disabled={isLoading}
+                            className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition shadow-lg mt-4 active:scale-95 duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
-                            Find My Store & Login
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="animate-spin" size={20} /> Logging in...
+                                </>
+                            ) : (
+                                "Find My Store & Login"
+                            )}
                         </button>
                     </form>
 

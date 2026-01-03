@@ -22,16 +22,16 @@ export async function login(formData: FormData) {
     });
 
     if (!user) {
-        return;
+        return { error: "User not found" };
     }
 
     // 2. Verify Password
     const isValid = await compare(password, user.password);
-    if (!isValid) return;
+    if (!isValid) return { error: "Invalid password" };
 
     // Check for Store OR Platform Admin privileges
     if (!user.store && !user.isPlatformAdmin) {
-        return; // Regular users must have a store
+        return { error: "No store account found. Please signup." };
     }
 
     // 3. Create Session
