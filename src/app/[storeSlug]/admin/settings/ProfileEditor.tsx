@@ -140,7 +140,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    className="w-full bg-brand-orange text-white py-4 rounded-xl font-black hover:bg-orange-600 transition shadow-lg"
+                    className="w-full bg-brand-cyan text-white py-4 rounded-xl font-black shadow-lg"
                 >
                     Save Profile
                 </button>
