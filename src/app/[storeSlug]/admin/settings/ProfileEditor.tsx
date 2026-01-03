@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera } from "lucide-react";
+import { Camera, Building2 } from "lucide-react";
 import { useState } from "react";
 import { updateStoreProfile } from "./profile-actions";
 
