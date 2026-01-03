@@ -113,7 +113,7 @@ export default function CreatorStudio({
 
                     <div>
                         <label className="text-xs font-bold text-gray-800 uppercase">Category</label>
-                        <select
+                        <select title="Product Category"
                             name="category"
                             className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 bg-white text-gray-900 font-medium"
                         >
@@ -167,7 +167,7 @@ export default function CreatorStudio({
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={handleDrop}
                     >
-                        <input
+                        <input title="Retail Price" aria-label="Retail Price"
                             ref={fileInputRef}
                             name="image"
                             type="file"

@@ -26,7 +26,8 @@ export default function CartHeaderButton() {
     return (
         <button
             onClick={toggleCart}
-            className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center relative hover:bg-gray-800 transition"
+            title="Shopping cart"
+            className="relative w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"
         >
             <ShoppingBag size={18} />
             {mounted && itemCount > 0 && (

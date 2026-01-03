@@ -49,7 +49,7 @@ export default async function StaffPage({ params }: { params: Promise<{ storeSlu
                         </div>
                         <div>
                             <label className="text-xs font-bold text-gray-700 uppercase">Role</label>
-                            <select name="role" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none focus:ring-2 focus:ring-brand-cyan/20 bg-white">
+                            <select title="User Role" name="role" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none focus:ring-2 focus:ring-brand-cyan/20 bg-white">
                                 <option value="Inventory Staff">Inventory Staff</option>
                                 <option value="OWNER">Owner Access</option>
                             </select>
@@ -57,7 +57,7 @@ export default async function StaffPage({ params }: { params: Promise<{ storeSlu
                         </div>
                         <div>
                             <label className="text-xs font-bold text-gray-700 uppercase">Temporary Password</label>
-                            <input name="password" type="text" required defaultValue="Anaya123!" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none focus:ring-2 focus:ring-brand-cyan/20 font-mono text-sm" />
+                            <input title="Email Address" aria-label="Email Address" name="password" type="text" required defaultValue="Anaya123!" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none focus:ring-2 focus:ring-brand-cyan/20 font-mono text-sm" />
                         </div>
                         <button type="submit" className="w-full bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition shadow-lg">
                             Create Account

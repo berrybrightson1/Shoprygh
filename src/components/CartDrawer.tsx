@@ -42,7 +42,7 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
                         <h2 className="text-xl font-bold flex items-center gap-2 text-gray-900">
                             My Bag <span className="text-brand-orange text-sm font-normal">({items.length} items)</span>
                         </h2>
-                        <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition text-gray-900">
+                        <button onClick={onClose} title="Close cart" className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition text-gray-900">
                             <X size={18} />
                         </button>
                     </div>
@@ -74,7 +74,7 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
                                         <div>
                                             <div className="flex justify-between items-start">
                                                 <h3 className="text-sm font-bold text-gray-900 line-clamp-2 leading-tight">{item.name}</h3>
-                                                <button onClick={() => removeItem(item.id)} className="text-gray-400 hover:text-red-500 p-1 -mr-2">
+                                                <button title="Decrease quantity" onClick={() => removeItem(item.id)} className="text-gray-400 hover:text-red-500 p-1 -mr-2">
                                                     <X size={14} />
                                                 </button>
                                             </div>
@@ -86,14 +86,14 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
 
                                             {/* Quantity Control */}
                                             <div className="flex items-center gap-3 bg-gray-50 rounded-full px-2 py-1 border border-gray-100">
-                                                <button
+                                                <button title="Increase quantity"
                                                     onClick={() => decreaseItem(item.id)}
                                                     className="w-6 h-6 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-50 text-gray-900"
                                                 >
                                                     <Minus size={12} />
                                                 </button>
                                                 <span className="text-xs font-bold w-3 text-center text-gray-900">{item.quantity}</span>
-                                                <button
+                                                <button title="Remove item"
                                                     onClick={() => addItem(item)}
                                                     className="w-6 h-6 rounded-full bg-black text-white shadow-sm flex items-center justify-center hover:bg-gray-800 transition"
                                                 >
