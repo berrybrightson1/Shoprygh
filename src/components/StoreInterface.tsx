@@ -265,13 +265,13 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug }: 
                     )}
                 </button>
 
-                <button
-                    title="Profile"
-                    onClick={() => router.push('/admin/inventory')}
+                <Link
+                    href={`/${storeSlug}/admin/inventory`}
+                    title="Admin Panel"
                     className="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-900 transition hover:scale-110"
                 >
                     <UserCircle2 size={24} />
-                </button>
+                </Link>
             </nav>
 
             {/* Global Cart Drawer */}
