@@ -33,7 +33,6 @@ async function main() {
         });
         console.log('Created user: admin@anaya.com / admin123');
     } else {
-    } else {
         console.log('Users already exist. Skipping default setup.');
     }
 
