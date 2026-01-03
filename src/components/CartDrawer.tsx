@@ -138,7 +138,7 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
                                         const { orderId } = await createOrder(storeId, items, total, phone);
 
                                         // 2. Construct Message
-                                        let msg = `Hello Anaya's! I'd like to place an order:\n`;
+                                        let msg = `Hello Store! I'd like to place an order:\n`;
                                         msg += `Order #${orderId.slice(-6).toUpperCase()}\n\n`;
                                         msg += `*Customer Contact:* ${phone}\n\n`;
                                         msg += `*Items:*\n`;
@@ -150,7 +150,6 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
 
                                         msg += `*Total Estimate:* ₵${total.toFixed(2)}`;
 
-                                        // 3. Clear & Redirect
                                         clearCart();
                                         onClose();
                                         window.location.href = `https://wa.me/233551171353?text=${encodeURIComponent(msg)}`;

@@ -85,7 +85,7 @@ function ProductCard({ product }: { product: any }) {
                 <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center">
                     <span className="text-[8px] font-bold text-black">A</span>
                 </div>
-                <span className="text-xs text-gray-900 font-medium">Anaya Store</span>
+                <span className="text-xs text-gray-900 font-medium">{product.storeName || 'Seller Hub'}</span>
 
                 {/* Color Swatches (Mock) */}
                 <div className="flex -space-x-1 ml-auto">

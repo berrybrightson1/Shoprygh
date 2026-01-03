@@ -65,8 +65,8 @@ export default function InstallPrompt() {
                             👶
                         </div>
                         <div>
-                            <h3 className="font-bold text-gray-900">Add Anaya to Home Screen?</h3>
-                            <p className="text-xs text-gray-500 mt-1">Install for a better experience.</p>
+                            <h3 className="font-bold text-gray-900">Add Shopry to Home Screen?</h3>
+                            <p className="text-gray-500 text-sm mt-1">Get the app for a better experience.</p>
                         </div>
                     </div>
                     <button onClick={() => setDeferredPrompt(null)} className="text-gray-400" aria-label="Close">
@@ -74,8 +74,8 @@ export default function InstallPrompt() {
                     </button>
                 </div>
                 <div className="mt-4 flex gap-3">
-                    <button onClick={() => setDeferredPrompt(null)} className="flex-1 py-2 rounded-lg font-bold text-sm text-gray-500 hover:bg-gray-50">Not Now</button>
-                    <button onClick={handleInstallClick} className="flex-1 py-2 rounded-lg font-bold text-sm bg-brand-cyan text-white shadow-lg shadow-brand-cyan/20">Install App</button>
+                    <button onClick={() => setDeferredPrompt(null)} className="flex-1 py-2 rounded-lg font-bold text-sm text-gray-500 hover:bg-gray-50">Maybe later</button>
+                    <button onClick={handleInstallClick} className="flex-1 py-2 rounded-lg font-bold text-sm bg-black text-white shadow-lg shadow-black/20">Install</button>
                 </div>
             </div>
         );
@@ -87,7 +87,7 @@ export default function InstallPrompt() {
             <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md p-6 pb-8 border-t border-gray-200 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] animate-in slide-in-from-bottom duration-700">
                 <div className="flex items-start justify-between mb-4">
                     <div>
-                        <h3 className="font-bold text-lg text-gray-900">Install "Anaya"</h3>
+                        <h3 className="font-bold text-lg text-gray-900">Install "Shopry"</h3>
                         <p className="text-sm text-gray-600 mt-1">Add to your Home Screen for the full experience.</p>
                     </div>
                     <button onClick={() => setIsIOS(false)} className="bg-gray-100 rounded-full p-1 text-gray-500" aria-label="Close">

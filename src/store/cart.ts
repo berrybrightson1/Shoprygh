@@ -63,16 +63,14 @@ export const useCartStore = create<CartState>()(
                 const { items } = get()
                 if (items.length === 0) return alert("Cart is empty")
 
-                let msg = "Hello Anaya's! I would like to order:%0A"
-                items.forEach(item => {
-                    msg += `- ${item.name} (${item.quantity}x) - ₵${item.priceRetail * item.quantity}%0A`
-                })
+                let msg = "Hello! I would like to order:%0A"
+                msg += items.map(i => `${i.quantity}x ${i.name}`).join('%0A')
 
-                const total = items.reduce((sum, item) => sum + (item.priceRetail * item.quantity), 0)
-                msg += `%0ATotal: ₵${total}`
+                const total = items.reduce((acc, i) => acc + (Number(i.priceRetail) * i.quantity), 0)
+                msg += `%0A%0A*Total: ₵${total}*`
 
                 // In production, this would be:
-                // window.open(`https://wa.me/...?text=${msg}`)
+                window.open(`https://wa.me/233555555555?text=${msg}`, '_blank')
                 console.log("Redirecting to WhatsApp with message:", msg)
                 alert("Redirecting to WhatsApp...\n\n" + decodeURIComponent(msg))
 
