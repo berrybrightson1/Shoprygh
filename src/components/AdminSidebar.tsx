@@ -29,8 +29,8 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                         <Menu size={24} />
                     </button>
                     <div className="flex flex-col">
-                        <span className="font-bold text-base leading-none">Anaya</span>
-                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Admin Panel</span>
+                        <span className="font-bold text-base leading-none">Shopry</span>
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Seller Hub</span>
                     </div>
                 </div>
 
@@ -51,12 +51,12 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
 
                 {/* Header */}
                 <div className="p-8 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-brand-cyan to-blue-600 text-white rounded-xl shadow-lg shadow-cyan-900/20 flex items-center justify-center font-bold text-xl">
-                        A
+                    <div className="w-10 h-10 bg-gradient-to-br from-brand-orange to-pink-600 text-white rounded-xl shadow-lg shadow-orange-900/20 flex items-center justify-center font-bold text-xl">
+                        S
                     </div>
                     <div>
-                        <span className="font-bold text-xl text-white block leading-none">Anaya</span>
-                        <span className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">Admin Panel</span>
+                        <span className="font-bold text-xl text-white block leading-none">Shopry</span>
+                        <span className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">Seller Hub</span>
                     </div>
                 </div>
 

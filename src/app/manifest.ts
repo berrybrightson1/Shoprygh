@@ -2,13 +2,13 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: "Anaya Baby Care",
-        short_name: "Anaya",
-        description: "Your favorite baby care store.",
+        name: "Shopry - Sell Online",
+        short_name: "Shopry",
+        description: "The operating system for modern retail in Ghana.",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
-        theme_color: "#06B6D4",
+        theme_color: "#000000",
         icons: [
             {
                 src: "/favicon.ico",
