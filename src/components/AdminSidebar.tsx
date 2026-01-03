@@ -81,8 +81,8 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                         active={pathname?.startsWith("/admin/inventory")}
                     />
 
-                    {/* Only show these for Owner & PRO/WHOLESALER */}
-                    {isOwner && storeTier !== 'HUSTLER' && (
+                    {/* Show these for all Owners */}
+                    {isOwner && (
                         <>
                             <NavLink
                                 href="/admin/orders"
