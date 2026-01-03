@@ -21,6 +21,10 @@ export async function login(formData: FormData) {
         include: { store: true } // Crucial: Fetch the linked store
     });
 
+    if (!user) {
+        return;
+    }
+
     // 2. Verify Password
     const isValid = await compare(password, user.password);
     if (!isValid) return;
