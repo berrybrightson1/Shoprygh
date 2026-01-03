@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu } from "lucide-react";
 import { useState } from "react";
-import { logout } from "@/app/admin/login/actions";
+import { logout } from "@/app/[storeSlug]/admin/login/actions";
 
 export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: any, storeTier?: string }) {
     const pathname = usePathname();

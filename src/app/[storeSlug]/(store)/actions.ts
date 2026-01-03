@@ -10,12 +10,14 @@ export type CartItemSnapshot = {
     quantity: number;
 };
 
-export async function createOrder(items: CartItemSnapshot[], totalEstimate: number, customerPhone?: string) {
+export async function createOrder(storeId: string, items: CartItemSnapshot[], totalEstimate: number, customerPhone?: string) {
     if (!items.length) throw new Error("Cart is empty");
+    if (!storeId) throw new Error("Store ID is required");
 
     // 1. Create the Order in DB
     const order = await prisma.order.create({
         data: {
+            storeId, // Link to Store
             total: totalEstimate,
             status: "PENDING",
             customerPhone: customerPhone || null,
@@ -31,22 +33,22 @@ export async function createOrder(items: CartItemSnapshot[], totalEstimate: numb
     });
 
     // 2. Revalidate Admin Orders page (so it shows up instantly)
-    revalidatePath("/admin/orders");
+    revalidatePath(`/${storeId}/admin/orders`);
 
     return { success: true, orderId: order.id };
 }
 
-export async function updateOrderStatus(orderId: string, newStatus: string) {
+export async function updateOrderStatus(storeId: string, orderId: string, newStatus: string) {
     await prisma.order.update({
-        where: { id: orderId },
+        where: { id: orderId, storeId }, // Ensure tenancy
         data: { status: newStatus }
     });
-    revalidatePath("/admin/orders");
+    revalidatePath(`/${storeId}/admin/orders`);
 }
 
-export async function deleteOrder(orderId: string) {
+export async function deleteOrder(storeId: string, orderId: string) {
     await prisma.order.delete({
-        where: { id: orderId }
+        where: { id: orderId, storeId } // Ensure tenancy
     });
-    revalidatePath("/admin/orders");
+    revalidatePath(`/${storeId}/admin/orders`);
 }

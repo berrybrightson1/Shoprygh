@@ -2,7 +2,7 @@
 
 import { useAdminStore } from "@/store/admin";
 import { Trash2, Save, Package, Check, Download } from "lucide-react";
-import { updateStock, deleteProduct, updatePrice, updateCategory } from "@/app/admin/inventory/actions";
+import { updateStock, deleteProduct, updatePrice, updateCategory } from "@/app/[storeSlug]/admin/inventory/actions";
 import { useState, useEffect } from "react";
 
 // Helper to auto-submit on change or show save button
@@ -71,9 +71,15 @@ function EditableCell({
 }
 
 
-export default function InventoryTable({ products }: { products: any[] }) {
+export default function InventoryTable({ products, storeId }: { products: any[], storeId: string }) {
     const { currentUser } = useAdminStore();
     const isOwner = currentUser?.role === 'Owner Access';
+
+    // Bind actions to store
+    const updateStockBound = updateStock.bind(null, storeId);
+    const updateCategoryBound = updateCategory.bind(null, storeId);
+    const updatePriceBound = updatePrice.bind(null, storeId);
+    const deleteProductBound = deleteProduct.bind(null, storeId);
 
     const CATEGORIES = ["Diapers", "Feeding", "Clothing", "Toys", "Health", "Bedding", "Bundles"];
 

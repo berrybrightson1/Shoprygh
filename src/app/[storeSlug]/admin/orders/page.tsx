@@ -1,15 +1,25 @@
 import prisma from "@/lib/prisma";
-import { deleteOrder, updateOrderStatus } from "@/app/(store)/actions"; // We'll assume these are available or use inline actions if preferred, but separate is cleaner.
+import { deleteOrder, updateOrderStatus } from "@/app/[storeSlug]/(store)/actions"; // We'll assume these are available or use inline actions if preferred, but separate is cleaner.
 import { Trash2, CheckCircle2, XCircle, Clock, ShoppingBag } from "lucide-react";
 import { revalidatePath } from "next/cache";
 
 export const dynamic = 'force-dynamic';
 
-export default async function OrdersPage() {
+export default async function OrdersPage({ params }: { params: { storeSlug: string } }) {
+    const store = await prisma.store.findUnique({
+        where: { slug: params.storeSlug }
+    });
+
+    if (!store) return <div>Store not found</div>;
+
     const orders = await prisma.order.findMany({
+        where: { storeId: store.id }, // Filter by Store
         orderBy: { createdAt: 'desc' },
         include: { items: true }
     });
+
+    const updateStatusWithStore = updateOrderStatus.bind(null, store.id);
+    const deleteOrderWithStore = deleteOrder.bind(null, store.id);
 
     return (
         <div className="p-8 max-w-7xl mx-auto">
@@ -95,7 +105,7 @@ export default async function OrdersPage() {
                                             {order.status !== 'COMPLETED' && (
                                                 <form action={async () => {
                                                     "use server";
-                                                    await updateOrderStatus(order.id, 'COMPLETED');
+                                                    await updateStatusWithStore(order.id, 'COMPLETED');
                                                 }}>
                                                     <button title="Mark Completed" className="p-2 hover:bg-green-100 text-gray-400 hover:text-green-600 rounded-lg transition">
                                                         <CheckCircle2 size={18} />
@@ -106,7 +116,7 @@ export default async function OrdersPage() {
                                             {order.status !== 'CANCELLED' && (
                                                 <form action={async () => {
                                                     "use server";
-                                                    await updateOrderStatus(order.id, 'CANCELLED');
+                                                    await updateStatusWithStore(order.id, 'CANCELLED');
                                                 }}>
                                                     <button title="Cancel Order" className="p-2 hover:bg-yellow-100 text-gray-400 hover:text-yellow-600 rounded-lg transition">
                                                         <XCircle size={18} />
@@ -118,7 +128,7 @@ export default async function OrdersPage() {
 
                                             <form action={async () => {
                                                 "use server";
-                                                await deleteOrder(order.id);
+                                                await deleteOrderWithStore(order.id);
                                             }}>
                                                 <button title="Delete" className="p-2 hover:bg-red-100 text-gray-400 hover:text-red-600 rounded-lg transition">
                                                     <Trash2 size={18} />

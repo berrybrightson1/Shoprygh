@@ -51,7 +51,7 @@ export default async function InventoryPage({ params }: Props) {
             <CreatorStudio createAction={createProductWithStore} storeTier={store.tier} />
 
             {/* Live Inventory Table (Client Component with RBAC) */}
-            <InventoryTable products={products} />
+            <InventoryTable products={products} storeId={store.id} />
         </div>
     );
 }

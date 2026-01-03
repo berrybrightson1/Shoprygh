@@ -3,9 +3,9 @@
 import { X, Minus, Plus, ShoppingBag, MessageCircle } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useEffect, useState } from "react";
-import { createOrder } from "@/app/(store)/actions";
+import { createOrder } from "@/app/[storeSlug]/(store)/actions";
 
-export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boolean; onClose: () => void; storeId: string }) {
     const { items, addItem, decreaseItem, removeItem, clearCart } = useCartStore();
     const [mounted, setMounted] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -135,7 +135,7 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
                                     setIsCheckingOut(true);
                                     try {
                                         // 1. Save "Ghost" Order
-                                        const { orderId } = await createOrder(items, total, phone);
+                                        const { orderId } = await createOrder(storeId, items, total, phone);
 
                                         // 2. Construct Message
                                         let msg = `Hello Anaya's! I'd like to place an order:\n`;

@@ -97,7 +97,7 @@ function ProductCard({ product }: { product: any }) {
     );
 }
 
-export default function StoreInterface({ initialProducts }: { initialProducts: any[] }) {
+export default function StoreInterface({ initialProducts, storeId }: { initialProducts: any[], storeId: string }) {
     const router = useRouter();
     const [activeCategory, setActiveCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
@@ -275,7 +275,7 @@ export default function StoreInterface({ initialProducts }: { initialProducts: a
             </nav>
 
             {/* Global Cart Drawer */}
-            <CartDrawer isOpen={isCartOpen} onClose={toggleCart} />
+            <CartDrawer isOpen={isCartOpen} onClose={toggleCart} storeId={storeId} />
         </>
     );
 }

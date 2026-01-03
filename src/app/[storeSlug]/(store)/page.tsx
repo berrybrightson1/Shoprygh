@@ -34,5 +34,5 @@ export default async function StorePage({ params }: Props) {
         createdAt: p.createdAt.toISOString()
     }));
 
-    return <StoreInterface initialProducts={serializedProducts} />;
+    return <StoreInterface initialProducts={serializedProducts} storeId={store.id} />;
 }
