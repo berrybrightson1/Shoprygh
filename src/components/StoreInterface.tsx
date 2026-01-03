@@ -16,7 +16,7 @@ declare global {
 
 import { useLikesStore } from "@/store/likes";
 
-function ProductCard({ product }: { product: any }) {
+function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }) {
     const addItem = useCartStore((state) => state.addItem);
     const toggleCart = useCartStore((state) => state.toggleCart);
     const { toggleLike, items: likedItems } = useLikesStore();
@@ -28,7 +28,7 @@ function ProductCard({ product }: { product: any }) {
 
     return (
         <div className="group relative flex flex-col h-full animate-in fade-in zoom-in duration-300">
-            <Link href={`/product/${product.id}`} className="block">
+            <Link href={`/${storeSlug}/product/${product.id}`} className="block">
                 <div className="relative aspect-[4/5] bg-gray-100 rounded-[24px] overflow-hidden mb-3">
                     {/* Image */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -97,7 +97,7 @@ function ProductCard({ product }: { product: any }) {
     );
 }
 
-export default function StoreInterface({ initialProducts, storeId }: { initialProducts: any[], storeId: string }) {
+export default function StoreInterface({ initialProducts, storeId, storeSlug }: { initialProducts: any[], storeId: string, storeSlug: string }) {
     const router = useRouter();
     const [activeCategory, setActiveCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
