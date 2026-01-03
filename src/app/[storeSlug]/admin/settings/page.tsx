@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Crown } from "lucide-react";
 import { updateStoreTier } from "./actions";
 
-export default async function SettingsPage({ params }: { params: { storeSlug: string } }) {
+export default async function SettingsPage({ params }: { params: Promise<{ storeSlug: string }> }) {
     const session = await getSession();
     if (!session) redirect("/login");
 
@@ -80,8 +80,8 @@ export default async function SettingsPage({ params }: { params: { storeSlug: st
                             <label
                                 key={tier}
                                 className={`relative flex items-start p-6 border-2 rounded-xl cursor-pointer transition-colors ${store.tier === tier
-                                        ? "border-brand- bg-brand-cyan/5"
-                                        : "border-gray-200 hover:border-black"
+                                    ? "border-brand- bg-brand-cyan/5"
+                                    : "border-gray-200 hover:border-black"
                                     }`}
                             >
                                 <div className="flex items-center h-5">
