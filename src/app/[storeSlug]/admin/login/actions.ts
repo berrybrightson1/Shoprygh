@@ -19,7 +19,8 @@ export async function login(formData: FormData) {
     }
 
     const user = await prisma.user.findUnique({
-        where: { email }
+        where: { email },
+        include: { store: true }
     });
 
     if (!user || !(await compare(password, user.password))) {
@@ -28,8 +29,20 @@ export async function login(formData: FormData) {
         redirect('/admin/login?error=InvalidCredentials');
     }
 
-    // Create Session
-    const session = await encrypt({ id: user.id, email: user.email, name: user.name, role: user.role });
+    if (!user.store) {
+        console.error('User has no store linked');
+        redirect('/login?error=NoStore');
+    }
+
+    // Create Session (Standardized Flat Payload)
+    const session = await encrypt({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        storeId: user.store.id,
+        storeSlug: user.store.slug
+    });
 
     (await cookies()).set('session', session, {
         httpOnly: true,
@@ -38,7 +51,8 @@ export async function login(formData: FormData) {
         path: '/',
     });
 
-    redirect('/admin/inventory');
+    // Correct Redirect to the store's inventory
+    redirect(`/${user.store.slug}/admin/inventory`);
 }
 
 export async function logout() {

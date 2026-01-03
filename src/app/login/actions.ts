@@ -30,17 +30,19 @@ export async function login(formData: FormData) {
     const isValid = await compare(password, user.password);
     if (!isValid) return;
 
-    // 3. Create Session
+    // 3. Create Session (Standardized Flat Payload)
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
-    const session = await encrypt({
-        user: {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            role: user.role
-        },
+    const sessionPayload = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        storeId: user.store.id,
+        storeSlug: user.store.slug,
         expires
-    });
+    };
+
+    const session = await encrypt(sessionPayload);
 
     (await cookies()).set("session", session, { expires, httpOnly: true });
 
