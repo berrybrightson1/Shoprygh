@@ -2,8 +2,8 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { Shield, Store, Ban, Trash2, CheckCircle, AlertCircle } from "lucide-react";
-import { suspendStore, unsuspendStore, deleteStore } from "./actions";
+import { Shield, AlertCircle } from "lucide-react";
+import StoreActions from "./StoreActions";
 
 // Platform Admin Dashboard - Force rebuild
 export default async function PlatformAdminPage() {
@@ -143,54 +143,9 @@ export default async function PlatformAdminPage() {
                                             {new Date(store.createdAt).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="flex gap-2">
-                                                <Link
-                                                    href={`/${store.slug}`}
-                                                    target="_blank"
-                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                                                    title="Visit Store"
-                                                >
-                                                    <Store size={18} />
-                                                </Link>
-                                                {store.status === "ACTIVE" ? (
-                                                    <form action={suspendStore}>
-                                                        <input type="hidden" name="storeId" value={store.id} />
-                                                        <button
-                                                            type="submit"
-                                                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-                                                            title="Suspend Store"
-                                                        >
-                                                            <Ban size={18} />
-                                                        </button>
-                                                    </form>
-                                                ) : (
-                                                    <form action={unsuspendStore}>
-                                                        <input type="hidden" name="storeId" value={store.id} />
-                                                        <button
-                                                            type="submit"
-                                                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition"
-                                                            title="Unsuspend Store"
-                                                        >
-                                                            <CheckCircle size={18} />
-                                                        </button>
-                                                    </form>
-                                                )}
-                                                <form action={deleteStore}>
-                                                    <input type="hidden" name="storeId" value={store.id} />
-                                                    <button
-                                                        type="submit"
-                                                        className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
-                                                        title="Delete Store"
-                                                        onClick={(e) => {
-                                                            if (!confirm(`Delete ${store.name}? This cannot be undone!`)) {
-                                                                e.preventDefault();
-                                                            }
-                                                        }}
-                                                    >
-                                                        <Trash2 size={18} />
-                                                    </button>
-                                                </form>
-                                            </div>
+                                            <td className="px-6 py-4">
+                                                <StoreActions store={store} />
+                                            </td>
                                         </td>
                                     </tr>
                                 ))}
