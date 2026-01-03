@@ -5,9 +5,10 @@ import { revalidatePath } from "next/cache";
 
 export const dynamic = 'force-dynamic';
 
-export default async function OrdersPage({ params }: { params: { storeSlug: string } }) {
+export default async function OrdersPage({ params }: { params: Promise<{ storeSlug: string }> }) {
+    const { storeSlug } = await params;
     const store = await prisma.store.findUnique({
-        where: { slug: params.storeSlug }
+        where: { slug: storeSlug }
     });
 
     if (!store) return <div>Store not found</div>;

@@ -7,13 +7,13 @@ import { createProduct } from "./actions";
 export const dynamic = 'force-dynamic';
 
 interface Props {
-    params: {
+    params: Promise<{
         storeSlug: string;
-    }
+    }>
 }
 
 export default async function InventoryPage({ params }: Props) {
-    const { storeSlug } = params;
+    const { storeSlug } = await params;
 
     const store = await prisma.store.findUnique({
         where: { slug: storeSlug }

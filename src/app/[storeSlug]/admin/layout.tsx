@@ -8,13 +8,14 @@ export default async function AdminLayout({
     params
 }: {
     children: React.ReactNode;
-    params: { storeSlug: string }
+    params: Promise<{ storeSlug: string }>
 }) {
     const session = await getSession();
+    const { storeSlug } = await params;
 
     // Fetch store info for Tier
     const store = await prisma.store.findUnique({
-        where: { slug: params.storeSlug }
+        where: { slug: storeSlug }
     });
 
     if (!store) return notFound();
