@@ -37,6 +37,7 @@ export async function login(formData: FormData) {
         email: user.email,
         name: user.name,
         role: user.role,
+        isPlatformAdmin: user.isPlatformAdmin,
         storeId: user.store.id,
         storeSlug: user.store.slug,
         expires

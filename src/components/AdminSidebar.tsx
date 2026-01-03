@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu } from "lucide-react";
+import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield } from "lucide-react";
 import { useState } from "react";
 import { logout } from "@/app/[storeSlug]/admin/login/actions";
 
@@ -112,6 +112,24 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                         label="Settings"
                         active={pathname?.startsWith(`/${storeSlug}/admin/settings`)}
                     />
+                    active={pathname?.startsWith(`/${storeSlug}/admin/settings`)}
+                    />
+
+                    {/* Platform Admin Link - Only for Super Admins */}
+                    {currentUser.isPlatformAdmin && (
+                        <>
+                            <div className="h-px bg-gray-800 mx-4 my-2" />
+                            <Link
+                                href="/platform-admin"
+                                className="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white hover:shadow-md transition-all duration-300 group"
+                            >
+                                <span className="text-gray-500 group-hover:text-brand-cyan transition-colors">
+                                    <Shield size={20} />
+                                </span>
+                                <span>Platform Admin</span>
+                            </Link>
+                        </>
+                    )}
                 </nav>
 
                 {/* User Profile / Switcher */}
