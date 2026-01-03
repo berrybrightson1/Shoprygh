@@ -84,29 +84,25 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                         active={pathname?.startsWith("/admin/inventory")}
                     />
 
-                    {/* Show these for all Owners */}
-                    {isOwner && (
-                        <>
-                            <NavLink
-                                href="/admin/orders"
-                                icon={<ShoppingBag size={20} />}
-                                label="Orders"
-                                active={pathname?.startsWith("/admin/orders")}
-                            />
-                            <NavLink
-                                href="/admin/staff"
-                                icon={<Users size={20} />}
-                                label="Staff"
-                                active={pathname?.startsWith("/admin/staff")}
-                            />
-                            <NavLink
-                                href={`/${storeSlug}/admin/reports`}
-                                icon={<BarChart size={20} />}
-                                label="Reports"
-                                active={pathname?.startsWith(`/${storeSlug}/admin/reports`)}
-                            />
-                        </>
-                    )}
+                    {/* Show these for ALL admin users */}
+                    <NavLink
+                        href={`/${storeSlug}/admin/orders`}
+                        icon={<ShoppingBag size={20} />}
+                        label="Orders"
+                        active={pathname?.startsWith(`/${storeSlug}/admin/orders`)}
+                    />
+                    <NavLink
+                        href={`/${storeSlug}/admin/staff`}
+                        icon={<Users size={20} />}
+                        label="Staff"
+                        active={pathname?.startsWith(`/${storeSlug}/admin/staff`)}
+                    />
+                    <NavLink
+                        href={`/${storeSlug}/admin/reports`}
+                        icon={<BarChart size={20} />}
+                        label="Reports"
+                        active={pathname?.startsWith(`/${storeSlug}/admin/reports`)}
+                    />
 
                     <div className="h-px bg-gray-800 mx-4 my-2" />
 
