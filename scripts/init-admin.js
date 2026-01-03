@@ -9,14 +9,26 @@ async function main() {
     console.log(`Found ${count} users.`);
 
     if (count === 0) {
-        console.log('Creating default admin user...');
+        console.log('Creating default admin store and user...');
+
+        // 1. Create Default Store
+        const store = await prisma.store.create({
+            data: {
+                name: 'Anaya Admin',
+                slug: 'admin',
+                tier: 'WHOLESALER',
+            }
+        });
+
+        // 2. Create Admin User linked to Store
         const hashedPassword = await hash('admin123', 10);
         await prisma.user.create({
             data: {
                 email: 'admin@anaya.com',
                 name: 'Mama Anaya',
-                role: 'Owner Access',
+                role: 'OWNER', // Fixed role enum/string
                 password: hashedPassword,
+                storeId: store.id,
             },
         });
         console.log('Created user: admin@anaya.com / admin123');
