@@ -55,116 +55,149 @@ export default async function PlatformAdminPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen bg-gray-50 relative overflow-hidden font-sans text-gray-900 selection:bg-brand-cyan/30">
+            {/* Background Gradients */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-400/20 blur-[130px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-400/20 blur-[130px]" />
+                <div className="absolute top-[40%] left-[40%] w-[40%] h-[40%] rounded-full bg-cyan-400/10 blur-[100px]" />
+            </div>
+
+            <main className="relative z-10 p-6 max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-black to-gray-800 rounded-2xl p-8 mb-8 text-white">
-                    <div className="flex items-center gap-4 mb-2">
-                        <Shield size={40} />
-                        <h1 className="text-4xl font-black">Platform Admin</h1>
-                    </div>
-                    <p className="text-gray-300">Manage all stores, subscriptions, and accounts</p>
-                </div>
-
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-                    <StatCard label="Total Stores" value={stats.total} color="bg-blue-500" />
-                    <StatCard label="Active" value={stats.active} color="bg-green-500" />
-                    <StatCard label="Suspended" value={stats.suspended} color="bg-red-500" />
-                    <StatCard label="Hustler (Free)" value={stats.hustler} color="bg-gray-500" />
-                    <StatCard label="Pro" value={stats.pro} color="bg-purple-500" />
-                    <StatCard label="Wholesaler" value={stats.wholesaler} color="bg-orange-500" />
-                </div>
-
-                {/* Stores Table */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-6 border-b border-gray-100">
-                        <h2 className="text-xl font-black text-gray-900">All Stores</h2>
+                <header className="mb-12 mt-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/40 backdrop-blur-md border border-white/50 text-xs font-bold uppercase tracking-wider text-gray-600 mb-4 shadow-sm">
+                            <Shield className="fill-gray-600" size={12} />
+                            Platform Access
+                        </div>
+                        <h1 className="text-5xl font-black tracking-tight text-gray-900 mb-2">
+                            Overview
+                        </h1>
+                        <p className="text-lg text-gray-500 font-medium">Hello, Super Admin. Here is what is happening today.</p>
                     </div>
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="bg-gray-50 border-b border-gray-200">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Store</th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Owner</th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Tier</th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Status</th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Stats</th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Created</th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200">
-                                {stores.map((store) => (
-                                    <tr key={store.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4">
-                                            <div>
-                                                <p className="font-bold text-gray-900">{store.name}</p>
-                                                <p className="text-sm text-gray-500">/{store.slug}</p>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div>
-                                                <p className="font-medium text-gray-900">{store.users[0]?.name || "N/A"}</p>
-                                                <p className="text-sm text-gray-500">{store.users[0]?.email || "N/A"}</p>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span
-                                                className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${store.tier === "WHOLESALER"
-                                                    ? "bg-orange-100 text-orange-800"
-                                                    : store.tier === "PRO"
-                                                        ? "bg-purple-100 text-purple-800"
-                                                        : "bg-gray-100 text-gray-800"
-                                                    }`}
-                                            >
-                                                {store.tier}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span
-                                                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${store.status === "ACTIVE"
-                                                    ? "bg-green-100 text-green-800"
-                                                    : store.status === "SUSPENDED"
-                                                        ? "bg-red-100 text-red-800"
-                                                        : "bg-gray-100 text-gray-800"
-                                                    }`}
-                                            >
-                                                {store.status === "ACTIVE" ? <CheckCircle size={12} /> : <Ban size={12} />}
-                                                {store.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-600">
-                                            <div>{store._count.products} products</div>
-                                            <div>{store._count.orders} orders</div>
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-600">
-                                            {new Date(store.createdAt).toLocaleDateString()}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <td className="px-6 py-4">
+                    <Link href="/" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl font-bold hover:scale-105 transition shadow-xl shadow-black/10 active:scale-95">
+                        <Store size={18} /> Visit Storefront
+                    </Link>
+                </header>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-12">
+                    <StatCard label="Total Stores" value={stats.total} gradient="from-blue-500 to-blue-600" />
+                    <StatCard label="Active" value={stats.active} gradient="from-green-500 to-emerald-600" />
+                    <StatCard label="Suspended" value={stats.suspended} gradient="from-red-500 to-rose-600" />
+                    <StatCard label="Hustler" value={stats.hustler} gradient="from-gray-500 to-gray-600" />
+                    <StatCard label="Pro" value={stats.pro} gradient="from-purple-500 to-indigo-600" />
+                    <StatCard label="Wholesaler" value={stats.wholesaler} gradient="from-orange-500 to-amber-600" />
+                </div>
+
+                {/* Stores Section */}
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between px-2">
+                        <h2 className="text-2xl font-black text-gray-900">All Stores</h2>
+                        <span className="text-sm font-bold text-gray-400">{stores.length} registered</span>
+                    </div>
+
+                    <div className="bg-white/40 backdrop-blur-xl rounded-3xl border border-white/60 shadow-xl shadow-gray-200/50 overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-white/50 border-b border-gray-100/50">
+                                    <tr>
+                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Store</th>
+                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Owner</th>
+                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Status</th>
+                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Stats</th>
+                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100/50">
+                                    {stores.map((store) => (
+                                        <tr key={store.id} className="group hover:bg-white/50 transition duration-200">
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-xl font-bold text-gray-500 group-hover:scale-110 transition shadow-inner">
+                                                        {store.name.charAt(0)}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-gray-900 text-lg leading-tight">{store.name}</p>
+                                                        <p className="text-xs font-bold text-gray-400 font-mono mt-1 px-1.5 py-0.5 rounded-md bg-gray-100 inline-block">/{store.slug}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div>
+                                                    <p className="font-bold text-gray-900">{store.users[0]?.name || "N/A"}</p>
+                                                    <p className="text-xs text-gray-500 font-medium">{store.users[0]?.email || "N/A"}</p>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <span
+                                                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-sm border ${store.status === "ACTIVE"
+                                                                ? "bg-green-50/50 text-green-700 border-green-200"
+                                                                : store.status === "SUSPENDED"
+                                                                    ? "bg-red-50/50 text-red-700 border-red-200"
+                                                                    : "bg-gray-50/50 text-gray-700 border-gray-200"
+                                                                }`}
+                                                        >
+                                                            {store.status === "ACTIVE" ? <CheckCircle size={10} className="fill-current" /> : <Ban size={10} />}
+                                                            {store.status}
+                                                        </span>
+                                                    </div>
+                                                    <span
+                                                        className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide opacity-70 ${store.tier === "WHOLESALER"
+                                                            ? "bg-orange-100 text-orange-800"
+                                                            : store.tier === "PRO"
+                                                                ? "bg-purple-100 text-purple-800"
+                                                                : "bg-gray-200 text-gray-600"
+                                                            }`}
+                                                    >
+                                                        {store.tier} PLAN
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div className="flex gap-4 text-sm font-medium">
+                                                    <div className="text-center">
+                                                        <span className="block font-black text-gray-900 text-base">{store._count.products}</span>
+                                                        <span className="text-[10px] uppercase text-gray-400 font-bold">Items</span>
+                                                    </div>
+                                                    <div className="w-px h-8 bg-gray-200" />
+                                                    <div className="text-center">
+                                                        <span className="block font-black text-gray-900 text-base">{store._count.orders}</span>
+                                                        <span className="text-[10px] uppercase text-gray-400 font-bold">Orders</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
                                                 <StoreActions store={store} />
                                             </td>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }
 
-function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
+function StatCard({ label, value, gradient }: { label: string; value: number; gradient: string }) {
     return (
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <div className={`w-12 h-12 ${color} rounded-lg flex items-center justify-center text-white font-black text-2xl mb-3`}>
-                {value}
+        <div className="bg-white/40 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-xl shadow-gray-200/40 relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+            <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${gradient} opacity-10 rounded-bl-[100px] transition group-hover:scale-110 group-hover:opacity-20`} />
+
+            <p className="text-xs font-black text-gray-400 uppercase tracking-wider mb-2 z-10 relative">{label}</p>
+            <div className="flex items-end gap-2 relative z-10">
+                <span className={`text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br ${gradient}`}>
+                    {value}
+                </span>
             </div>
-            <p className="text-xs font-bold text-gray-600 uppercase">{label}</p>
         </div>
     );
 }
+```
