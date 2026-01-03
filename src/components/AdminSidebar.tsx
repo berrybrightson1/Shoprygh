@@ -50,7 +50,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                 />
             )}
 
-            <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#111827] border-r border-gray-800 flex flex-col h-screen text-gray-300 shadow-xl transition-transform duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+            <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#111827] border-r border-gray-800 flex flex-col h-screen text-gray-300 shadow-xl transition-transform duration-300 ease-in-out md:translate-x-0 md:fixed md:top-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
 
                 {/* Header */}
                 <div className="p-8 flex items-center gap-3">
