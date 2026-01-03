@@ -100,13 +100,22 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                                 active={pathname?.startsWith("/admin/staff")}
                             />
                             <NavLink
-                                href="/admin/reports"
+                                href={`/${storeSlug}/admin/reports`}
                                 icon={<BarChart size={20} />}
                                 label="Reports"
-                                active={pathname?.startsWith("/admin/reports")}
+                                active={pathname?.startsWith(`/${storeSlug}/admin/reports`)}
                             />
                         </>
                     )}
+
+                    <div className="h-px bg-gray-800 mx-4 my-2" />
+
+                    <NavLink
+                        href={`/${storeSlug}/admin/settings`}
+                        icon={<Store size={20} />}
+                        label="Settings"
+                        active={pathname?.startsWith(`/${storeSlug}/admin/settings`)}
+                    />
                 </nav>
 
                 {/* User Profile / Switcher */}

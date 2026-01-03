@@ -126,7 +126,7 @@ export default function SignupPage() {
                                             required
                                             value={storeName}
                                             onChange={handleNameChange}
-                                            className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5"
+                                            className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5 text-gray-900 placeholder:text-gray-400"
                                             placeholder="My Awesome Store"
                                         />
                                     </div>
@@ -169,7 +169,7 @@ export default function SignupPage() {
                                             name="ownerName"
                                             type="text"
                                             required
-                                            className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5"
+                                            className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5 text-gray-900 placeholder:text-gray-400"
                                             placeholder="John Doe"
                                         />
                                     </div>
@@ -187,7 +187,7 @@ export default function SignupPage() {
                                             type="email"
                                             autoComplete="email"
                                             required
-                                            className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5"
+                                            className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5 text-gray-900 placeholder:text-gray-400"
                                             placeholder="you@example.com"
                                         />
                                     </div>
@@ -205,11 +205,36 @@ export default function SignupPage() {
                                             type="password"
                                             autoComplete="new-password"
                                             required
-                                            className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5"
+                                            className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5 text-gray-900 placeholder:text-gray-400"
                                             placeholder="••••••••"
                                         />
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        {/* Terms & Conditions */}
+                        <div className="flex items-start">
+                            <div className="flex items-center h-5">
+                                <input
+                                    id="terms"
+                                    name="terms"
+                                    type="checkbox"
+                                    required
+                                    className="focus:ring-black h-4 w-4 text-black border-gray-300 rounded"
+                                />
+                            </div>
+                            <div className="ml-3 text-sm">
+                                <label htmlFor="terms" className="font-medium text-gray-700">
+                                    I agree to the{" "}
+                                    <Link href="/terms" target="_blank" className="text-brand-orange hover:underline">
+                                        Terms of Service
+                                    </Link>
+                                    {" "}and{" "}
+                                    <Link href="/privacy" target="_blank" className="text-brand-orange hover:underline">
+                                        Privacy Policy
+                                    </Link>
+                                </label>
                             </div>
                         </div>
 
