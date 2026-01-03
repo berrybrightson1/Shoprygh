@@ -11,6 +11,9 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
     const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
+    // Dynamic storeSlug extraction
+    const storeSlug = pathname?.split('/')[1] || 'sh';
+
     // Fallback if no user (should be caught by middleware)
     const currentUser = user || { name: "", role: "", email: "", id: "" };
     const initials = currentUser.name ? currentUser.name.charAt(0) : "A";
@@ -75,7 +78,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                     <div className="h-px bg-gray-800 mx-4 my-2" />
 
                     <NavLink
-                        href="/admin/inventory"
+                        href={`/${storeSlug}/admin/inventory`}
                         icon={<Package size={20} />}
                         label="Inventory"
                         active={pathname?.startsWith("/admin/inventory")}

@@ -1,12 +1,15 @@
 import Link from "next/link";
-import { Lock } from "lucide-react";
+import { Lock, ArrowLeft } from "lucide-react";
 import { login } from "./actions";
 
 export default function LoginPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                <div className="p-8 text-center bg-brand-cyan/5">
+                <div className="p-8 text-center bg-brand-cyan/5 relative">
+                    <Link href="/" className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 transition p-2 hover:bg-white rounded-full">
+                        <ArrowLeft size={20} />
+                    </Link>
                     <div className="mx-auto w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-4 shadow-lg rotate-3">
                         <Lock className="text-white" size={24} />
                     </div>
