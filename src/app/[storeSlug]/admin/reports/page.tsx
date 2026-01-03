@@ -1,5 +1,3 @@
-import { BarChart } from "lucide-react";
-
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { BarChart, TrendingUp, ShoppingBag, Package, DollarSign, Calendar } from "lucide-react";
@@ -101,8 +99,8 @@ export default async function ReportsPage({ params }: { params: Promise<{ storeS
                                         <td className="px-4 py-3 font-bold text-gray-900">₵{Number(order.total).toFixed(2)}</td>
                                         <td className="px-4 py-3">
                                             <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
-                                                    order.status === 'CANCELLED' ? 'bg-red-100 text-red-700' :
-                                                        'bg-yellow-100 text-yellow-700'
+                                                order.status === 'CANCELLED' ? 'bg-red-100 text-red-700' :
+                                                    'bg-yellow-100 text-yellow-700'
                                                 }`}>
                                                 {order.status}
                                             </span>
