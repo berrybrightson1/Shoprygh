@@ -22,11 +22,19 @@ export default async function AdminLayout({
 
     // Security Check: Ensure the logged-in user belongs to this store
     // We allow PLATFORM_ADMIN to access any store (optional, but good for support)
-    if (session && session.storeId !== store.id && session.role !== 'PLATFORM_ADMIN') {
-        // User is logged in but trying to access a different store
-        // Redirect them to their own store or show unauthorized
-        // For now, redirect to their own inventory
-        redirect(`/${session.storeSlug}/admin/inventory`);
+    if (session) {
+        // Handle Stale Sessions (Migrating from old auth pattern)
+        if (!session.storeSlug || !session.storeId) {
+            // Session exists but lacks store data -> Force Re-login
+            // We can't use the logout action directly here as it's a server component
+            // So we redirect to a route that handles logout or just login which will overwrite
+            redirect('/login');
+        }
+
+        if (session.storeId !== store.id && session.role !== 'PLATFORM_ADMIN') {
+            // User is logged in but trying to access a different store
+            redirect(`/${session.storeSlug}/admin/inventory`);
+        }
     }
 
     return (
