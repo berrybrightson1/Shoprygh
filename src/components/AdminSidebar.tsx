@@ -17,7 +17,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
     // Fallback if no user (should be caught by middleware)
     const currentUser = user || { name: "", role: "", email: "", id: "" };
     const initials = currentUser.name ? currentUser.name.charAt(0) : "A";
-    const isOwner = currentUser.role === "Owner Access";
+    const isOwner = currentUser.role === "OWNER"; // Fixed: was "Owner Access", should be "OWNER"
 
     return (
         <>

@@ -55,8 +55,17 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                 </Link>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                    <h1 className="text-3xl font-black text-gray-900 mb-2">Store Settings</h1>
-                    <p className="text-gray-500 mb-8">Manage your subscription and account settings</p>
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 className="text-3xl font-black text-gray-900">Store Settings</h1>
+                            <p className="text-gray-500 mt-1">{store.name}</p>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-xs font-bold text-gray-500 uppercase">Store URL</p>
+                            <p className="text-sm text-brand-orange font-bold">shopry.app/{store.slug}</p>
+                        </div>
+                    </div>
+                    <p className="text-gray-600 mb-8">Manage your subscription and account settings</p>
 
                     {/* Current Plan */}
                     <div className="mb-8 p-6 bg-brand-cyan/5 border border-brand-cyan/20 rounded-xl">
@@ -80,7 +89,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                             <label
                                 key={tier}
                                 className={`relative flex items-start p-6 border-2 rounded-xl cursor-pointer transition-colors ${store.tier === tier
-                                    ? "border-brand- bg-brand-cyan/5"
+                                    ? "border-brand-cyan bg-brand-cyan/5"
                                     : "border-gray-200 hover:border-black"
                                     }`}
                             >
@@ -101,10 +110,11 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                                         </label>
                                         <span className="text-2xl font-black text-brand-orange">{info.price}</span>
                                     </div>
-                                    <ul className="space-y-1 text-sm text-gray-600">
+                                    <ul className="space-y-1 text-sm text-gray-700">
                                         {info.features.map((feature, idx) => (
                                             <li key={idx} className="flex items-center gap-2">
-                                                <span className="text-brand-cyan">✓</span> {feature}
+                                                <span className="text-brand-cyan font-bold">✓</span>
+                                                <span className="text-gray-900">{feature}</span>
                                             </li>
                                         ))}
                                     </ul>

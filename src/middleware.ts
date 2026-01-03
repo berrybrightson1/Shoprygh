@@ -5,6 +5,17 @@ import { decrypt } from '@/lib/auth';
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
+    // Allow platform-admin route (requires login but different check)
+    if (pathname.startsWith('/platform-admin')) {
+        const cookie = request.cookies.get('session')?.value;
+        const session = cookie ? await decrypt(cookie) : null;
+
+        if (!session) {
+            return NextResponse.redirect(new URL('/login', request.url));
+        }
+        return NextResponse.next();
+    }
+
     // Regex: Matches /something/admin...
     // Captures the store slug in group 1
     const adminRegex = /^\/([^/]+)\/admin/;
