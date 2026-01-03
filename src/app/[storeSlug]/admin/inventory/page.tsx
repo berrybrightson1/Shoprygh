@@ -3,6 +3,7 @@ import InventoryTable from "@/components/InventoryTable";
 import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { createProduct } from "./actions";
+import SeedButton from "./SeedButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -43,8 +44,9 @@ export default async function InventoryPage({ params }: Props) {
     return (
         <div className="p-4 sm:p-8 max-w-6xl mx-auto">
             <h1 className="text-2xl font-bold text-gray-900 mb-6">Inventory Management</h1>
-            <div className="mb-4">
+            <div className="mb-4 flex items-center gap-3">
                 <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Store: {store.name}</span>
+                {products.length === 0 && <SeedButton storeId={store.id} />}
             </div>
 
             {/* Creator Studio (Client Component) */}
