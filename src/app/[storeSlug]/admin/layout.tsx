@@ -40,11 +40,18 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-gray-50 font-sans">
+        <div className="flex min-h-screen bg-gray-50 font-sans relative overflow-hidden text-gray-900 selection:bg-brand-cyan/30">
+            {/* Background Gradients */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-400/20 blur-[130px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-400/20 blur-[130px]" />
+                <div className="absolute top-[40%] left-[40%] w-[40%] h-[40%] rounded-full bg-cyan-400/10 blur-[100px]" />
+            </div>
+
             {/* Sidebar (Client Component) - Only show if logged in */}
             {session && <AdminSidebar user={session} storeTier={store.tier} />}
 
-            <main className={`flex-1 transition-all duration-300 ${session ? "ml-0 md:ml-64 pt-16 md:pt-0" : ""}`}>
+            <main className={`flex-1 transition-all duration-300 relative z-10 ${session ? "ml-0 md:ml-64 pt-16 md:pt-0" : ""}`}>
                 {children}
             </main>
         </div>
