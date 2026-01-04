@@ -31,10 +31,10 @@ export default function SeedProductsButton({ storeId }: { storeId: string }) {
         <button
             onClick={handleSeed}
             disabled={isSeeding}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 text-gray-500 rounded-lg text-xs font-bold hover:bg-white hover:border-gray-300 hover:text-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide"
         >
-            <Sparkles size={18} />
-            {isSeeding ? "Adding Products..." : "Add 6 Test Products"}
+            <Sparkles size={14} />
+            {isSeeding ? "Adding..." : "Add 6 Test Products"}
         </button>
     );
 }

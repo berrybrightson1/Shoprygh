@@ -42,12 +42,23 @@ export default async function InventoryPage({ params }: Props) {
     const createProductWithStore = createProduct.bind(null, store.id);
 
     return (
-        <div className="p-4 sm:p-8 max-w-6xl mx-auto">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Inventory Management</h1>
-            <div className="mb-4 flex items-center gap-3">
-                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Store: {store.name}</span>
-                {products.length === 0 && <SeedButton storeId={store.id} />}
-            </div>
+        <div className="p-4 sm:p-8 max-w-[1400px] mx-auto space-y-8">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-8">
+                <div>
+                    <div className="flex items-center gap-3 mb-1">
+                        <span className="text-sm font-black text-brand-orange tracking-widest uppercase">Store Management</span>
+                        <div className="h-px bg-gray-200 flex-1" />
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+                        {store.name}
+                    </h1>
+                </div>
+                {products.length === 0 && (
+                    <div className="flex-shrink-0">
+                        <SeedButton storeId={store.id} />
+                    </div>
+                )}
+            </header>
 
             {/* Creator Studio (Client Component) */}
             <CreatorStudio createAction={createProductWithStore} storeTier={store.tier} />
