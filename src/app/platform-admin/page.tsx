@@ -4,6 +4,9 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Shield, AlertCircle, CheckCircle, Ban, Store, Sparkles, Wallet } from "lucide-react";
 import StoreActions from "./StoreActions";
+import StoreList from "./StoreList";
+import PlatformGrowthChart from "./PlatformGrowthChart";
+import GlobalActivityFeed from "./GlobalActivityFeed";
 
 // Platform Admin Dashboard - Force rebuild
 export default async function PlatformAdminPage() {
@@ -164,90 +167,8 @@ export default async function PlatformAdminPage() {
                 </div>
 
                 {/* Stores Section (Bento List) */}
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between px-2">
-                        <h2 className="text-2xl font-black text-gray-900">All Stores</h2>
-                        <span className="text-sm font-bold text-gray-400 bg-white px-3 py-1 rounded-full border border-gray-100 shadow-sm">{stores.length} registered</span>
-                    </div>
+                <StoreList stores={stores as any} />
 
-                    {/* Column Headers (Hidden on Mobile) */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 mb-2 text-xs font-black text-gray-400 uppercase tracking-wider">
-                        <div className="col-span-4 pl-2">Store</div>
-                        <div className="col-span-3">Owner</div>
-                        <div className="col-span-2">Status</div>
-                        <div className="col-span-2">Stats</div>
-                        <div className="col-span-1 text-right pr-2">Actions</div>
-                    </div>
-
-                    <div className="space-y-3">
-                        {stores.map((store) => (
-                            <div
-                                key={store.id}
-                                className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 hover:scale-[1.01] transition duration-300 group grid grid-cols-1 md:grid-cols-12 gap-6 items-center"
-                            >
-                                {/* Store Info */}
-                                <div className="md:col-span-4 flex items-center gap-5">
-                                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 flex-shrink-0 flex items-center justify-center text-2xl font-black text-gray-400 group-hover:bg-brand-cyan/10 group-hover:text-brand-cyan transition duration-300">
-                                        {store.name.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-gray-900 text-lg leading-tight group-hover:text-brand-cyan transition">{store.name}</p>
-                                        <p className="text-xs font-bold text-gray-400 font-mono mt-1 px-1.5 py-0.5 rounded-lg bg-gray-50 inline-block">/{store.slug}</p>
-                                    </div>
-                                </div>
-
-                                {/* Owner Info */}
-                                <div className="md:col-span-3">
-                                    <p className="font-bold text-gray-900 text-sm">{store.users[0]?.name || "N/A"}</p>
-                                    <p className="text-xs text-gray-500 font-medium truncate">{store.users[0]?.email || "N/A"}</p>
-                                </div>
-
-                                {/* Status & Tier */}
-                                <div className="md:col-span-2 flex flex-col items-start gap-2">
-                                    <span
-                                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wide border ${store.status === "ACTIVE"
-                                            ? "bg-green-50 text-green-600 border-green-100"
-                                            : store.status === "SUSPENDED"
-                                                ? "bg-red-50 text-red-600 border-red-100"
-                                                : "bg-gray-50 text-gray-600 border-gray-100"
-                                            }`}
-                                    >
-                                        <span className={`w-1.5 h-1.5 rounded-full ${store.status === "ACTIVE" ? "bg-green-500" : store.status === "SUSPENDED" ? "bg-red-500" : "bg-gray-500"}`} />
-                                        {store.status}
-                                    </span>
-                                    <span
-                                        className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide opacity-70 ${store.tier === "WHOLESALER"
-                                            ? "bg-orange-50 text-orange-600"
-                                            : store.tier === "PRO"
-                                                ? "bg-purple-50 text-purple-600"
-                                                : "bg-gray-100 text-gray-500"
-                                            }`}
-                                    >
-                                        {store.tier} PLAN
-                                    </span>
-                                </div>
-
-                                {/* Stats */}
-                                <div className="md:col-span-2 flex gap-4">
-                                    <div>
-                                        <span className="block font-black text-gray-900 text-lg">{store._count.products}</span>
-                                        <span className="text-[9px] uppercase text-gray-400 font-black tracking-wider">Items</span>
-                                    </div>
-                                    <div className="w-px h-8 bg-gray-100" />
-                                    <div>
-                                        <span className="block font-black text-gray-900 text-lg">{store._count.orders}</span>
-                                        <span className="text-[9px] uppercase text-gray-400 font-black tracking-wider">Orders</span>
-                                    </div>
-                                </div>
-
-                                {/* Actions */}
-                                <div className="md:col-span-1 flex justify-end">
-                                    <StoreActions store={{ ...store, tier: store.tier }} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
             </main>
         </div>
     );

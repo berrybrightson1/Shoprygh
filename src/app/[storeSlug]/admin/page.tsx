@@ -66,18 +66,34 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
 
     // --- UI Components ---
 
-    const StatCard = ({ title, value, icon: Icon, color, subtext }: any) => (
-        <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm flex items-center justify-between group hover:shadow-md transition">
-            <div>
-                <p className="text-xs font-black text-gray-500 uppercase tracking-wider mb-1">{title}</p>
-                <h3 className="text-3xl font-black text-gray-900">{value}</h3>
-                {subtext && <p className="text-xs font-bold text-gray-500 mt-1">{subtext}</p>}
+    const StatCard = ({ label, value, color, subtext }: { label: string; value: string | number; color: string; subtext?: string }) => {
+        const styles: Record<string, { bg: string; text: string; decoration: string }> = {
+            blue: { bg: "bg-blue-50", text: "text-blue-800", decoration: "bg-blue-200" },
+            green: { bg: "bg-green-50", text: "text-green-800", decoration: "bg-green-200" },
+            red: { bg: "bg-red-50", text: "text-red-800", decoration: "bg-red-200" },
+            purple: { bg: "bg-purple-50", text: "text-purple-800", decoration: "bg-purple-200" },
+            orange: { bg: "bg-orange-50", text: "text-orange-800", decoration: "bg-orange-200" },
+            gray: { bg: "bg-gray-50", text: "text-gray-800", decoration: "bg-gray-200" },
+        };
+
+        const style = styles[color] || styles.blue;
+
+        return (
+            <div className={`${style.bg} rounded-[2rem] p-6 relative overflow-hidden group hover:-translate-y-1 transition duration-300 border border-white/60 shadow-sm`}>
+                {/* Decorative Bloom */}
+                <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full ${style.decoration} blur-3xl opacity-60 group-hover:scale-110 transition`} />
+                <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full ${style.decoration} opacity-20`} />
+
+                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 z-10 relative">{label}</p>
+                <div className="relative z-10">
+                    <span className={`text-4xl font-black ${style.text} tracking-tight block`}>
+                        {value}
+                    </span>
+                    {subtext && <p className="text-xs font-bold text-gray-500 mt-2 opacity-80">{subtext}</p>}
+                </div>
             </div>
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${color} group-hover:scale-110 transition shadow-inner`}>
-                <Icon size={24} />
-            </div>
-        </div>
-    );
+        );
+    };
 
     return (
         <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -92,32 +108,28 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
-                    title="Total Revenue"
+                    label="Total Revenue"
                     value={`₵${totalRevenue.toLocaleString()}`}
-                    icon={TrendingUp}
-                    color="bg-green-50 text-green-700"
+                    color="green"
                     subtext="Lifetime Sales"
                 />
                 <StatCard
-                    title="Orders Today"
+                    label="Orders Today"
                     value={ordersToday}
-                    icon={ShoppingBag}
-                    color="bg-blue-50 text-blue-700"
+                    color="blue"
                     subtext={new Date().toLocaleDateString()}
                 />
                 <StatCard
-                    title="Customers"
+                    label="Customers"
                     value={totalCustomers}
-                    icon={Users}
-                    color="bg-purple-50 text-purple-700"
+                    color="purple"
                     subtext="Unique Buyers"
                 />
                 <Link href={`/${storeSlug}/admin/inventory`}>
                     <StatCard
-                        title="Low Stock"
+                        label="Low Stock"
                         value={lowStockCount}
-                        icon={AlertCircle}
-                        color={lowStockCount > 0 ? "bg-red-50 text-red-700" : "bg-gray-100 text-gray-400"}
+                        color={lowStockCount > 0 ? "red" : "gray"}
                         subtext="Items require attention"
                     />
                 </Link>

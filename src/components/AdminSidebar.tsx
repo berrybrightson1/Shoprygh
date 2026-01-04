@@ -17,27 +17,26 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
     // Fallback if no user (should be caught by middleware)
     const currentUser = user || { name: "", role: "", email: "", id: "" };
     const initials = currentUser.name ? currentUser.name.charAt(0) : "A";
-    const isOwner = currentUser.role === "OWNER"; // Fixed: was "Owner Access", should be "OWNER"
 
     return (
         <>
             {/* Mobile Header Bar */}
-            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#111827] text-white z-30 flex items-center px-4 justify-between shadow-md border-b border-gray-800">
+            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-xl text-gray-900 z-30 flex items-center px-4 justify-between shadow-sm border-b border-gray-100">
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="p-2 -ml-2 rounded-lg hover:bg-gray-800 transition text-gray-300 hover:text-white"
+                        className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition text-gray-600 hover:text-gray-900"
                         aria-label="Open sidebar"
                     >
                         <Menu size={24} />
                     </button>
                     <div className="flex flex-col">
-                        <span className="font-bold text-base leading-none">Shopry</span>
+                        <span className="font-black text-base leading-none tracking-tight">Shopry</span>
                         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Seller Hub</span>
                     </div>
                 </div>
 
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-cyan to-blue-600 flex items-center justify-center font-bold text-white text-xs shadow-sm">
+                <div className="w-9 h-9 rounded-2xl bg-purple-600 flex items-center justify-center font-black text-white text-sm shadow-lg shadow-purple-200">
                     {initials}
                 </div>
             </div>
@@ -45,27 +44,27 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
             {/* Backdrop */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm"
+                    className="fixed inset-0 bg-gray-900/20 z-40 md:hidden backdrop-blur-sm"
                     onClick={() => setIsOpen(false)}
                 />
             )}
 
-            <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#111827] border-r border-gray-800 flex flex-col h-screen text-gray-300 shadow-xl transition-transform duration-300 ease-in-out md:translate-x-0 md:fixed md:top-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+            <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-white/60 backdrop-blur-2xl border-r border-white/50 flex flex-col h-screen text-gray-600 shadow-2xl shadow-gray-200/50 transition-transform duration-300 ease-in-out md:translate-x-0 md:fixed md:top-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
 
                 {/* Header */}
-                <div className="p-8 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-brand-orange to-pink-600 text-white rounded-xl shadow-lg shadow-orange-900/20 flex items-center justify-center font-black text-xl">
+                <div className="p-8 flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-2xl shadow-xl shadow-purple-500/20 flex items-center justify-center font-black text-2xl">
                         S
                     </div>
                     <div>
-                        <span className="font-bold text-xl text-white block leading-none">Shopry</span>
-                        <span className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">Seller Hub</span>
+                        <span className="font-black text-2xl text-gray-900 block leading-none tracking-tight">Shopry</span>
+                        <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1 block">Seller Hub</span>
                     </div>
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-4 space-y-2 mt-4">
-                    <div className="px-4 text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Menu</div>
+                <nav className="flex-1 px-4 space-y-2 mt-2 overflow-y-auto custom-scrollbar">
+                    <div className="px-4 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 mt-2">Menu</div>
 
                     <NavLink
                         href={`/${storeSlug}`}
@@ -75,7 +74,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         isExternal
                     />
 
-                    <div className="h-px bg-gray-800 mx-4 my-2" />
+                    <div className="h-px bg-gray-100 mx-4 my-3" />
 
                     <NavLink
                         href={`/${storeSlug}/admin/inventory`}
@@ -125,7 +124,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname?.startsWith(`/${storeSlug}/admin/finance`)}
                     />
 
-                    <div className="h-px bg-gray-800 mx-4 my-2" />
+                    <div className="h-px bg-gray-100 mx-4 my-3" />
 
                     <NavLink
                         href={`/${storeSlug}/admin/settings`}
@@ -138,34 +137,34 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                     {/* Platform Admin Link - Only for Super Admins */}
                     {currentUser.isPlatformAdmin && (
                         <>
-                            <div className="h-px bg-gray-800 mx-4 my-2" />
+                            <div className="h-px bg-gray-100 mx-4 my-3" />
                             <Link
                                 href="/platform-admin"
-                                className="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white hover:shadow-md transition-all duration-300 group"
+                                className="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-500 hover:bg-white hover:text-purple-600 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 group border border-transparent hover:border-purple-100"
                             >
-                                <span className="text-gray-500 group-hover:text-brand-cyan transition-colors">
+                                <span className="text-gray-400 group-hover:text-purple-500 transition-colors">
                                     <Shield size={20} />
                                 </span>
-                                <span>Platform Admin</span>
+                                <span className="font-bold">Platform Admin</span>
                             </Link>
                         </>
                     )}
                 </nav>
 
                 {/* User Profile / Switcher */}
-                <div className="relative p-6 border-t border-gray-800 bg-[#0f1523]">
+                <div className="relative p-6 border-t border-white/50 bg-white/30 backdrop-blur-sm mt-auto">
 
                     {/* Switcher Popup */}
                     {isSwitcherOpen && (
-                        <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#1f2937] border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 z-50">
-                            <div className="p-3 border-b border-gray-700">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Account</p>
+                        <div className="absolute bottom-full left-4 right-4 mb-4 bg-white border border-gray-100 rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 z-50">
+                            <div className="p-4 border-b border-gray-50 bg-gray-50/50">
+                                <p className="text-xs font-black text-gray-400 uppercase tracking-wider">Account</p>
                             </div>
 
-                            <div className="p-2 border-t border-gray-700 bg-gray-800/50">
+                            <div className="p-2 border-t border-gray-50">
                                 <form action={logout}>
-                                    <button className="w-full text-xs font-bold text-red-400 hover:text-red-300 py-2 flex items-center justify-center gap-2 transition">
-                                        <LogOut size={12} /> Sign Out
+                                    <button className="w-full text-xs font-bold text-red-500 hover:bg-red-50 hover:text-red-600 py-3 rounded-xl flex items-center justify-center gap-2 transition">
+                                        <LogOut size={14} /> Sign Out
                                     </button>
                                 </form>
                             </div>
@@ -175,16 +174,16 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                     {/* Profile Trigger */}
                     <button
                         onClick={() => setIsSwitcherOpen(!isSwitcherOpen)}
-                        className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all border border-transparent ${isSwitcherOpen ? "bg-gray-800 border-gray-700" : "hover:bg-gray-800 hover:border-gray-700/50"}`}
+                        className={`w-full flex items-center gap-3 p-2.5 rounded-2xl transition-all border ${isSwitcherOpen ? "bg-white border-gray-100 shadow-md" : "hover:bg-white/60 hover:border-white hover:shadow-sm border-transparent"}`}
                     >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-cyan to-blue-600 flex items-center justify-center font-bold text-white shadow-md">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-purple-500/20">
                             {initials}
                         </div>
                         <div className="text-left flex-1 min-w-0">
-                            <p className="text-sm font-bold text-white leading-tight truncate">{currentUser.name || "User"}</p>
-                            <p className="text-xs text-brand-cyan font-medium truncate">{currentUser.role || "Admin"}</p>
+                            <p className="text-sm font-black text-gray-900 leading-tight truncate">{currentUser.name || "User"}</p>
+                            <p className="text-xs text-gray-400 font-bold truncate mt-0.5">{currentUser.role || "Admin"}</p>
                         </div>
-                        <ChevronUp size={16} className={`text-gray-500 transition-transform duration-300 ${isSwitcherOpen ? "rotate-0" : "rotate-180"}`} />
+                        <ChevronUp size={16} className={`text-gray-400 transition-transform duration-300 ${isSwitcherOpen ? "rotate-0" : "rotate-180"}`} />
                     </button>
                 </div>
             </aside>
@@ -197,18 +196,17 @@ function NavLink({ href, icon, label, active = false, isExternal = false }: { hr
         <Link
             href={href}
             target={isExternal ? "_blank" : undefined}
-            className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 group ${active
-                ? "bg-gray-800 text-white shadow-md shadow-black/40 border-l-4 border-brand-orange font-bold relative overflow-hidden"
-                : "text-gray-400 hover:bg-gray-800 hover:text-white hover:shadow-md hover:shadow-black/20"
+            className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative ${active
+                ? "bg-purple-50 text-purple-900 shadow-sm font-black overflow-hidden"
+                : "text-gray-500 hover:bg-white/60 hover:text-gray-900 hover:shadow-sm"
                 }`}
         >
-            <span className={`relative z-10 ${active ? "text-brand-orange" : "text-gray-600 group-hover:text-white transition-colors"}`}>
+            {active && <div className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 bg-purple-600 rounded-r-full" />}
+
+            <span className={`relative z-10 ${active ? "text-purple-600" : "text-gray-400 group-hover:text-purple-500 transition-colors"}`}>
                 {icon}
             </span>
-            <span className={`relative z-10 font-bold ${active ? "" : "text-gray-500 group-hover:text-gray-200"}`}>{label}</span>
-            {active && (
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-orange/10 to-transparent pointer-events-none" />
-            )}
+            <span className={`relative z-10 font-bold ${active ? "text-purple-900" : "text-gray-600 group-hover:text-gray-900"}`}>{label}</span>
         </Link>
     );
 }
@@ -245,7 +243,7 @@ function UpdatesNavLink({ href, latestUpdateDate, active }: { href: string, late
                 active={active}
             />
             {hasNewUpdates && (
-                <span className="absolute top-2 right-4 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#111827] animate-pulse pointer-events-none" />
+                <span className="absolute top-3 right-4 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white animate-pulse pointer-events-none shadow-sm" />
             )}
         </div>
     );
