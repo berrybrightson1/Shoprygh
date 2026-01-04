@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield } from "lucide-react";
+import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { logout } from "@/app/[storeSlug]/admin/login/actions";
 
-export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: any, storeTier?: string }) {
+export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate }: { user: any, storeTier?: string, latestUpdateDate?: Date }) {
     const pathname = usePathname();
     const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -103,6 +103,20 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER' }: { user: an
                         label="Reports"
                         active={pathname?.startsWith(`/${storeSlug}/admin/reports`)}
                     />
+
+                    {/* Updates Tab with Green Dot Indicator */}
+                    <div className="relative">
+                        <NavLink
+                            href={`/${storeSlug}/admin/updates`}
+                            icon={<Sparkles size={20} />}
+                            label="Updates"
+                            active={pathname?.startsWith(`/${storeSlug}/admin/updates`)}
+                        />
+                        {/* Green Dot Logic: Show if update is < 3 days old */}
+                        {latestUpdateDate && (new Date().getTime() - new Date(latestUpdateDate).getTime() < 3 * 24 * 60 * 60 * 1000) && (
+                            <span className="absolute top-2 right-4 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#111827] animate-pulse pointer-events-none" />
+                        )}
+                    </div>
 
                     <div className="h-px bg-gray-800 mx-4 my-2" />
 

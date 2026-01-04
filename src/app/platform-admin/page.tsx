@@ -77,9 +77,14 @@ export default async function PlatformAdminPage() {
                         <p className="text-lg text-gray-500 font-medium">Hello, Super Admin. Here is what is happening today.</p>
                     </div>
 
-                    <Link href="/" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl font-bold hover:scale-105 transition shadow-xl shadow-black/10 active:scale-95">
-                        <Store size={18} /> Visit Storefront
-                    </Link>
+                    <div className="flex gap-4">
+                        <Link href="/platform-admin/updates" className="inline-flex items-center gap-2 bg-white text-gray-900 border border-gray-200 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 transition shadow-sm">
+                            <Sparkles size={18} className="text-brand-cyan" /> Post Update
+                        </Link>
+                        <Link href="/" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl font-bold hover:scale-105 transition shadow-xl shadow-black/10 active:scale-95">
+                            <Store size={18} /> Visit Storefront
+                        </Link>
+                    </div>
                 </header>
 
                 {/* Stats Grid */}

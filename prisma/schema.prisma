@@ -35,6 +35,16 @@ model Store {
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  updatedAt   DateTime @updatedAt
+}
+
+model SystemUpdate {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text
+  version   String
+  type      String   @default("UPDATE") // UPDATE, ALERT, MAINTENANCE
+  createdAt DateTime @default(now())
 }
 
 // --- Application Models ---

@@ -18,6 +18,11 @@ export default async function AdminLayout({
         where: { slug: storeSlug }
     });
 
+    const latestUpdate = await prisma.systemUpdate.findFirst({
+        orderBy: { createdAt: 'desc' },
+        select: { createdAt: true }
+    });
+
     if (!store) return notFound();
 
     // Security Check: Ensure the logged-in user belongs to this store
@@ -49,7 +54,7 @@ export default async function AdminLayout({
             </div>
 
             {/* Sidebar (Client Component) - Only show if logged in */}
-            {session && <AdminSidebar user={session} storeTier={store.tier} />}
+            {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdate?.createdAt} />}
 
             <main className={`flex-1 transition-all duration-300 relative z-10 ${session ? "ml-0 md:ml-72 pt-16 md:pt-0" : ""}`}>
                 {children}
