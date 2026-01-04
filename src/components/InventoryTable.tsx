@@ -34,7 +34,7 @@ function EditableCell({
 
     return (
         <div className="relative group/cell flex items-center gap-1">
-            <span className="text-gray-400 text-xs font-bold">{prefix}</span>
+            <span className="text-gray-500 text-xs font-bold">{prefix}</span>
             {type === 'select' ? (
                 <select title="Edit field"
                     value={value}
@@ -145,7 +145,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                         />
                                         <div>
                                             <div className="font-bold text-sm text-gray-900 line-clamp-1">{p.name}</div>
-                                            <div className="text-[10px] text-gray-500 line-clamp-1">{p.description}</div>
+                                            <div className="text-[10px] text-gray-600 font-medium line-clamp-1">{p.description}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -172,7 +172,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                             />
                                         </form>
                                     ) : (
-                                        <span className="text-xs font-bold text-gray-600 bg-gray-50/50 px-2 py-1 rounded-lg">{p.category}</span>
+                                        <span className="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-1 rounded-lg border border-gray-200">{p.category}</span>
                                     )}
                                 </td>
 
@@ -197,7 +197,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                             />
                                         </form>
                                     ) : (
-                                        <span className="text-sm font-bold text-gray-900">₵{Number(p.priceRetail).toFixed(2)}</span>
+                                        <span className="text-sm font-black text-gray-900">₵{Number(p.priceRetail).toFixed(2)}</span>
                                     )}
                                 </td>
 
@@ -215,7 +215,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                                 className={`w-16 px-2 py-1 text-xs font-bold rounded-md border text-center outline-none focus:ring-2 focus:ring-brand-cyan/20 ${p.stockQty < 5 ? "border-red-200 bg-red-50 text-red-700" : "border-green-200 bg-green-50 text-green-700"
                                                     }`}
                                             />
-                                            <button title="Update Stock" className="p-1.5 hover:bg-gray-200 rounded-md text-gray-400 hover:text-gray-900 transition opacity-0 group-hover:opacity-100">
+                                            <button title="Update Stock" className="p-1.5 hover:bg-gray-200 rounded-md text-gray-500 hover:text-gray-900 transition opacity-0 group-hover:opacity-100">
                                                 <Save size={14} />
                                             </button>
                                         </form>
@@ -228,7 +228,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
 
                                 {/* Date Added */}
                                 <td className="hidden md:table-cell p-4">
-                                    <span className="text-xs font-medium text-gray-500">
+                                    <span className="text-xs font-bold text-gray-600">
                                         {p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "-"}
                                     </span>
                                 </td>
@@ -240,7 +240,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                             <input type="hidden" name="id" value={p.id} />
                                             <button
                                                 type="submit"
-                                                className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-lg transition"
+                                                className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition"
                                                 title="Delete Product"
                                             >
                                                 <Trash2 size={18} />
@@ -252,7 +252,7 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                         ))}
                         {products.length === 0 && (
                             <tr>
-                                <td colSpan={5} className="p-12 text-center text-gray-400">
+                                <td colSpan={5} className="p-12 text-center text-gray-500 font-bold">
                                     <Package className="mx-auto mb-3 opacity-20" size={48} />
                                     No products found in inventory.
                                 </td>

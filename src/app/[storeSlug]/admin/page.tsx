@@ -67,13 +67,13 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
     // --- UI Components ---
 
     const StatCard = ({ title, value, icon: Icon, color, subtext }: any) => (
-        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition">
+        <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm flex items-center justify-between group hover:shadow-md transition">
             <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{title}</p>
+                <p className="text-xs font-black text-gray-500 uppercase tracking-wider mb-1">{title}</p>
                 <h3 className="text-3xl font-black text-gray-900">{value}</h3>
-                {subtext && <p className="text-xs font-medium text-gray-400 mt-1">{subtext}</p>}
+                {subtext && <p className="text-xs font-bold text-gray-500 mt-1">{subtext}</p>}
             </div>
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${color} group-hover:scale-110 transition`}>
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${color} group-hover:scale-110 transition shadow-inner`}>
                 <Icon size={24} />
             </div>
         </div>
@@ -86,7 +86,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
                     <LayoutDashboard className="text-brand-purple" size={32} />
                     Cockpit
                 </h1>
-                <p className="text-gray-500 font-medium">Overview of your store's performance today.</p>
+                <p className="text-gray-600 font-bold mt-1">Overview of your store's performance today.</p>
             </header>
 
             {/* Stats Grid */}
@@ -95,21 +95,21 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
                     title="Total Revenue"
                     value={`₵${totalRevenue.toLocaleString()}`}
                     icon={TrendingUp}
-                    color="bg-green-100 text-green-600"
+                    color="bg-green-50 text-green-700"
                     subtext="Lifetime Sales"
                 />
                 <StatCard
                     title="Orders Today"
                     value={ordersToday}
                     icon={ShoppingBag}
-                    color="bg-blue-100 text-blue-600"
+                    color="bg-blue-50 text-blue-700"
                     subtext={new Date().toLocaleDateString()}
                 />
                 <StatCard
                     title="Customers"
                     value={totalCustomers}
                     icon={Users}
-                    color="bg-purple-100 text-purple-600"
+                    color="bg-purple-50 text-purple-700"
                     subtext="Unique Buyers"
                 />
                 <Link href={`/${storeSlug}/admin/inventory`}>
@@ -117,7 +117,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
                         title="Low Stock"
                         value={lowStockCount}
                         icon={AlertCircle}
-                        color={lowStockCount > 0 ? "bg-red-100 text-red-600" : "bg-gray-100 text-gray-400"}
+                        color={lowStockCount > 0 ? "bg-red-50 text-red-700" : "bg-gray-100 text-gray-400"}
                         subtext="Items require attention"
                     />
                 </Link>
@@ -128,30 +128,30 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
                 <div className="lg:col-span-2 space-y-6">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                            <Clock size={20} className="text-gray-400" /> Recent Activity
+                            <Clock size={20} className="text-gray-500" /> Recent Activity
                         </h2>
-                        <Link href={`/${storeSlug}/admin/orders`} className="text-sm font-bold text-brand-purple hover:underline">
+                        <Link href={`/${storeSlug}/admin/orders`} className="text-sm font-black text-brand-purple hover:underline">
                             View All Orders
                         </Link>
                     </div>
 
-                    <div className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden">
+                    <div className="bg-white rounded-3xl border border-gray-200 shadow-xl shadow-gray-200/50 overflow-hidden">
                         <div className="divide-y divide-gray-100">
                             {recentOrders.length === 0 ? (
-                                <div className="p-12 text-center text-gray-400">
-                                    <ShoppingBag size={48} className="mx-auto mb-4 opacity-20" />
+                                <div className="p-12 text-center text-gray-500">
+                                    <ShoppingBag size={48} className="mx-auto mb-4 opacity-30" />
                                     <p className="font-bold">No orders yet.</p>
                                 </div>
                             ) : (
                                 recentOrders.map(order => (
                                     <div key={order.id} className="p-4 hover:bg-gray-50 transition flex items-center justify-between group">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                                            <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-bold border border-blue-100">
                                                 {order.customerName?.charAt(0) || "?"}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-gray-900 text-sm">{order.customerName || "Guest"}</p>
-                                                <p className="text-xs text-gray-400 font-bold">{order.items.length} items • {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                                <p className="font-black text-gray-900 text-sm">{order.customerName || "Guest"}</p>
+                                                <p className="text-xs text-gray-500 font-bold">{order.items.length} items • {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">

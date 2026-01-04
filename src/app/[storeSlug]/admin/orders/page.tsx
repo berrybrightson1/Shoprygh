@@ -26,11 +26,11 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
         <div className="p-8 max-w-7xl mx-auto">
             <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                    <h1 className="text-3xl font-black text-gray-900 flex items-center gap-3">
                         <ShoppingBag className="text-brand-orange" />
                         Orders Management
                     </h1>
-                    <p className="text-gray-500 mt-1">Manage incoming WhatsApp orders and track fulfillment.</p>
+                    <p className="text-gray-600 font-bold mt-1">Manage incoming WhatsApp orders and track fulfillment.</p>
                 </div>
                 <div className="bg-green-50 px-4 py-3 rounded-xl border border-green-200 shadow-sm text-sm font-bold text-green-800 whitespace-nowrap flex items-center gap-2">
                     Total Revenue: <span className="font-black text-green-700 text-lg">₵{orders.reduce((acc, o) => acc + Number(o.total), 0).toFixed(2)}</span>
@@ -39,7 +39,7 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden overflow-x-auto">
                 {orders.length === 0 ? (
-                    <div className="p-20 text-center text-gray-400">
+                    <div className="p-20 text-center text-gray-500 font-bold">
                         <ShoppingBag size={48} className="mx-auto mb-4 opacity-20" />
                         <p>No orders placed yet.</p>
                     </div>
@@ -47,33 +47,33 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                     <table className="w-full text-left text-sm min-w-[900px]">
                         <thead className="bg-gray-50 border-b border-gray-100 text-gray-700 uppercase tracking-wider text-xs">
                             <tr>
-                                <th className="px-6 py-4 font-semibold">Order ID</th>
-                                <th className="px-6 py-4 font-semibold">Date</th>
-                                <th className="px-6 py-4 font-semibold">Customer</th>
-                                <th className="px-6 py-4 font-semibold">Items</th>
-                                <th className="px-6 py-4 font-semibold">Total</th>
-                                <th className="px-6 py-4 font-semibold">Status</th>
-                                <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                                <th className="px-6 py-4 font-black">Order ID</th>
+                                <th className="px-6 py-4 font-black">Date</th>
+                                <th className="px-6 py-4 font-black">Customer</th>
+                                <th className="px-6 py-4 font-black">Items</th>
+                                <th className="px-6 py-4 font-black">Total</th>
+                                <th className="px-6 py-4 font-black">Status</th>
+                                <th className="px-6 py-4 font-black text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {orders.map((order) => (
                                 <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
-                                    <td className="px-6 py-4 font-mono text-gray-500">#{order.id.slice(-6).toUpperCase()}</td>
-                                    <td className="px-6 py-4 text-gray-600">
+                                    <td className="px-6 py-4 font-mono font-bold text-gray-600">#{order.id.slice(-6).toUpperCase()}</td>
+                                    <td className="px-6 py-4 text-gray-700 font-bold">
                                         {new Date(order.createdAt).toLocaleDateString()}
-                                        <div className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleTimeString()}</div>
+                                        <div className="text-xs text-gray-500 font-medium">{new Date(order.createdAt).toLocaleTimeString()}</div>
                                     </td>
                                     <td className="px-6 py-4">
                                         {order.customerPhone ? (
                                             <a
                                                 href={`tel:${order.customerPhone}`}
-                                                className="font-bold text-gray-900 hover:text-brand-cyan hover:underline"
+                                                className="font-black text-gray-900 hover:text-brand-cyan hover:underline"
                                             >
                                                 {order.customerPhone}
                                             </a>
                                         ) : (
-                                            <span className="text-gray-400 text-xs italic">N/A</span>
+                                            <span className="text-gray-500 text-xs italic font-bold">N/A</span>
                                         )}
                                     </td>
                                     <td className="px-6 py-4">

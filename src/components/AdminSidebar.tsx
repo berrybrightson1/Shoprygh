@@ -54,7 +54,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
 
                 {/* Header */}
                 <div className="p-8 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-brand-orange to-pink-600 text-white rounded-xl shadow-lg shadow-orange-900/20 flex items-center justify-center font-bold text-xl">
+                    <div className="w-10 h-10 bg-gradient-to-br from-brand-orange to-pink-600 text-white rounded-xl shadow-lg shadow-orange-900/20 flex items-center justify-center font-black text-xl">
                         S
                     </div>
                     <div>
@@ -65,7 +65,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
 
                 {/* Navigation */}
                 <nav className="flex-1 px-4 space-y-2 mt-4">
-                    <div className="px-4 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Menu</div>
+                    <div className="px-4 text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Menu</div>
 
                     <NavLink
                         href={`/${storeSlug}`}
@@ -112,18 +112,11 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                     />
 
                     {/* Updates Tab with Green Dot Indicator */}
-                    <div className="relative">
-                        <NavLink
-                            href={`/${storeSlug}/admin/updates`}
-                            icon={<Sparkles size={20} />}
-                            label="Updates"
-                            active={pathname?.startsWith(`/${storeSlug}/admin/updates`)}
-                        />
-                        {/* Green Dot Logic: Show if update is < 3 days old */}
-                        {latestUpdateDate && (new Date().getTime() - new Date(latestUpdateDate).getTime() < 3 * 24 * 60 * 60 * 1000) && (
-                            <span className="absolute top-2 right-4 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#111827] animate-pulse pointer-events-none" />
-                        )}
-                    </div>
+                    <UpdatesNavLink
+                        href={`/${storeSlug}/admin/updates`}
+                        latestUpdateDate={latestUpdateDate}
+                        active={pathname?.startsWith(`/${storeSlug}/admin/updates`)}
+                    />
 
                     <NavLink
                         href={`/${storeSlug}/admin/finance`}
@@ -209,13 +202,51 @@ function NavLink({ href, icon, label, active = false, isExternal = false }: { hr
                 : "text-gray-400 hover:bg-gray-800 hover:text-white hover:shadow-md hover:shadow-black/20"
                 }`}
         >
-            <span className={`relative z-10 ${active ? "text-brand-orange" : "text-gray-500 group-hover:text-white transition-colors"}`}>
+            <span className={`relative z-10 ${active ? "text-brand-orange" : "text-gray-600 group-hover:text-white transition-colors"}`}>
                 {icon}
             </span>
-            <span className="relative z-10">{label}</span>
+            <span className={`relative z-10 font-bold ${active ? "" : "text-gray-500 group-hover:text-gray-200"}`}>{label}</span>
             {active && (
                 <div className="absolute inset-0 bg-gradient-to-r from-brand-orange/10 to-transparent pointer-events-none" />
             )}
         </Link>
+    );
+}
+
+function UpdatesNavLink({ href, latestUpdateDate, active }: { href: string, latestUpdateDate?: Date, active?: boolean }) {
+    const [lastRead, setLastRead] = useState<number>(0);
+
+    // Initialize from localStorage on mount
+    useState(() => {
+        if (typeof window !== 'undefined') {
+            const stored = localStorage.getItem('lastReadUpdates');
+            if (stored) setLastRead(parseInt(stored));
+        }
+    });
+
+    const hasNewUpdates = latestUpdateDate &&
+        (new Date().getTime() - new Date(latestUpdateDate).getTime() < 3 * 24 * 60 * 60 * 1000) &&
+        (!lastRead || new Date(latestUpdateDate).getTime() > lastRead);
+
+    const handleClick = () => {
+        const now = new Date().getTime();
+        setLastRead(now);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('lastReadUpdates', now.toString());
+        }
+    };
+
+    return (
+        <div className="relative" onClick={handleClick}>
+            <NavLink
+                href={href}
+                icon={<Sparkles size={20} />}
+                label="Updates"
+                active={active}
+            />
+            {hasNewUpdates && (
+                <span className="absolute top-2 right-4 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#111827] animate-pulse pointer-events-none" />
+            )}
+        </div>
     );
 }

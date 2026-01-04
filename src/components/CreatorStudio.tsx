@@ -148,11 +148,11 @@ export default function CreatorStudio({
                     {storeTier !== 'HUSTLER' && (
                         <>
                             <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase">SKU</label>
+                                <label className="text-xs font-bold text-gray-800 uppercase">SKU</label>
                                 <input name="sku" type="text" placeholder="Stock Unit ID" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none text-xs" />
                             </div>
                             <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase">Weight (kg)</label>
+                                <label className="text-xs font-bold text-gray-800 uppercase">Weight (kg)</label>
                                 <input name="weight" type="number" step="0.01" placeholder="0.5" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none text-xs" />
                             </div>
                         </>

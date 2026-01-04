@@ -46,19 +46,19 @@ export default async function CustomersPage({ params }: { params: Promise<{ stor
 
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-100/50">
+                        <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Customer</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Contact</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Spent</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Orders</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Last Order</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Customer</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Contact</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Spent</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Orders</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Last Order</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100/50">
                             {customers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
+                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
                                         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <Users size={32} className="opacity-50" />
                                         </div>
@@ -71,7 +71,7 @@ export default async function CustomersPage({ params }: { params: Promise<{ stor
                                     <tr key={customer.id} className="group hover:bg-blue-50/30 transition duration-200 cursor-pointer">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 text-purple-600 flex items-center justify-center font-black text-sm">
+                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 text-purple-700 flex items-center justify-center font-black text-sm border border-purple-100">
                                                     {customer.name?.charAt(0) || "?"}
                                                 </div>
                                                 <span className="font-bold text-gray-900">{customer.name || "Unknown"}</span>
@@ -95,12 +95,12 @@ export default async function CustomersPage({ params }: { params: Promise<{ stor
                                             <span className="font-black text-gray-900">₵{Number(customer.totalSpent).toFixed(2)}</span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-gray-100 text-gray-800">
                                                 {customer.totalOrders}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
+                                            <div className="flex items-center gap-2 text-xs font-bold text-gray-500">
                                                 <Calendar size={12} />
                                                 {customer.lastOrderAt ? new Date(customer.lastOrderAt).toLocaleDateString() : "N/A"}
                                             </div>
