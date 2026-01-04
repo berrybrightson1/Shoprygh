@@ -33,9 +33,103 @@ model Store {
   orders      Order[]
   subscriptions Subscription[]
   
+
+  // Finance
+  walletBalance Decimal @default(0)
+  payouts     PayoutRequest[]
+  transactions WalletTransaction[]
+
+  // Marketing
+  coupons     Coupon[]
+  
+  // CRM
+  customers   Customer[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// --- CRM Models ---
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String?
+  email       String?
+  phone       String?
+  
+  totalSpent  Decimal  @default(0)
+  totalOrders Int      @default(0)
+  lastOrderAt DateTime?
+  
+  notes       String?  @db.Text
+  
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id])
+  orders      Order[]
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  @@unique([storeId, phone]) // Unique customer per store by phone
+  @@unique([storeId, email]) // Unique customer per store by email
+}
+
+// --- Marketing Models ---
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   // e.g., "SUMMER10"
+  type        String   @default("PERCENTAGE") // PERCENTAGE, FIXED
+  value       Decimal
+  
+  uses        Int      @default(0)
+  maxUses     Int?     // If null, unlimited
+  expiresAt   DateTime?
+  isActive    Boolean  @default(true)
+  
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([storeId, code]) // Code must be unique per store
+}
+
+// --- Finance Models ---
+
+model PayoutRequest {
+  id          String   @id @default(cuid())
+  amount      Decimal
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  // Payout Details
+  method      String   // "Mobile Money", "Bank Transfer"
+  destination String   // Phone number or Account Number
+  
+  // Admin Logic
+  processedAt DateTime?
+  adminNote   String?  // Why it was rejected/approved
+  
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WalletTransaction {
+  id          String   @id @default(cuid())
+  amount      Decimal
+  type        String   // SALE, PAYOUT, REFUND, FEE
+  description String
+  
+  referenceId String?  // ID of related Order or Payout
+  
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id])
+  
+  createdAt   DateTime @default(now())
 }
 
 model SystemUpdate {
@@ -115,6 +209,10 @@ model Order {
   status    String      @default("PENDING") // PENDING, PAID, DELIVERED, CANCELLED
   customerName String?
   customerPhone String?
+  
+  // CRM Link (Optional for now, populated on checkout)
+  customerId    String?
+  customer      Customer? @relation(fields: [customerId], references: [id])
   
   total     Decimal
   items     OrderItem[]

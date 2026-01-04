@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield, Sparkles } from "lucide-react";
+import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield, Sparkles, Wallet, Tag } from "lucide-react";
 import { useState } from "react";
 import { logout } from "@/app/[storeSlug]/admin/login/actions";
 
@@ -104,6 +104,13 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname?.startsWith(`/${storeSlug}/admin/reports`)}
                     />
 
+                    <NavLink
+                        href={`/${storeSlug}/admin/customers`}
+                        icon={<Users size={20} />}
+                        label="Customers"
+                        active={pathname?.startsWith(`/${storeSlug}/admin/customers`)}
+                    />
+
                     {/* Updates Tab with Green Dot Indicator */}
                     <div className="relative">
                         <NavLink
@@ -117,6 +124,13 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                             <span className="absolute top-2 right-4 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#111827] animate-pulse pointer-events-none" />
                         )}
                     </div>
+
+                    <NavLink
+                        href={`/${storeSlug}/admin/finance`}
+                        icon={<Wallet size={20} />}
+                        label="Finance"
+                        active={pathname?.startsWith(`/${storeSlug}/admin/finance`)}
+                    />
 
                     <div className="h-px bg-gray-800 mx-4 my-2" />
 

@@ -26,6 +26,7 @@ export default function StoreActions({ store }: StoreActionsProps) {
                     name="tier"
                     defaultValue={store.tier}
                     onChange={(e) => e.target.form?.requestSubmit()}
+                    aria-label="Store Tier"
                     className="text-[10px] font-bold uppercase bg-white border border-gray-200 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-brand-cyan outline-none cursor-pointer hover:bg-gray-50 transition"
                 >
                     <option value="HUSTLER">Hustler</option>

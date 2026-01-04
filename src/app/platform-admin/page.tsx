@@ -2,7 +2,7 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { Shield, AlertCircle, CheckCircle, Ban, Store, Sparkles } from "lucide-react";
+import { Shield, AlertCircle, CheckCircle, Ban, Store, Sparkles, Wallet } from "lucide-react";
 import StoreActions from "./StoreActions";
 
 // Platform Admin Dashboard - Force rebuild
@@ -114,6 +114,9 @@ export default async function PlatformAdminPage() {
                     <div className="flex gap-4">
                         <Link href="/platform-admin/updates" className="inline-flex items-center gap-2 bg-white text-gray-900 border border-gray-200 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 transition shadow-sm">
                             <Sparkles size={18} className="text-brand-cyan" /> Post Update
+                        </Link>
+                        <Link href="/platform-admin/finance" className="inline-flex items-center gap-2 bg-white text-gray-900 border border-gray-200 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 transition shadow-sm">
+                            <Wallet size={18} className="text-green-600" /> Payouts
                         </Link>
                         <Link href="/" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl font-bold hover:scale-105 transition shadow-xl shadow-black/10 active:scale-95">
                             <Store size={18} /> Visit Storefront
