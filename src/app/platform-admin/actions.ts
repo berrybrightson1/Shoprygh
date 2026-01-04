@@ -67,7 +67,6 @@ export async function deleteStore(formData: FormData) {
         // For now, we log it. The UI might not reflect failure immediately without a toast.
     }
 }
-}
 
 export async function impersonateStoreOwner(formData: FormData) {
     const storeId = formData.get("storeId") as string;

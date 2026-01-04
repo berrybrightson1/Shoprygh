@@ -2,7 +2,7 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { Shield, AlertCircle, CheckCircle, Ban, Store } from "lucide-react";
+import { Shield, AlertCircle, CheckCircle, Ban, Store, Sparkles } from "lucide-react";
 import StoreActions from "./StoreActions";
 
 // Platform Admin Dashboard - Force rebuild
