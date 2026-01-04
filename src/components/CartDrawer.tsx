@@ -2,13 +2,19 @@
 
 import { useCartStore } from "@/store/cart";
 import { useEffect, useState } from "react";
-import { createOrder } from "@/app/[storeSlug]/(store)/actions";
+import { createOrder, validateCoupon } from "@/app/[storeSlug]/(store)/actions";
+import { toast } from "sonner";
+import { X, ShoppingBag, Minus, Plus, TicketPercent, Loader2, Check, MessageCircle } from "lucide-react";
 
 export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boolean; onClose: () => void; storeId: string }) {
     const { items, addItem, decreaseItem, removeItem, clearCart } = useCartStore();
     const [mounted, setMounted] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [phone, setPhone] = useState("");
+    const [couponCode, setCouponCode] = useState("");
+    const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number } | null>(null);
+    const [isValidating, setIsValidating] = useState(false);
+    const [couponError, setCouponError] = useState("");
 
     useEffect(() => {
         setMounted(true);
@@ -187,7 +193,7 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
                             <button
                                 onClick={async () => {
                                     if (!phone) {
-                                        alert("Please enter your phone number so we can contact you!");
+                                        toast.error("Please enter your phone number so we can contact you!");
                                         return;
                                     }
 
@@ -221,7 +227,7 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
 
                                     } catch (err) {
                                         console.error(err);
-                                        alert("Something went wrong. Please try again.");
+                                        toast.error("Something went wrong. Please try again.");
                                     } finally {
                                         setIsCheckingOut(false);
                                     }

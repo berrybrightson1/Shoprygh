@@ -2,6 +2,7 @@
 
 import { Store, Ban, Trash2, CheckCircle, User } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { suspendStore, unsuspendStore, deleteStore, impersonateStoreOwner, updateStoreTierManually } from "./actions";
 
 interface StoreActionsProps {
@@ -82,13 +83,22 @@ export default function StoreActions({ store }: StoreActionsProps) {
             <form action={deleteStore}>
                 <input type="hidden" name="storeId" value={store.id} />
                 <button
-                    type="submit"
+                    type="button"
                     className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
                     title="Delete Store"
                     onClick={(e) => {
-                        if (!confirm(`Delete ${store.name}? This cannot be undone!`)) {
-                            e.preventDefault();
-                        }
+                        const form = e.currentTarget.closest('form');
+                        toast.error(`Delete ${store.name}?`, {
+                            description: "This action cannot be undone.",
+                            action: {
+                                label: "Delete",
+                                onClick: () => form?.requestSubmit(),
+                            },
+                            cancel: {
+                                label: "Cancel",
+                                onClick: () => { },
+                            },
+                        });
                     }}
                 >
                     <Trash2 size={18} />

@@ -1,4 +1,7 @@
-// Placeholder to ensure I update schema first.
+"use server";
+
+import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export type CartItemSnapshot = {
     id: string;
@@ -60,4 +63,51 @@ export async function deleteOrder(storeId: string, orderId: string) {
         where: { id: orderId, storeId } // Ensure tenancy
     });
     revalidatePath(`/${storeId}/admin/orders`);
+}
+
+export async function validateCoupon(code: string, storeId: string, subtotal: number) {
+    if (!code) return { valid: false, message: "Code required" };
+
+    const coupon = await prisma.coupon.findUnique({
+        where: {
+            storeId_code: {
+                storeId,
+                code: code
+            }
+        }
+    });
+
+    if (!coupon) {
+        return { valid: false, message: "Invalid Coupon Code" };
+    }
+
+    if (!coupon.isActive) {
+        return { valid: false, message: "This coupon is no longer active" };
+    }
+
+    if (coupon.expiresAt && new Date() > coupon.expiresAt) {
+        return { valid: false, message: "This coupon has expired" };
+    }
+
+    // Calculate Discount
+    let discountAmount = 0;
+    const value = Number(coupon.value);
+
+    if (coupon.type === 'PERCENTAGE') {
+        discountAmount = subtotal * (value / 100);
+    } else {
+        discountAmount = value;
+    }
+
+    // Ensure we don't discount more than the subtotal
+    if (discountAmount > subtotal) {
+        discountAmount = subtotal;
+    }
+
+    return {
+        valid: true,
+        code: coupon.code,
+        discountAmount,
+        message: "Coupon applied!"
+    };
 }

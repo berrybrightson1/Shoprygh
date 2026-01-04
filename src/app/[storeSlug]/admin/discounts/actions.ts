@@ -25,7 +25,7 @@ export async function createCoupon(formData: FormData) {
     };
 
     // Basic Validation
-    if (!rawData.code || !rawData.storeId) return { error: "Code and Store ID are required" };
+    if (!rawData.code || !rawData.storeId) throw new Error("Code and Store ID are required");
 
     try {
         await prisma.coupon.create({
@@ -41,7 +41,7 @@ export async function createCoupon(formData: FormData) {
         });
     } catch (e) {
         console.error(e);
-        return { error: "Failed to create coupon. Code might already exist." };
+        throw new Error("Failed to create coupon. Code might already exist.");
     }
 
     // Determine slug for redirect
