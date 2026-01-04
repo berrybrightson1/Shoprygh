@@ -1,7 +1,4 @@
-"use server";
-
-import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+// Placeholder to ensure I update schema first.
 
 export type CartItemSnapshot = {
     id: string;
@@ -10,17 +7,29 @@ export type CartItemSnapshot = {
     quantity: number;
 };
 
-export async function createOrder(storeId: string, items: CartItemSnapshot[], totalEstimate: number, customerPhone?: string) {
+export async function createOrder(storeId: string, items: CartItemSnapshot[], totalEstimate: number, customerPhone?: string, couponCode?: string) {
     if (!items.length) throw new Error("Cart is empty");
     if (!storeId) throw new Error("Store ID is required");
 
-    // 1. Create the Order in DB
+    // 1. Handle Coupon Usage
+    if (couponCode) {
+        try {
+            await prisma.coupon.update({
+                where: { storeId_code: { storeId, code: couponCode } },
+                data: { uses: { increment: 1 } }
+            });
+        } catch (error) {
+            console.warn(`Failed to track usage for coupon ${couponCode}:`, error);
+        }
+    }
+
+    // 2. Create the Order in DB
     const order = await prisma.order.create({
         data: {
             storeId, // Link to Store
             total: totalEstimate,
             status: "PENDING",
-            customerPhone: customerPhone || null,
+            customerPhone: customerPhone ? (couponCode ? `${customerPhone} (Code: ${couponCode})` : customerPhone) : null,
             items: {
                 create: items.map(item => ({
                     productId: item.id,
@@ -32,7 +41,7 @@ export async function createOrder(storeId: string, items: CartItemSnapshot[], to
         }
     });
 
-    // 2. Revalidate Admin Orders page (so it shows up instantly)
+    // 3. Revalidate Admin Orders page (so it shows up instantly)
     revalidatePath(`/${storeId}/admin/orders`);
 
     return { success: true, orderId: order.id };

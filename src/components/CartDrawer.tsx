@@ -1,6 +1,5 @@
-"use client";
+// Placeholder to ensure I check the file first.
 
-import { X, Minus, Plus, ShoppingBag, MessageCircle } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useEffect, useState } from "react";
 import { createOrder } from "@/app/[storeSlug]/(store)/actions";
@@ -110,6 +109,52 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
                     {/* Footer (Total & Checkout) */}
                     {items.length > 0 && (
                         <div className="p-6 bg-white border-t border-gray-100 pb-8">
+                            {/* Discount Code */}
+                            <div className="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <label className="text-xs font-bold text-gray-800 uppercase block mb-2 flex items-center gap-2">
+                                    <TicketPercent size={14} className="text-purple-600" /> Promo Code
+                                </label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Code"
+                                        value={couponCode}
+                                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                        disabled={!!appliedDiscount}
+                                        className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 text-gray-900 font-bold uppercase placeholder:text-gray-300 disabled:opacity-50 disabled:bg-gray-100"
+                                    />
+                                    {appliedDiscount ? (
+                                        <button
+                                            onClick={() => { setAppliedDiscount(null); setCouponCode(""); }}
+                                            className="bg-gray-200 text-gray-600 px-4 py-2 rounded-xl font-bold hover:bg-gray-300 transition"
+                                        >
+                                            <X size={18} />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={async () => {
+                                                setIsValidating(true);
+                                                setCouponError("");
+                                                const subtotal = items.reduce((sum, item) => sum + (item.priceRetail * item.quantity), 0);
+                                                const res = await validateCoupon(couponCode, storeId, subtotal);
+                                                setIsValidating(false);
+                                                if (res.valid) {
+                                                    setAppliedDiscount({ code: res.code!, amount: res.discountAmount! });
+                                                } else {
+                                                    setCouponError(res.message || "Invalid Code");
+                                                }
+                                            }}
+                                            disabled={!couponCode || isValidating}
+                                            className="bg-brand-purple text-white px-4 py-2 rounded-xl font-bold hover:bg-purple-700 transition disabled:opacity-50 min-w-[80px] flex items-center justify-center shadow-lg shadow-purple-200"
+                                        >
+                                            {isValidating ? <Loader2 size={18} className="animate-spin" /> : "Apply"}
+                                        </button>
+                                    )}
+                                </div>
+                                {couponError && <p className="text-xs text-red-500 font-bold mt-2">{couponError}</p>}
+                                {appliedDiscount && <p className="text-xs text-green-600 font-bold mt-2 flex items-center gap-1"><Check size={12} /> Code applied! You saved ₵{appliedDiscount.amount.toFixed(2)}</p>}
+                            </div>
+
                             <div className="mb-4">
                                 <label className="text-xs font-bold text-gray-800 uppercase block mb-1">Your Contact Number</label>
                                 <input
@@ -121,10 +166,23 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
                                 />
                             </div>
 
-                            <div className="flex justify-between items-center mb-4">
-                                <span className="text-black font-bold text-sm">Total Estimate</span>
-                                <span className="text-2xl font-black text-black">₵{total.toFixed(2)}</span>
+                            <div className="space-y-2 mb-6">
+                                <div className="flex justify-between items-center text-gray-500 text-sm font-medium">
+                                    <span>Subtotal</span>
+                                    <span>₵{total.toFixed(2)}</span>
+                                </div>
+                                {appliedDiscount && (
+                                    <div className="flex justify-between items-center text-green-600 text-sm font-bold">
+                                        <span>Discount ({appliedDiscount.code})</span>
+                                        <span>-₵{appliedDiscount.amount.toFixed(2)}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between items-center border-t border-gray-100 pt-2">
+                                    <span className="text-black font-black text-lg">Total</span>
+                                    <span className="text-2xl font-black text-black">₵{(total - (appliedDiscount?.amount || 0)).toFixed(2)}</span>
+                                </div>
                             </div>
+
                             <button
                                 onClick={async () => {
                                     if (!phone) {
@@ -134,8 +192,10 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
 
                                     setIsCheckingOut(true);
                                     try {
+                                        const finalTotal = total - (appliedDiscount?.amount || 0);
+
                                         // 1. Save "Ghost" Order
-                                        const { orderId } = await createOrder(storeId, items, total, phone);
+                                        const { orderId } = await createOrder(storeId, items, finalTotal, phone, appliedDiscount?.code);
 
                                         // 2. Construct Message
                                         let msg = `Hello Store! I'd like to place an order:\n`;
@@ -148,7 +208,11 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
                                             msg += `   Qty: ${item.quantity} | Price: ₵${item.priceRetail}\n\n`;
                                         });
 
-                                        msg += `*Total Estimate:* ₵${total.toFixed(2)}`;
+                                        msg += `*Subtotal:* ₵${total.toFixed(2)}\n`;
+                                        if (appliedDiscount) {
+                                            msg += `*Discount (${appliedDiscount.code}):* -₵${appliedDiscount.amount.toFixed(2)}\n`;
+                                        }
+                                        msg += `*Total Estimate:* ₵${finalTotal.toFixed(2)}`;
 
                                         clearCart();
                                         onClose();
