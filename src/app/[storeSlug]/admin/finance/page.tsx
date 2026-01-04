@@ -70,7 +70,7 @@ export default async function FinancePage({ params }: { params: Promise<{ storeS
                                     required
                                     className="w-full bg-[#1f2937] border border-gray-600 rounded-lg py-2 px-3 text-white text-sm font-bold focus:border-brand-cyan outline-none mb-3"
                                 />
-                                <button type="submit" className="w-full bg-brand-cyan hover:bg-cyan-500 text-[#111827] font-black py-2 rounded-lg transition text-sm shadow-lg shadow-brand-cyan/20">
+                                <button type="submit" className="w-full bg-white hover:bg-brand-cyan hover:text-black text-gray-900 font-black py-3 rounded-xl transition text-sm shadow-lg shadow-black/20 uppercase tracking-wide">
                                     Request Payout
                                 </button>
                             </form>

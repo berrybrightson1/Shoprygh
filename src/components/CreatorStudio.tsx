@@ -1,8 +1,16 @@
 "use client";
 
-import { PlusCircle, Image as ImageIcon, X, Loader2 } from "lucide-react";
-import { useState, useRef } from "react";
+import { Plus, X, Image as ImageIcon, Sparkles, Smartphone, Box, Trash2, Upload, Tag, ChevronDown, Wand2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { compressImage } from "@/utils/imageCompression";
+
+interface Variant {
+    id: string; // Temp ID for UI
+    name: string;
+    price: string;
+    stockQty: string;
+    sku: string;
+}
 
 export default function CreatorStudio({
     createAction,
@@ -11,205 +19,496 @@ export default function CreatorStudio({
     createAction: (formData: FormData) => Promise<void>,
     storeTier?: string
 }) {
-    const [preview, setPreview] = useState<string | null>(null);
+    // --- State ---
+    const borderClass = "border-gray-200 focus:border-brand-cyan hover:border-gray-300";
+    const [name, setName] = useState("");
+    const [price, setPrice] = useState("");
+    const [category, setCategory] = useState("Diapers");
+    const [description, setDescription] = useState("");
+
+    // Images
+    const [mainImage, setMainImage] = useState<string | null>(null); // Preview URL
+    const [gallery, setGallery] = useState<string[]>([]); // Preview URLs
     const [isCompressing, setIsCompressing] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // File Refs for Form Submission
+    const mainFileRef = useRef<File | null>(null);
+    const galleryFilesRef = useRef<File[]>([]);
+
+    // Tags & Variants
+    const [tags, setTags] = useState<string[]>([]);
+    const [tagInput, setTagInput] = useState("");
+    const [variants, setVariants] = useState<Variant[]>([]);
+
     const formRef = useRef<HTMLFormElement>(null);
 
-    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    // --- Handlers ---
+
+    const handleMainImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             setIsCompressing(true);
             try {
                 const compressed = await compressImage(file);
-
-                // Update file input with compressed file
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(compressed);
-                e.target.files = dataTransfer.files;
-
-                const url = URL.createObjectURL(compressed);
-                setPreview(url);
+                mainFileRef.current = compressed;
+                setMainImage(URL.createObjectURL(compressed));
             } catch (err) {
-                console.error("Compression failed", err);
-                // Fallback to original
-                setPreview(URL.createObjectURL(file));
+                console.error(err);
+                mainFileRef.current = file;
+                setMainImage(URL.createObjectURL(file));
             } finally {
                 setIsCompressing(false);
             }
         }
     };
 
-    const handleDrop = async (e: React.DragEvent) => {
-        e.preventDefault();
-        const file = e.dataTransfer.files?.[0];
-        if (file && fileInputRef.current) {
-            setIsCompressing(true);
+    const handleGallery = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+
+        setIsCompressing(true);
+        const newUrls: string[] = [];
+        const newFiles: File[] = [];
+
+        for (const file of files) {
             try {
                 const compressed = await compressImage(file);
-
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(compressed);
-                fileInputRef.current.files = dataTransfer.files;
-
-                const url = URL.createObjectURL(compressed);
-                setPreview(url);
+                newFiles.push(compressed);
+                newUrls.push(URL.createObjectURL(compressed));
             } catch (err) {
-                console.error("Compression failed", err);
-            } finally {
-                setIsCompressing(false);
+                newFiles.push(file);
+                newUrls.push(URL.createObjectURL(file));
             }
+        }
+
+        galleryFilesRef.current = [...galleryFilesRef.current, ...newFiles];
+        setGallery(prev => [...prev, ...newUrls]);
+        setIsCompressing(false);
+    };
+
+    const addTag = () => {
+        if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+            setTags([...tags, tagInput.trim()]);
+            setTagInput("");
         }
     };
 
+    const removeTag = (tag: string) => {
+        setTags(tags.filter(t => t !== tag));
+    };
+
+    const addVariant = () => {
+        setVariants([...variants, { id: crypto.randomUUID(), name: "", price: "", stockQty: "0", sku: "" }]);
+    };
+
+    const removeVariant = (id: string) => {
+        setVariants(variants.filter(v => v.id !== id));
+    };
+
+    const updateVariant = (id: string, field: keyof Variant, value: string) => {
+        setVariants(variants.map(v => v.id === id ? { ...v, [field]: value } : v));
+    };
+
+    // --- AI Stub ---
+    const generateDescription = () => {
+        const templates = [
+            `Experience the best quality with ${name || 'this item'}. Perfect for ${category.toLowerCase()} needs.`,
+            `High quality ${category.toLowerCase()} product. ${name || 'Item'} is designed for comfort and durability.`,
+            `Get the amazing ${name || 'product'} now. A clear favorite in our ${category} collection.`
+        ];
+        setDescription(templates[Math.floor(Math.random() * templates.length)]);
+    };
+
+
+    // --- Render ---
+
     return (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
-            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <PlusCircle size={18} className="text-brand-cyan" /> Creator Studio
-            </h3>
-            <form
-                action={async (formData) => {
-                    await createAction(formData);
-                    formRef.current?.reset();
-                    setPreview(null);
-                }}
-                ref={formRef}
-            >
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="col-span-2">
-                        <label className="text-xs font-bold text-gray-800 uppercase">Product Name</label>
-                        <input
-                            name="name"
-                            type="text"
-                            placeholder="e.g. Pampers Premium Care"
-                            required
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-xs font-bold text-gray-800 uppercase">Price (₵)</label>
-                        <input
-                            name="price"
-                            type="number"
-                            step="0.01"
-                            placeholder="0.00"
-                            required
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
-                        />
-                    </div>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-12">
+            {/* LEFT: Editor Form */}
+            <div className="xl:col-span-2 space-y-6">
+                <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-cyan via-blue-500 to-purple-600" />
 
-                    {storeTier !== 'HUSTLER' && (
-                        <div className="animate-in fade-in slide-in-from-top-2">
-                            <label className="text-xs font-bold text-gray-800 uppercase text-brand-orange">Wholesale (₵)</label>
-                            <input
-                                name="priceWholesale"
-                                type="number"
-                                step="0.01"
-                                placeholder="Bulk Price"
-                                className="w-full border border-brand-orange/20 bg-brand-orange/5 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-orange/20 outline-none text-gray-900 font-medium"
-                            />
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+                                <Sparkles className="text-brand-orange filling-brand-orange" size={24} />
+                                Creator Studio
+                            </h2>
+                            <p className="text-gray-500 font-bold mt-1">Design your product listing</p>
                         </div>
-                    )}
-
-                    <div>
-                        <label className="text-xs font-bold text-gray-800 uppercase">Category</label>
-                        <select title="Product Category"
-                            name="category"
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 bg-white text-gray-900 font-medium"
-                        >
-                            <option>Diapers</option>
-                            <option>Feeding</option>
-                            <option>Clothing</option>
-                            <option>Toys</option>
-                            <option>Health</option>
-                            <option>Bedding</option>
-                            <option>Bundles</option>
-                        </select>
-                    </div>
-                    <div className="col-span-2">
-                        <label className="text-xs font-bold text-gray-800 uppercase">Description</label>
-                        <textarea
-                            name="description"
-                            placeholder="Product details..."
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 h-[50px] focus:ring-2 focus:ring-brand-cyan/20 outline-none resize-none text-gray-900 placeholder:text-gray-400 font-medium"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-xs font-bold text-gray-800 uppercase">Initial Stock</label>
-                        <input
-                            name="stockQty"
-                            type="number"
-                            placeholder="10"
-                            defaultValue="10"
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-brand-cyan/20 outline-none text-gray-900 placeholder:text-gray-400 font-medium"
-                        />
+                        <div className="hidden md:flex gap-2">
+                            <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-black uppercase tracking-wide">
+                                Draft
+                            </span>
+                        </div>
                     </div>
 
-                    {storeTier !== 'HUSTLER' && (
-                        <>
-                            <div>
-                                <label className="text-xs font-bold text-gray-800 uppercase">SKU</label>
-                                <input name="sku" type="text" placeholder="Stock Unit ID" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none text-xs" />
-                            </div>
-                            <div>
-                                <label className="text-xs font-bold text-gray-800 uppercase">Weight (kg)</label>
-                                <input name="weight" type="number" step="0.01" placeholder="0.5" className="w-full border border-gray-200 rounded-lg px-3 py-2 mt-1 outline-none text-xs" />
-                            </div>
-                        </>
-                    )}
-                </div>
+                    <form
+                        ref={formRef}
+                        action={async (formData) => {
+                            // Append custom state
+                            if (mainFileRef.current) formData.set("image", mainFileRef.current);
+                            galleryFilesRef.current.forEach(f => formData.append("gallery", f));
+                            formData.set("tags", JSON.stringify(tags));
+                            formData.set("variants", JSON.stringify(variants));
 
-                {/* Image Upload Area */}
-                <div className="mt-4">
-                    <label className="text-xs font-bold text-gray-800 uppercase mb-2 block">Product Image</label>
-                    <div
-                        className={`relative border-2 border-dashed rounded-xl p-8 transition-all text-center group overflow-hidden ${preview ? "border-brand-cyan bg-brand-cyan/5" : "border-gray-300 hover:border-brand-cyan hover:bg-brand-cyan/5"}`}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={handleDrop}
+                            await createAction(formData);
+
+                            // Reset
+                            formRef.current?.reset();
+                            setMainImage(null);
+                            setGallery([]);
+                            setTags([]);
+                            setVariants([]);
+                            mainFileRef.current = null;
+                            galleryFilesRef.current = [];
+                            setName("");
+                            setPrice("");
+                            setDescription("");
+                        }}
+                        className="space-y-8"
                     >
-                        <input title="Retail Price" aria-label="Retail Price"
-                            ref={fileInputRef}
-                            name="image"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                            disabled={isCompressing}
-                        />
+                        {/* 1. Basic Info */}
+                        <section className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-xs font-black text-gray-700 uppercase mb-2">Product Name</label>
+                                    <input
+                                        name="name"
+                                        value={name}
+                                        onChange={e => setName(e.target.value)}
+                                        placeholder="e.g. Huggies Gold"
+                                        className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-3 font-bold text-gray-900 outline-none transition-all`}
+                                        required
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-black text-gray-700 uppercase mb-2">Price (₵)</label>
+                                        <input
+                                            name="price"
+                                            value={price}
+                                            onChange={e => setPrice(e.target.value)}
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="0.00"
+                                            className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-3 font-bold text-gray-900 outline-none transition-all`}
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-black text-gray-700 uppercase mb-2">Stock</label>
+                                        <input
+                                            name="stockQty"
+                                            type="number"
+                                            defaultValue="10"
+                                            className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-3 font-bold text-gray-900 outline-none transition-all`}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
 
-                        {isCompressing ? (
-                            <div className="relative h-48 w-full flex flex-col items-center justify-center gap-2">
-                                <Loader2 className="animate-spin text-brand-cyan" size={32} />
-                                <p className="text-xs font-bold text-brand-cyan">Compressing...</p>
-                            </div>
-                        ) : preview ? (
-                            <div className="relative h-48 w-full flex items-center justify-center">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={preview} alt="Preview" className="h-full object-contain rounded-lg shadow-sm" />
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                    <p className="text-white font-bold flex items-center gap-2"><ImageIcon size={18} /> Change Image</p>
+                        {/* 2. Visuals */}
+                        <section>
+                            <label className="block text-xs font-black text-gray-700 uppercase mb-3">Visuals</label>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                {/* Main Image */}
+                                <div className="relative group w-full md:w-1/3 aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center overflow-hidden hover:border-brand-cyan hover:bg-cyan-50/30 transition-all cursor-pointer">
+                                    {mainImage ? (
+                                        <>
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={mainImage} className="w-full h-full object-cover" alt="Main" />
+                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <p className="text-white font-bold text-sm">Change Cover</p>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="text-center p-4">
+                                            <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-2 text-gray-500">
+                                                <ImageIcon size={24} />
+                                            </div>
+                                            <p className="text-xs font-black text-gray-500 uppercase">Cover Image</p>
+                                        </div>
+                                    )}
+                                    <input type="file" accept="image/*" onChange={handleMainImage} className="absolute inset-0 opacity-0 cursor-pointer" />
+                                </div>
+
+                                {/* Gallery Grid */}
+                                <div className="flex-1 grid grid-cols-3 sm:grid-cols-4 gap-4 content-start">
+                                    {gallery.map((url, idx) => (
+                                        <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-gray-200 group">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={url} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setGallery(prev => prev.filter((_, i) => i !== idx));
+                                                    galleryFilesRef.current = galleryFilesRef.current.filter((_, i) => i !== idx);
+                                                }}
+                                                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+
+                                    {/* Upload Button */}
+                                    <div className="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center hover:border-brand-cyan hover:text-brand-cyan text-gray-400 transition-colors cursor-pointer relative">
+                                        <Plus size={24} />
+                                        <span className="text-[10px] font-bold uppercase mt-1">Add</span>
+                                        <input type="file" multiple accept="image/*" onChange={handleGallery} className="absolute inset-0 opacity-0 cursor-pointer" />
+                                    </div>
                                 </div>
                             </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center gap-2 py-6">
-                                <div className="p-3 bg-brand-cyan/10 text-brand-cyan rounded-full group-hover:scale-110 transition-transform">
-                                    <PlusCircle size={24} />
+                        </section>
+
+                        {/* 3. Details & AI */}
+                        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="md:col-span-1 space-y-4">
+                                <div>
+                                    <label className="block text-xs font-black text-gray-700 uppercase mb-2">Category</label>
+                                    <div className="relative">
+                                        <select
+                                            name="category"
+                                            value={category}
+                                            onChange={e => setCategory(e.target.value)}
+                                            className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-3 appearance-none font-bold text-gray-900 outline-none`}
+                                        >
+                                            <option>Diapers</option>
+                                            <option>Feeding</option>
+                                            <option>Clothing</option>
+                                            <option>Toys</option>
+                                            <option>Health</option>
+                                            <option>Bedding</option>
+                                            <option>Bundles</option>
+                                            <option>General</option>
+                                        </select>
+                                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" size={16} />
+                                    </div>
                                 </div>
-                                <p className="text-sm font-bold text-gray-700">Click or drag image here</p>
-                                <p className="text-xs text-gray-700">Supports JPG, PNG (Auto-Compressed)</p>
+
+                                <div>
+                                    <label className="block text-xs font-black text-gray-700 uppercase mb-2">Tags</label>
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        {tags.map(tag => (
+                                            <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-lg border border-blue-100">
+                                                {tag}
+                                                <X size={12} className="cursor-pointer hover:text-blue-900" onClick={() => removeTag(tag)} />
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <div className="relative">
+                                        <input
+                                            value={tagInput}
+                                            onChange={e => setTagInput(e.target.value)}
+                                            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                                            placeholder="Add tag..."
+                                            className={`w-full bg-white border ${borderClass} rounded-lg px-3 py-2 text-sm font-medium pr-8 outline-none`}
+                                        />
+                                        <Tag size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    </div>
+                                </div>
                             </div>
+
+                            <div className="md:col-span-2">
+                                <div className="flex justify-between items-center mb-2">
+                                    <label className="block text-xs font-black text-gray-700 uppercase">Description</label>
+                                    <button
+                                        type="button"
+                                        onClick={generateDescription}
+                                        className="text-xs font-bold text-brand-cyan hover:text-cyan-700 flex items-center gap-1 transition-colors"
+                                    >
+                                        <Wand2 size={12} /> AI Generate
+                                    </button>
+                                </div>
+                                <textarea
+                                    name="description"
+                                    value={description}
+                                    onChange={e => setDescription(e.target.value)}
+                                    placeholder="Describe your product..."
+                                    className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-3 h-32 resize-none font-medium text-gray-600 outline-none`}
+                                />
+                            </div>
+                        </section>
+
+                        {/* 4. Variants */}
+                        {storeTier !== 'HUSTLER' && (
+                            <section className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h4 className="font-black text-gray-800 flex items-center gap-2">
+                                        <Box size={18} /> Variants
+                                    </h4>
+                                    <button type="button" onClick={addVariant} className="text-xs font-black text-white bg-gray-900 hover:bg-gray-800 px-3 py-1.5 rounded-lg transition-colors">
+                                        + Add Variant
+                                    </button>
+                                </div>
+
+                                {variants.length === 0 ? (
+                                    <div className="text-center py-6 text-gray-400 text-sm font-medium">
+                                        No variants added. This product is sold as a single item.
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {variants.map((v) => (
+                                            <div key={v.id} className="grid grid-cols-12 gap-3 items-center animate-in slide-in-from-left-2">
+                                                <div className="col-span-4">
+                                                    <input
+                                                        placeholder="Option Name (e.g. Red, XL)"
+                                                        value={v.name}
+                                                        onChange={e => updateVariant(v.id, 'name', e.target.value)}
+                                                        className="w-full text-sm font-bold border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-brand-cyan border"
+                                                    />
+                                                </div>
+                                                <div className="col-span-3">
+                                                    <input
+                                                        placeholder="Price (Opt)"
+                                                        type="number"
+                                                        value={v.price}
+                                                        onChange={e => updateVariant(v.id, 'price', e.target.value)}
+                                                        className="w-full text-sm font-medium border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-brand-cyan border"
+                                                    />
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <input
+                                                        placeholder="Qty"
+                                                        type="number"
+                                                        value={v.stockQty}
+                                                        onChange={e => updateVariant(v.id, 'stockQty', e.target.value)}
+                                                        className="w-full text-center text-sm font-medium border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-brand-cyan border"
+                                                    />
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <input
+                                                        placeholder="SKU"
+                                                        value={v.sku}
+                                                        onChange={e => updateVariant(v.id, 'sku', e.target.value)}
+                                                        className="w-full text-sm font-medium border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-brand-cyan border"
+                                                    />
+                                                </div>
+                                                <div className="col-span-1 text-right">
+                                                    <button type="button" onClick={() => removeVariant(v.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </section>
                         )}
+
+
+                        {/* Submit */}
+                        <div className="pt-4 border-t border-gray-100">
+                            <button
+                                type="submit"
+                                className="w-full bg-brand-cyan hover:bg-cyan-500 text-[#111827] font-black text-lg py-4 rounded-xl shadow-lg shadow-brand-cyan/20 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+                            >
+                                <Upload size={20} className="stroke-3" />
+                                Publish Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {/* RIGHT: Live Preview */}
+            <div className="xl:col-span-1 hidden xl:block">
+                <div className="sticky top-8">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Smartphone size={18} className="text-gray-400" />
+                        <span className="text-xs font-black text-gray-500 uppercase tracking-wider">Live Preview</span>
+                    </div>
+
+                    {/* Phone Mockup */}
+                    <div className="bg-gray-900 rounded-[3rem] p-4 border-[8px] border-gray-800 shadow-2xl relative">
+                        {/* Notch */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-gray-800 rounded-b-xl z-20" />
+
+                        {/* Screen */}
+                        <div className="bg-white rounded-[2rem] overflow-hidden aspect-[9/19] relative flex flex-col">
+                            {/* App Bar */}
+                            <div className="h-14 bg-white/80 backdrop-blur-md absolute top-0 left-0 right-0 z-10 flex items-center justify-center pt-4">
+                                <span className="text-xs font-black text-black">Product Details</span>
+                            </div>
+
+                            {/* Scrollable Content */}
+                            <div className="overflow-y-auto no-scrollbar flex-1 pb-20">
+                                {/* Image Carousel */}
+                                <div className="aspect-square bg-gray-100 mb-4 relative">
+                                    {mainImage ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img src={mainImage} className="w-full h-full object-cover" alt="Preview" />
+                                    ) : (
+                                        <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                                            <ImageIcon size={48} />
+                                        </div>
+                                    )}
+                                    {gallery.length > 0 && (
+                                        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-2 py-1 rounded-full text-[10px] font-bold">
+                                            1/{gallery.length + 1}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="px-6 space-y-4">
+                                    {/* Header */}
+                                    <div>
+                                        <div className="flex justify-between items-start mb-1">
+                                            <h3 className="text-xl font-black text-gray-900 leading-tight">
+                                                {name || "Product Name"}
+                                            </h3>
+                                            <p className="text-lg font-black text-brand-orange">
+                                                ₵{price || "0.00"}
+                                            </p>
+                                        </div>
+                                        <p className="text-xs text-gray-500 font-bold uppercase tracking-wide">{category}</p>
+                                    </div>
+
+                                    {/* Tags */}
+                                    {tags.length > 0 && (
+                                        <div className="flex flex-wrap gap-2">
+                                            {tags.map(t => (
+                                                <span key={t} className="px-2 py-1 bg-gray-100 text-gray-600 text-[10px] font-bold rounded-lg">{t}</span>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Description */}
+                                    <div className="prose prose-sm">
+                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                            {description || "Product description will appear here..."}
+                                        </p>
+                                    </div>
+
+                                    {/* Variants Preview */}
+                                    {variants.length > 0 && (
+                                        <div className="my-4 pt-4 border-t border-gray-100">
+                                            <p className="text-xs font-black text-gray-900 mb-2 uppercase">Options</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {variants.map(v => (
+                                                    <span key={v.id} className="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-gray-700">
+                                                        {v.name} {v.price ? `(+₵${v.price})` : ''}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Add to Cart Bar */}
+                            <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur border-t border-gray-100">
+                                <button className="w-full bg-black text-white font-black py-3 rounded-xl shadow-lg">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <button
-                    type="submit"
-                    className="mt-8 bg-cyan-600 text-white w-full py-4 rounded-xl font-bold text-lg hover:bg-cyan-700 hover:shadow-xl transition-all flex items-center justify-center gap-3 transform hover:scale-[1.02] active:scale-[0.98] shadow-md"
-                >
-                    <PlusCircle size={22} className="stroke-2" />
-                    Post Item to Shop
-                </button>
-            </form>
+            </div>
         </div>
     );
 }

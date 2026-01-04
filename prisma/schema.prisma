@@ -162,7 +162,8 @@ model Product {
   name           String
   description    String?
   image          String?
-  
+  gallery        String[]  // Multiple images support
+
   // Pricing
   priceRetail    Decimal
   priceWholesale Decimal?
@@ -174,8 +175,11 @@ model Product {
   
   // Organization
   category       String   @default("General")
-  tags           String?
+  tags           String[] // Changed from String? to String[] for better filtering
   stockQty       Int      @default(0)
+  
+  // Variants
+  variants       ProductVariant[]
   
   // Bundle Logic
   isBundle       Boolean  @default(false)
@@ -189,6 +193,21 @@ model Product {
   orderItems     OrderItem[]
 }
 
+model ProductVariant {
+  id             String   @id @default(cuid())
+  
+  productId      String
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  name           String   // e.g. "Size: L, Color: Red"
+  price          Decimal? // Optional override
+  stockQty       Int      @default(0)
+  sku            String?
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
 model BundleItem {
   id        String  @id @default(cuid())
   
@@ -196,10 +215,6 @@ model BundleItem {
   bundle    Product @relation("ParentBundle", fields: [bundleId], references: [id])
   
   productId String  
-  // In a real app, we might want to relation to the child Product too, but to keep it simple and avoid circular mess/complex deletes, ID ref is okay. 
-  // However, usually better to have a relation if we want to ensure referential integrity.
-  // For now I'll keep it as ID based on previous schema, but arguably it should be related. 
-  // Let's stick to previous schema style to minimize drift, unless strictly needed.
   
   quantity  Int     @default(1)
 }

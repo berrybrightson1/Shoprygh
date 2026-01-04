@@ -18,17 +18,30 @@ export async function createProduct(storeId: string, formData: FormData) {
     const weight = weightStr ? parseFloat(weightStr) : null;
     const dimensions = formData.get("dimensions") as string || null;
 
-    const file = formData.get("image") as File;
+    // --- Image Processing ---
+    const mainFile = formData.get("image") as File;
+    const galleryFiles = formData.getAll("gallery") as File[];
 
-    if (!name || !priceRetail || !storeId) return;
-
-    let imagePath = "https://images.unsplash.com/photo-1515488042361-25f4682ae2ed?w=400"; // Default
-
-    if (file && file.size > 0) {
-        const buffer = await file.arrayBuffer();
-        const base64String = Buffer.from(buffer).toString('base64');
-        imagePath = `data:${file.type};base64,${base64String}`;
+    let mainImagePath = "https://images.unsplash.com/photo-1515488042361-25f4682ae2ed?w=400"; // Default
+    if (mainFile && mainFile.size > 0) {
+        const buffer = await mainFile.arrayBuffer();
+        mainImagePath = `data:${mainFile.type};base64,${Buffer.from(buffer).toString('base64')}`;
     }
+
+    const galleryPaths: string[] = [];
+    for (const file of galleryFiles) {
+        if (file.size > 0) {
+            const buffer = await file.arrayBuffer();
+            galleryPaths.push(`data:${file.type};base64,${Buffer.from(buffer).toString('base64')}`);
+        }
+    }
+
+    // --- Complex Data Parsing ---
+    const tagsJson = formData.get("tags") as string;
+    const tags = tagsJson ? JSON.parse(tagsJson) : [];
+
+    const variantsJson = formData.get("variants") as string;
+    const variantsData = variantsJson ? JSON.parse(variantsJson) : []; // Expecting [{name, price, stockQty, sku}]
 
     await prisma.product.create({
         data: {
@@ -41,15 +54,22 @@ export async function createProduct(storeId: string, formData: FormData) {
             category,
             description,
             stockQty,
-            image: imagePath,
-            storeId
+            image: mainImagePath,
+            gallery: galleryPaths,
+            tags: tags,
+            storeId,
+            variants: {
+                create: variantsData.map((v: any) => ({
+                    name: v.name,
+                    price: v.price ? parseFloat(v.price) : null,
+                    stockQty: parseInt(v.stockQty) || 0,
+                    sku: v.sku || null
+                }))
+            }
         }
     });
 
-    revalidatePath(`/${storeId}/admin/inventory`); // Invalidates generic admin path. Note: slug might differ from storeId. But we rely on dynamic paths.
-    // Actually revalidatePath should use the URL path. 
-    // Since we don't have the slug here efficiently, we might need to pass it or just revalidate layout.
-    // For now, let's assume we revalidate the inventory page. 
+    revalidatePath(`/`, 'layout'); // Revalidate everything to be safe 
 }
 
 export async function deleteProduct(storeId: string, formData: FormData) {
