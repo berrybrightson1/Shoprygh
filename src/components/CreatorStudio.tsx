@@ -326,7 +326,7 @@ export default function CreatorStudio({
                                         {tags.map(tag => (
                                             <span key={tag} className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-[10px] font-bold rounded-md border border-purple-100">
                                                 {tag}
-                                                <button type="button" onClick={() => removeTag(tag)} className="hover:text-purple-900"><X size={10} /></button>
+                                                <button type="button" title="Remove tag" onClick={() => removeTag(tag)} className="hover:text-purple-900"><X size={10} /></button>
                                             </span>
                                         ))}
                                     </div>

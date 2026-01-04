@@ -125,6 +125,7 @@ export default function CartDrawer({ isOpen, onClose, storeId }: { isOpen: boole
                                     />
                                     {appliedDiscount ? (
                                         <button
+                                            title="Remove coupon"
                                             onClick={() => { setAppliedDiscount(null); setCouponCode(""); }}
                                             className="bg-gray-200 text-gray-600 px-4 py-2 rounded-xl font-bold hover:bg-gray-300 transition"
                                         >

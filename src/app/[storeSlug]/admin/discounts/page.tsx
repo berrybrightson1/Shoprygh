@@ -96,7 +96,7 @@ export default async function DiscountsPage({ params }: { params: Promise<{ stor
                                         "use server";
                                         await deleteCoupon(coupon.id, storeSlug);
                                     }}>
-                                        <button className="text-red-400 hover:text-red-600 transition p-2 hover:bg-red-50 rounded-lg">
+                                        <button title="Delete Coupon" className="text-red-400 hover:text-red-600 transition p-2 hover:bg-red-50 rounded-lg">
                                             <Trash2 size={16} />
                                         </button>
                                     </form>

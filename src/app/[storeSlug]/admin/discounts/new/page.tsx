@@ -47,7 +47,7 @@ export default async function NewCouponPage({ params }: { params: Promise<{ stor
                         <div className="grid grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-xs font-black text-gray-700 uppercase tracking-wider mb-2">Type</label>
-                                <select name="type" className="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 font-bold text-gray-900 focus:ring-4 focus:ring-purple-100 outline-none appearance-none">
+                                <select name="type" aria-label="Discount Type" className="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 font-bold text-gray-900 focus:ring-4 focus:ring-purple-100 outline-none appearance-none">
                                     <option value="PERCENTAGE">Percentage (%)</option>
                                     <option value="FIXED">Fixed Amount (₵)</option>
                                 </select>
