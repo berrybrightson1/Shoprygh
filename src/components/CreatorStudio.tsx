@@ -176,6 +176,7 @@ export default function CreatorStudio({
                                     <label className="block text-xs font-black text-gray-700 uppercase mb-2">Product Name</label>
                                     <input
                                         name="name"
+                                        title="Product Name"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
                                         placeholder="e.g. Huggies Gold"
@@ -188,6 +189,7 @@ export default function CreatorStudio({
                                         <label className="block text-xs font-black text-gray-700 uppercase mb-2">Price (₵)</label>
                                         <input
                                             name="price"
+                                            title="Price"
                                             value={price}
                                             onChange={e => setPrice(e.target.value)}
                                             type="number"
@@ -201,6 +203,7 @@ export default function CreatorStudio({
                                         <label className="block text-xs font-black text-gray-700 uppercase mb-2">Stock</label>
                                         <input
                                             name="stockQty"
+                                            title="Stock Quantity"
                                             type="number"
                                             defaultValue="10"
                                             className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-3 font-bold text-gray-900 outline-none transition-all`}
@@ -232,7 +235,7 @@ export default function CreatorStudio({
                                             <p className="text-xs font-black text-gray-500 uppercase">Cover Image</p>
                                         </div>
                                     )}
-                                    <input type="file" accept="image/*" onChange={handleMainImage} className="absolute inset-0 opacity-0 cursor-pointer" />
+                                    <input type="file" title="Upload cover image" aria-label="Upload cover image" accept="image/*" onChange={handleMainImage} className="absolute inset-0 opacity-0 cursor-pointer" />
                                 </div>
 
                                 {/* Gallery Grid */}
@@ -243,6 +246,8 @@ export default function CreatorStudio({
                                             <img src={url} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
                                             <button
                                                 type="button"
+                                                title="Remove image"
+                                                aria-label="Remove image"
                                                 onClick={() => {
                                                     setGallery(prev => prev.filter((_, i) => i !== idx));
                                                     galleryFilesRef.current = galleryFilesRef.current.filter((_, i) => i !== idx);
@@ -258,7 +263,7 @@ export default function CreatorStudio({
                                     <div className="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center hover:border-brand-cyan hover:text-brand-cyan text-gray-400 transition-colors cursor-pointer relative">
                                         <Plus size={24} />
                                         <span className="text-[10px] font-bold uppercase mt-1">Add</span>
-                                        <input type="file" multiple accept="image/*" onChange={handleGallery} className="absolute inset-0 opacity-0 cursor-pointer" />
+                                        <input type="file" title="Upload gallery images" aria-label="Upload gallery images" multiple accept="image/*" onChange={handleGallery} className="absolute inset-0 opacity-0 cursor-pointer" />
                                     </div>
                                 </div>
                             </div>
@@ -272,6 +277,8 @@ export default function CreatorStudio({
                                     <div className="relative">
                                         <select
                                             name="category"
+                                            title="Select Category"
+                                            aria-label="Select Category"
                                             value={category}
                                             onChange={e => setCategory(e.target.value)}
                                             className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-3 appearance-none font-bold text-gray-900 outline-none`}
@@ -302,6 +309,8 @@ export default function CreatorStudio({
                                     <div className="relative">
                                         <input
                                             value={tagInput}
+                                            title="Add a tag"
+                                            aria-label="Add a tag"
                                             onChange={e => setTagInput(e.target.value)}
                                             onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
                                             placeholder="Add tag..."
@@ -325,6 +334,7 @@ export default function CreatorStudio({
                                 </div>
                                 <textarea
                                     name="description"
+                                    title="Product Description"
                                     value={description}
                                     onChange={e => setDescription(e.target.value)}
                                     placeholder="Describe your product..."
@@ -355,6 +365,7 @@ export default function CreatorStudio({
                                             <div key={v.id} className="grid grid-cols-12 gap-3 items-center animate-in slide-in-from-left-2">
                                                 <div className="col-span-4">
                                                     <input
+                                                        title="Variant Name"
                                                         placeholder="Option Name (e.g. Red, XL)"
                                                         value={v.name}
                                                         onChange={e => updateVariant(v.id, 'name', e.target.value)}
@@ -363,6 +374,7 @@ export default function CreatorStudio({
                                                 </div>
                                                 <div className="col-span-3">
                                                     <input
+                                                        title="Variant Price Override"
                                                         placeholder="Price (Opt)"
                                                         type="number"
                                                         value={v.price}
@@ -372,6 +384,7 @@ export default function CreatorStudio({
                                                 </div>
                                                 <div className="col-span-2">
                                                     <input
+                                                        title="Variant Quantity"
                                                         placeholder="Qty"
                                                         type="number"
                                                         value={v.stockQty}
@@ -381,6 +394,7 @@ export default function CreatorStudio({
                                                 </div>
                                                 <div className="col-span-2">
                                                     <input
+                                                        title="Variant SKU"
                                                         placeholder="SKU"
                                                         value={v.sku}
                                                         onChange={e => updateVariant(v.id, 'sku', e.target.value)}
@@ -388,7 +402,7 @@ export default function CreatorStudio({
                                                     />
                                                 </div>
                                                 <div className="col-span-1 text-right">
-                                                    <button type="button" onClick={() => removeVariant(v.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                                    <button type="button" title="Remove Variant" aria-label="Remove Variant" onClick={() => removeVariant(v.id)} className="text-gray-400 hover:text-red-500 transition-colors">
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </div>
