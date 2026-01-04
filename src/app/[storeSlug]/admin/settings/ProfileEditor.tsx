@@ -52,7 +52,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                     type="submit"
                     form="profile-form"
                     disabled={isSubmitting}
-                    className="flex items-center gap-2 bg-brand-orange text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:bg-orange-600 transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-600/20 hover:shadow-xl hover:bg-blue-700 transition-all disabled:opacity-50"
                 >
                     <Save size={18} />
                     {isSubmitting ? "Saving..." : "Save Changes"}
