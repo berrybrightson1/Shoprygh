@@ -45,6 +45,40 @@ export default async function PlatformAdminPage() {
         orderBy: { createdAt: "desc" },
     });
 
+    // --- AUTO UPDATE LOGIC ---
+    // 1. Get Current App Version from package.json
+    // We import it this way server-side to avoid bundling issues
+    const packageJson = await import("@/../package.json");
+    const currentVersion = packageJson.version; // e.g., "1.1.0"
+
+    // 2. Get Latest Update from DB
+    const latestUpdate = await prisma.systemUpdate.findFirst({
+        orderBy: { createdAt: "desc" },
+        select: { version: true }
+    });
+
+    // 3. Compare and Auto-Post if needed
+    if (currentVersion && (!latestUpdate || latestUpdate.version !== currentVersion)) {
+        // Prevent re-posting if version is older or same (basic check implemented above)
+        // We need to double check if this version specifically exists to be safe
+        const existingVersion = await prisma.systemUpdate.findFirst({
+            where: { version: currentVersion }
+        });
+
+        if (!existingVersion) {
+            console.log(`[AutoUpdate] New version detected: ${currentVersion}. Posting update...`);
+            await prisma.systemUpdate.create({
+                data: {
+                    title: `System Update v${currentVersion}`,
+                    version: currentVersion,
+                    content: "• General system improvements and performance optimizations.\n• Bug fixes and stability enhancements.",
+                    type: "UPDATE"
+                }
+            });
+        }
+    }
+    // -------------------------
+
     const stats = {
         total: stores.length,
         active: stores.filter((s) => s.status === "ACTIVE").length,
