@@ -196,17 +196,17 @@ function NavLink({ href, icon, label, active = false, isExternal = false }: { hr
         <Link
             href={href}
             target={isExternal ? "_blank" : undefined}
-            className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative ${active
-                ? "bg-purple-50 text-purple-900 shadow-sm font-black overflow-hidden"
-                : "text-gray-500 hover:bg-white/60 hover:text-gray-900 hover:shadow-sm"
+            className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group relative ${active
+                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20 font-black overflow-hidden"
+                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 group-hover:translate-x-1"
                 }`}
         >
-            {active && <div className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 bg-purple-600 rounded-r-full" />}
+            {active && <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 mix-blend-multiply opacity-50" />}
 
-            <span className={`relative z-10 ${active ? "text-purple-600" : "text-gray-400 group-hover:text-purple-500 transition-colors"}`}>
+            <span className={`relative z-10 transition-colors ${active ? "text-white" : "text-gray-400 group-hover:text-gray-900"}`}>
                 {icon}
             </span>
-            <span className={`relative z-10 font-bold ${active ? "text-purple-900" : "text-gray-600 group-hover:text-gray-900"}`}>{label}</span>
+            <span className={`relative z-10 font-bold ${active ? "text-white" : "text-gray-700 group-hover:text-gray-900"}`}>{label}</span>
         </Link>
     );
 }
