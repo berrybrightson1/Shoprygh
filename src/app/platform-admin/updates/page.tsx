@@ -11,16 +11,16 @@ export default function CreateUpdatePage() {
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
             <div className="bg-white rounded-3xl shadow-xl w-full max-w-2xl overflow-hidden border border-gray-100">
-                <div className="bg-[#111827] p-8 text-white relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/20 blur-[80px] rounded-full pointer-events-none" />
-                    <Link href="/platform-admin" className="text-gray-400 hover:text-white text-sm font-bold mb-4 inline-block transition">
+                <div className="bg-purple-600 p-8 text-white relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full pointer-events-none" />
+                    <Link href="/platform-admin" className="text-purple-200 hover:text-white text-sm font-bold mb-4 inline-block transition">
                         &larr; Back to Dashboard
                     </Link>
                     <h1 className="text-3xl font-black flex items-center gap-3">
-                        <Sparkles className="text-brand-cyan" />
+                        <Sparkles className="text-purple-200 fill-purple-100" />
                         Post System Update
                     </h1>
-                    <p className="text-gray-400 mt-2">Announce new features or fixes to all store owners.</p>
+                    <p className="text-purple-100 mt-2">Announce new features or fixes to all store owners.</p>
                 </div>
 
                 <form
@@ -67,7 +67,7 @@ export default function CreateUpdatePage() {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-brand-cyan text-white font-black py-4 rounded-xl hover:bg-cyan-600 transition shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-purple-600 text-white font-black py-4 rounded-xl hover:bg-purple-700 transition shadow-lg shadow-purple-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <Save size={20} />
                         {isSubmitting ? "Broadcasting..." : "Broadcast Update"}

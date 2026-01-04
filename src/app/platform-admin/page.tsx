@@ -143,111 +143,109 @@ export default async function PlatformAdminPage() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-12">
                     {/* Revenue Card - Spans 2 cols on huge screens */}
-                    <div className="md:col-span-2 xl:col-span-2 bg-white/40 backdrop-blur-xl rounded-[2rem] p-8 border border-white/60 shadow-xl shadow-gray-200/40 relative overflow-hidden group hover:-translate-y-1 transition duration-300">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400 to-emerald-600 opacity-10 rounded-bl-[100px] transition group-hover:scale-110 group-hover:opacity-20" />
-                        <p className="text-xs font-black text-gray-400 uppercase tracking-wider mb-2 z-10 relative">Total Platform Revenue</p>
-                        <div className="flex items-end gap-2 relative z-10">
-                            <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-600 to-emerald-800">
+                    <div className="md:col-span-2 xl:col-span-2 bg-emerald-50 rounded-[2rem] p-8 border border-emerald-100/50 shadow-sm relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+                        <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-emerald-100 blur-3xl opacity-60 group-hover:scale-110 transition" />
+                        <div className="absolute top-0 right-0 w-32 h-32 rounded-bl-full bg-emerald-100/50 opacity-100" />
+
+                        <p className="text-[10px] font-black text-emerald-800/60 uppercase tracking-widest mb-4 z-10 relative">Total Platform Revenue</p>
+                        <div className="relative z-10">
+                            <span className="text-5xl font-black text-emerald-900 tracking-tight">
                                 ₵{totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
                         </div>
                     </div>
 
-                    <StatCard label="Total Stores" value={stats.total} gradient="from-blue-500 to-blue-600" />
-                    <StatCard label="Active" value={stats.active} gradient="from-green-500 to-emerald-600" />
-                    <StatCard label="Suspended" value={stats.suspended} gradient="from-red-500 to-rose-600" />
-                    <StatCard label="Hustler" value={stats.hustler} gradient="from-gray-500 to-gray-600" />
-                    <StatCard label="Pro" value={stats.pro} gradient="from-purple-500 to-indigo-600" />
-                    <StatCard label="Wholesaler" value={stats.wholesaler} gradient="from-orange-500 to-amber-600" />
+                    <StatCard label="Total Stores" value={stats.total} color="blue" />
+                    <StatCard label="Active" value={stats.active} color="green" />
+                    <StatCard label="Suspended" value={stats.suspended} color="red" />
+                    <StatCard label="Hustler" value={stats.hustler} color="gray" />
+                    <StatCard label="Pro" value={stats.pro} color="purple" />
+                    <StatCard label="Wholesaler" value={stats.wholesaler} color="orange" />
                 </div>
 
-                {/* Stores Section */}
+                {/* Stores Section (Bento List) */}
                 <div className="space-y-6">
                     <div className="flex items-center justify-between px-2">
                         <h2 className="text-2xl font-black text-gray-900">All Stores</h2>
-                        <span className="text-sm font-bold text-gray-400">{stores.length} registered</span>
+                        <span className="text-sm font-bold text-gray-400 bg-white px-3 py-1 rounded-full border border-gray-100 shadow-sm">{stores.length} registered</span>
                     </div>
 
-                    <div className="bg-white/40 backdrop-blur-xl rounded-3xl border border-white/60 shadow-xl shadow-gray-200/50 overflow-hidden">
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead className="bg-white/50 border-b border-gray-100/50">
-                                    <tr>
-                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Store</th>
-                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Owner</th>
-                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Status</th>
-                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Stats</th>
-                                        <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100/50">
-                                    {stores.map((store) => (
-                                        <tr key={store.id} className="group hover:bg-white/50 transition duration-200">
-                                            <td className="px-8 py-6">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-xl font-bold text-gray-500 group-hover:scale-110 transition shadow-inner">
-                                                        {store.name.charAt(0)}
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-bold text-gray-900 text-lg leading-tight">{store.name}</p>
-                                                        <p className="text-xs font-bold text-gray-400 font-mono mt-1 px-1.5 py-0.5 rounded-md bg-gray-100 inline-block">/{store.slug}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <div>
-                                                    <p className="font-bold text-gray-900">{store.users[0]?.name || "N/A"}</p>
-                                                    <p className="text-xs text-gray-500 font-medium">{store.users[0]?.email || "N/A"}</p>
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <div className="space-y-2">
-                                                    <div className="flex items-center gap-2">
-                                                        <span
-                                                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-sm border ${store.status === "ACTIVE"
-                                                                ? "bg-green-50/50 text-green-700 border-green-200"
-                                                                : store.status === "SUSPENDED"
-                                                                    ? "bg-red-50/50 text-red-700 border-red-200"
-                                                                    : "bg-gray-50/50 text-gray-700 border-gray-200"
-                                                                }`}
-                                                        >
-                                                            {store.status === "ACTIVE" ? <CheckCircle size={10} className="fill-current" /> : <Ban size={10} />}
-                                                            {store.status}
-                                                        </span>
-                                                    </div>
-                                                    <span
-                                                        className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide opacity-70 ${store.tier === "WHOLESALER"
-                                                            ? "bg-orange-100 text-orange-800"
-                                                            : store.tier === "PRO"
-                                                                ? "bg-purple-100 text-purple-800"
-                                                                : "bg-gray-200 text-gray-600"
-                                                            }`}
-                                                    >
-                                                        {store.tier} PLAN
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <div className="flex gap-4 text-sm font-medium">
-                                                    <div className="text-center">
-                                                        <span className="block font-black text-gray-900 text-base">{store._count.products}</span>
-                                                        <span className="text-[10px] uppercase text-gray-400 font-bold">Items</span>
-                                                    </div>
-                                                    <div className="w-px h-8 bg-gray-200" />
-                                                    <div className="text-center">
-                                                        <span className="block font-black text-gray-900 text-base">{store._count.orders}</span>
-                                                        <span className="text-[10px] uppercase text-gray-400 font-bold">Orders</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-6">
-                                                <StoreActions store={{ ...store, tier: store.tier }} />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                    {/* Column Headers (Hidden on Mobile) */}
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 mb-2 text-xs font-black text-gray-400 uppercase tracking-wider">
+                        <div className="col-span-4 pl-2">Store</div>
+                        <div className="col-span-3">Owner</div>
+                        <div className="col-span-2">Status</div>
+                        <div className="col-span-2">Stats</div>
+                        <div className="col-span-1 text-right pr-2">Actions</div>
+                    </div>
+
+                    <div className="space-y-3">
+                        {stores.map((store) => (
+                            <div
+                                key={store.id}
+                                className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 hover:scale-[1.01] transition duration-300 group grid grid-cols-1 md:grid-cols-12 gap-6 items-center"
+                            >
+                                {/* Store Info */}
+                                <div className="md:col-span-4 flex items-center gap-5">
+                                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 flex-shrink-0 flex items-center justify-center text-2xl font-black text-gray-400 group-hover:bg-brand-cyan/10 group-hover:text-brand-cyan transition duration-300">
+                                        {store.name.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-gray-900 text-lg leading-tight group-hover:text-brand-cyan transition">{store.name}</p>
+                                        <p className="text-xs font-bold text-gray-400 font-mono mt-1 px-1.5 py-0.5 rounded-lg bg-gray-50 inline-block">/{store.slug}</p>
+                                    </div>
+                                </div>
+
+                                {/* Owner Info */}
+                                <div className="md:col-span-3">
+                                    <p className="font-bold text-gray-900 text-sm">{store.users[0]?.name || "N/A"}</p>
+                                    <p className="text-xs text-gray-500 font-medium truncate">{store.users[0]?.email || "N/A"}</p>
+                                </div>
+
+                                {/* Status & Tier */}
+                                <div className="md:col-span-2 flex flex-col items-start gap-2">
+                                    <span
+                                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wide border ${store.status === "ACTIVE"
+                                            ? "bg-green-50 text-green-600 border-green-100"
+                                            : store.status === "SUSPENDED"
+                                                ? "bg-red-50 text-red-600 border-red-100"
+                                                : "bg-gray-50 text-gray-600 border-gray-100"
+                                            }`}
+                                    >
+                                        <span className={`w-1.5 h-1.5 rounded-full ${store.status === "ACTIVE" ? "bg-green-500" : store.status === "SUSPENDED" ? "bg-red-500" : "bg-gray-500"}`} />
+                                        {store.status}
+                                    </span>
+                                    <span
+                                        className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide opacity-70 ${store.tier === "WHOLESALER"
+                                            ? "bg-orange-50 text-orange-600"
+                                            : store.tier === "PRO"
+                                                ? "bg-purple-50 text-purple-600"
+                                                : "bg-gray-100 text-gray-500"
+                                            }`}
+                                    >
+                                        {store.tier} PLAN
+                                    </span>
+                                </div>
+
+                                {/* Stats */}
+                                <div className="md:col-span-2 flex gap-4">
+                                    <div>
+                                        <span className="block font-black text-gray-900 text-lg">{store._count.products}</span>
+                                        <span className="text-[9px] uppercase text-gray-400 font-black tracking-wider">Items</span>
+                                    </div>
+                                    <div className="w-px h-8 bg-gray-100" />
+                                    <div>
+                                        <span className="block font-black text-gray-900 text-lg">{store._count.orders}</span>
+                                        <span className="text-[9px] uppercase text-gray-400 font-black tracking-wider">Orders</span>
+                                    </div>
+                                </div>
+
+                                {/* Actions */}
+                                <div className="md:col-span-1 flex justify-end">
+                                    <StoreActions store={{ ...store, tier: store.tier }} />
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </main>
@@ -255,14 +253,27 @@ export default async function PlatformAdminPage() {
     );
 }
 
-function StatCard({ label, value, gradient }: { label: string; value: number; gradient: string }) {
-    return (
-        <div className="bg-white/40 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-xl shadow-gray-200/40 relative overflow-hidden group hover:-translate-y-1 transition duration-300">
-            <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${gradient} opacity-10 rounded-bl-[100px] transition group-hover:scale-110 group-hover:opacity-20`} />
+function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
+    const styles: Record<string, { bg: string; text: string; decoration: string }> = {
+        blue: { bg: "bg-blue-50", text: "text-blue-600", decoration: "bg-blue-100" },
+        green: { bg: "bg-green-50", text: "text-green-600", decoration: "bg-green-100" },
+        red: { bg: "bg-red-50", text: "text-red-600", decoration: "bg-red-100" },
+        gray: { bg: "bg-gray-100", text: "text-gray-600", decoration: "bg-gray-200" },
+        purple: { bg: "bg-purple-50", text: "text-purple-600", decoration: "bg-purple-100" },
+        orange: { bg: "bg-orange-50", text: "text-orange-600", decoration: "bg-orange-100" },
+    };
 
-            <p className="text-xs font-black text-gray-400 uppercase tracking-wider mb-2 z-10 relative">{label}</p>
-            <div className="flex items-end gap-2 relative z-10">
-                <span className={`text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br ${gradient}`}>
+    const style = styles[color] || styles.blue;
+
+    return (
+        <div className={`${style.bg} rounded-[2rem] p-6 relative overflow-hidden group hover:-translate-y-1 transition duration-300 border border-white/50 shadow-sm`}>
+            {/* Decorative Bloom */}
+            <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full ${style.decoration} blur-2xl opacity-60 group-hover:scale-110 transition`} />
+            <div className={`absolute top-0 right-0 w-20 h-20 rounded-bl-full ${style.decoration} opacity-40`} />
+
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 z-10 relative">{label}</p>
+            <div className="relative z-10">
+                <span className={`text-4xl font-black ${style.text} tracking-tight`}>
                     {value}
                 </span>
             </div>
