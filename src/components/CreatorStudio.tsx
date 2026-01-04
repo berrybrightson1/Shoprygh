@@ -137,21 +137,21 @@ export default function CreatorStudio({
     return (
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 mb-20 animate-in fade-in duration-500">
             {/* LEFT: Editor Form (7/12 cols) */}
-            <div className="xl:col-span-7 space-y-8">
-                <div className="bg-white p-8 lg:p-10 rounded-[2.5rem] shadow-sm border border-gray-100 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400" />
+            <div className="xl:col-span-7 space-y-4">
+                <div className="bg-white p-5 lg:p-6 rounded-[2rem] shadow-sm border border-gray-100 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400" />
 
-                    <div className="flex items-center justify-between mb-10">
+                    <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h2 className="text-3xl font-black text-gray-900 flex items-center gap-3">
-                                <Sparkles className="text-purple-600 fill-purple-100" size={28} />
+                            <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+                                <Sparkles className="text-purple-600 fill-purple-100" size={24} />
                                 Creator Studio
                             </h2>
-                            <p className="text-gray-500 font-bold mt-2 text-base ml-1">Craft your next bestseller.</p>
+                            <p className="text-gray-500 font-bold text-xs ml-1">Craft your next bestseller.</p>
                         </div>
                         <div className="flex gap-2">
-                            <span className="px-4 py-1.5 rounded-full bg-gray-50 text-gray-500 border border-gray-200 text-xs font-black uppercase tracking-wide">
-                                Draft Mode
+                            <span className="px-3 py-1 rounded-full bg-gray-50 text-gray-500 border border-gray-200 text-[10px] font-black uppercase tracking-wide">
+                                Draft
                             </span>
                         </div>
                     </div>
@@ -179,27 +179,27 @@ export default function CreatorStudio({
                             setDescription("");
                             toast.success("Product published successfully!");
                         }}
-                        className="space-y-10"
+                        className="space-y-5"
                     >
                         {/* 1. Basic Info */}
-                        <section className="space-y-6">
-                            <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-4">Product Details</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-bold text-gray-700 uppercase">Product Name</label>
+                        <section className="space-y-3">
+                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Product Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="block text-[10px] font-bold text-gray-700 uppercase">Product Name</label>
                                     <input
                                         name="name"
                                         title="Product Name"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
                                         placeholder="e.g. Huggies Gold"
-                                        className={`w-full bg-gray-50 border ${borderClass} rounded-2xl px-5 py-4 font-bold text-gray-900 text-lg outline-none transition-all placeholder:text-gray-300`}
+                                        className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-2.5 font-bold text-gray-900 text-sm outline-none transition-all placeholder:text-gray-300`}
                                         required
                                     />
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <label className="block text-xs font-bold text-gray-700 uppercase">Price (₵)</label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1">
+                                        <label className="block text-[10px] font-bold text-gray-700 uppercase">Price (₵)</label>
                                         <input
                                             name="price"
                                             title="Price"
@@ -208,18 +208,18 @@ export default function CreatorStudio({
                                             type="number"
                                             step="0.01"
                                             placeholder="0.00"
-                                            className={`w-full bg-gray-50 border ${borderClass} rounded-2xl px-5 py-4 font-bold text-gray-900 text-lg outline-none transition-all placeholder:text-gray-300`}
+                                            className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-2.5 font-bold text-gray-900 text-sm outline-none transition-all placeholder:text-gray-300`}
                                             required
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="block text-xs font-bold text-gray-700 uppercase">Stock</label>
+                                    <div className="space-y-1">
+                                        <label className="block text-[10px] font-bold text-gray-700 uppercase">Stock</label>
                                         <input
                                             name="stockQty"
                                             title="Stock Quantity"
                                             type="number"
                                             defaultValue="10"
-                                            className={`w-full bg-gray-50 border ${borderClass} rounded-2xl px-5 py-4 font-bold text-gray-900 text-lg outline-none transition-all text-center`}
+                                            className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-2.5 font-bold text-gray-900 text-sm outline-none transition-all text-center`}
                                         />
                                     </div>
                                 </div>
@@ -229,26 +229,26 @@ export default function CreatorStudio({
                         <hr className="border-gray-50" />
 
                         {/* 2. Visuals */}
-                        <section className="space-y-6">
-                            <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-4">Visuals</h3>
-                            <div className="flex flex-col gap-6">
-                                <div className="flex gap-6 overflow-x-auto pb-4 no-scrollbar snap-x">
+                        <section className="space-y-3">
+                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Visuals</h3>
+                            <div className="flex flex-col gap-4">
+                                <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar snap-x">
                                     {/* Main Image Uploader */}
-                                    <div className="snap-start shrink-0 w-40 h-40 md:w-48 md:h-48 relative group bg-gray-50 border-2 border-dashed border-gray-300 rounded-3xl flex flex-col items-center justify-center overflow-hidden hover:border-purple-500 hover:bg-purple-50/30 transition-all cursor-pointer">
+                                    <div className="snap-start shrink-0 w-28 h-28 md:w-32 md:h-32 relative group bg-gray-50 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center overflow-hidden hover:border-purple-500 hover:bg-purple-50/30 transition-all cursor-pointer">
                                         {mainImage ? (
                                             <>
                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img src={mainImage} className="w-full h-full object-cover" alt="Main" />
                                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <p className="text-white font-bold text-xs uppercase tracking-wide">Change</p>
+                                                    <p className="text-white font-bold text-[10px] uppercase tracking-wide">Change</p>
                                                 </div>
                                             </>
                                         ) : (
-                                            <div className="text-center p-4">
-                                                <div className="w-10 h-10 bg-white shadow-sm rounded-full flex items-center justify-center mx-auto mb-3 text-purple-600">
-                                                    <ImageIcon size={20} />
+                                            <div className="text-center p-3">
+                                                <div className="w-8 h-8 bg-white shadow-sm rounded-full flex items-center justify-center mx-auto mb-2 text-purple-600">
+                                                    <ImageIcon size={16} />
                                                 </div>
-                                                <p className="text-[10px] font-black text-gray-400 uppercase">Cover Image</p>
+                                                <p className="text-[9px] font-black text-gray-400 uppercase">Cover</p>
                                             </div>
                                         )}
                                         <input type="file" title="Upload cover image" aria-label="Upload cover image" accept="image/*" onChange={handleMainImage} className="absolute inset-0 opacity-0 cursor-pointer" />
@@ -256,7 +256,7 @@ export default function CreatorStudio({
 
                                     {/* Gallery Images */}
                                     {gallery.map((url, idx) => (
-                                        <div key={idx} className="snap-start shrink-0 w-40 h-40 md:w-48 md:h-48 relative rounded-3xl overflow-hidden border border-gray-200 group bg-gray-100">
+                                        <div key={idx} className="snap-start shrink-0 w-28 h-28 md:w-32 md:h-32 relative rounded-2xl overflow-hidden border border-gray-200 group bg-gray-100">
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img src={url} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
                                             <button
@@ -267,17 +267,17 @@ export default function CreatorStudio({
                                                     setGallery(prev => prev.filter((_, i) => i !== idx));
                                                     galleryFilesRef.current = galleryFilesRef.current.filter((_, i) => i !== idx);
                                                 }}
-                                                className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                                                className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-lg shadow-sm opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
                                             >
-                                                <X size={14} />
+                                                <X size={12} />
                                             </button>
                                         </div>
                                     ))}
 
                                     {/* Add More Button */}
-                                    <div className="snap-start shrink-0 w-40 h-40 md:w-48 md:h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center hover:border-purple-500 hover:text-purple-600 text-gray-300 transition-all cursor-pointer relative group">
-                                        <Plus size={32} className="group-hover:scale-110 transition-transform" />
-                                        <span className="text-[10px] font-bold uppercase mt-2">Add Gallery</span>
+                                    <div className="snap-start shrink-0 w-28 h-28 md:w-32 md:h-32 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center hover:border-purple-500 hover:text-purple-600 text-gray-300 transition-all cursor-pointer relative group">
+                                        <Plus size={24} className="group-hover:scale-110 transition-transform" />
+                                        <span className="text-[9px] font-bold uppercase mt-1">Add</span>
                                         <input type="file" title="Upload gallery images" aria-label="Upload gallery images" multiple accept="image/*" onChange={handleGallery} className="absolute inset-0 opacity-0 cursor-pointer" />
                                     </div>
                                 </div>
@@ -287,10 +287,10 @@ export default function CreatorStudio({
                         <hr className="border-gray-50" />
 
                         {/* 3. Classification & AI */}
-                        <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-bold text-gray-700 uppercase">Category</label>
+                        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                                <div className="space-y-1">
+                                    <label className="block text-[10px] font-bold text-gray-700 uppercase">Category</label>
                                     <div className="relative">
                                         <select
                                             name="category"
@@ -298,18 +298,18 @@ export default function CreatorStudio({
                                             aria-label="Select Category"
                                             value={category}
                                             onChange={e => setCategory(e.target.value)}
-                                            className={`w-full bg-gray-50 border ${borderClass} rounded-2xl px-5 py-4 appearance-none font-bold text-gray-900 outline-none`}
+                                            className={`w-full bg-gray-50 border ${borderClass} rounded-xl px-4 py-2.5 appearance-none font-bold text-gray-900 text-sm outline-none`}
                                         >
                                             {CATEGORIES.map(cat => (
                                                 <option key={cat} value={cat}>{cat}</option>
                                             ))}
                                         </select>
-                                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-bold text-gray-700 uppercase">Tags</label>
+                                <div className="space-y-1">
+                                    <label className="block text-[10px] font-bold text-gray-700 uppercase">Tags</label>
                                     <div className="relative">
                                         <input
                                             value={tagInput}
@@ -318,30 +318,30 @@ export default function CreatorStudio({
                                             onChange={e => setTagInput(e.target.value)}
                                             onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
                                             placeholder="Type tag & hit Enter..."
-                                            className={`w-full bg-white border ${borderClass} rounded-2xl px-5 py-3 text-sm font-medium pr-10 outline-none`}
+                                            className={`w-full bg-white border ${borderClass} rounded-xl px-4 py-2.5 text-xs font-medium pr-8 outline-none`}
                                         />
-                                        <Tag size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                        <Tag size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                                     </div>
-                                    <div className="flex flex-wrap gap-2 mt-3">
+                                    <div className="flex flex-wrap gap-1.5 mt-2">
                                         {tags.map(tag => (
-                                            <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-700 text-xs font-bold rounded-lg border border-purple-100">
+                                            <span key={tag} className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-[10px] font-bold rounded-md border border-purple-100">
                                                 {tag}
-                                                <button type="button" onClick={() => removeTag(tag)} className="hover:text-purple-900"><X size={12} /></button>
+                                                <button type="button" onClick={() => removeTag(tag)} className="hover:text-purple-900"><X size={10} /></button>
                                             </span>
                                         ))}
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex flex-col h-full space-y-2">
+                            <div className="flex flex-col h-full space-y-1">
                                 <div className="flex justify-between items-center">
-                                    <label className="block text-xs font-bold text-gray-700 uppercase">Description</label>
+                                    <label className="block text-[10px] font-bold text-gray-700 uppercase">Description</label>
                                     <button
                                         type="button"
                                         onClick={generateDescription}
-                                        className="text-xs font-black text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 px-3 py-1 rounded-lg flex items-center gap-1.5 transition-colors"
+                                        className="text-[10px] font-black text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 px-2 py-0.5 rounded-md flex items-center gap-1 transition-colors"
                                     >
-                                        <Wand2 size={12} /> AI Generate
+                                        <Wand2 size={10} /> AI Generate
                                     </button>
                                 </div>
                                 <textarea
@@ -350,7 +350,7 @@ export default function CreatorStudio({
                                     value={description}
                                     onChange={e => setDescription(e.target.value)}
                                     placeholder="Describe your product vertically..."
-                                    className={`w-full flex-1 bg-gray-50 border ${borderClass} rounded-2xl px-5 py-4 min-h-[140px] resize-none font-medium text-gray-600 outline-none leading-relaxed`}
+                                    className={`w-full flex-1 bg-gray-50 border ${borderClass} rounded-xl px-4 py-2.5 min-h-[100px] resize-none font-medium text-gray-600 text-sm outline-none leading-relaxed`}
                                 />
                             </div>
                         </section>
@@ -359,34 +359,34 @@ export default function CreatorStudio({
 
                         {/* 4. Variants */}
                         {storeTier !== 'HUSTLER' && (
-                            <section className="bg-gray-50 rounded-[2rem] p-8 border border-gray-200/60 dashed-border relative">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div className="flex items-center gap-2">
-                                        <div className="p-2 bg-white rounded-lg shadow-sm text-gray-700">
-                                            <Box size={18} />
+                            <section className="bg-gray-50 rounded-2xl p-4 border border-gray-200/60 dashed-border relative">
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="p-1.5 bg-white rounded-md shadow-sm text-gray-700">
+                                            <Box size={14} />
                                         </div>
-                                        <span className="font-black text-gray-800 uppercase tracking-wide text-sm">Variants & Options</span>
+                                        <span className="font-black text-gray-800 uppercase tracking-wide text-xs">Variants</span>
                                     </div>
-                                    <button type="button" onClick={addVariant} className="text-xs font-black text-white bg-gray-900 hover:bg-black px-4 py-2 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-gray-200">
-                                        + Add Variant
+                                    <button type="button" onClick={addVariant} className="text-[10px] font-black text-white bg-gray-900 hover:bg-black px-3 py-1.5 rounded-lg transition-all hover:scale-105 active:scale-95 shadow-md">
+                                        + Add
                                     </button>
                                 </div>
 
                                 {variants.length === 0 ? (
-                                    <div className="text-center py-8 text-gray-400 text-sm font-medium border-2 border-dashed border-gray-200 rounded-xl">
-                                        No variants added. Selling as single item.
+                                    <div className="text-center py-4 text-gray-400 text-xs font-medium border-2 border-dashed border-gray-200 rounded-lg">
+                                        No variants added.
                                     </div>
                                 ) : (
-                                    <div className="space-y-3">
+                                    <div className="space-y-2">
                                         {variants.map((v) => (
-                                            <div key={v.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm animate-in slide-in-from-left-2">
+                                            <div key={v.id} className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center bg-white p-2 rounded-lg border border-gray-100 shadow-sm animate-in slide-in-from-left-2">
                                                 <div className="md:col-span-4">
                                                     <input
                                                         title="Variant Name"
                                                         placeholder="Name (e.g. Red)"
                                                         value={v.name}
                                                         onChange={e => updateVariant(v.id, 'name', e.target.value)}
-                                                        className="w-full text-sm font-bold bg-transparent px-2 outline-none placeholder:font-normal"
+                                                        className="w-full text-xs font-bold bg-transparent px-2 outline-none placeholder:font-normal"
                                                     />
                                                 </div>
                                                 <div className="md:col-span-3">
@@ -396,7 +396,7 @@ export default function CreatorStudio({
                                                         type="number"
                                                         value={v.price}
                                                         onChange={e => updateVariant(v.id, 'price', e.target.value)}
-                                                        className="w-full text-sm font-medium bg-gray-50 rounded-lg px-3 py-2 outline-none"
+                                                        className="w-full text-xs font-medium bg-gray-50 rounded px-2 py-1 outline-none"
                                                     />
                                                 </div>
                                                 <div className="md:col-span-2">
@@ -406,7 +406,7 @@ export default function CreatorStudio({
                                                         type="number"
                                                         value={v.stockQty}
                                                         onChange={e => updateVariant(v.id, 'stockQty', e.target.value)}
-                                                        className="w-full text-center text-sm font-medium bg-gray-50 rounded-lg px-3 py-2 outline-none"
+                                                        className="w-full text-center text-xs font-medium bg-gray-50 rounded px-2 py-1 outline-none"
                                                     />
                                                 </div>
                                                 <div className="md:col-span-2">
@@ -415,12 +415,12 @@ export default function CreatorStudio({
                                                         placeholder="SKU"
                                                         value={v.sku}
                                                         onChange={e => updateVariant(v.id, 'sku', e.target.value)}
-                                                        className="w-full text-sm font-medium bg-gray-50 rounded-lg px-3 py-2 outline-none"
+                                                        className="w-full text-xs font-medium bg-gray-50 rounded px-2 py-1 outline-none"
                                                     />
                                                 </div>
                                                 <div className="md:col-span-1 text-center">
                                                     <button type="button" title="Remove Variant" aria-label="Remove Variant" onClick={() => removeVariant(v.id)} className="text-gray-300 hover:text-red-500 transition-colors">
-                                                        <Trash2 size={16} />
+                                                        <Trash2 size={14} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -432,12 +432,12 @@ export default function CreatorStudio({
 
 
                         {/* Submit */}
-                        <div className="pt-6">
+                        <div className="pt-2">
                             <button
                                 type="submit"
-                                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-black text-xl py-5 rounded-2xl shadow-xl shadow-purple-200 hover:shadow-2xl hover:shadow-purple-300 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center justify-center gap-3 tracking-wide"
+                                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-black text-lg py-3.5 rounded-xl shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center justify-center gap-2 tracking-wide"
                             >
-                                <Upload size={22} className="stroke-[3px]" />
+                                <Upload size={18} className="stroke-[3px]" />
                                 Publish Product
                             </button>
                         </div>

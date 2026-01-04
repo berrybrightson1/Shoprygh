@@ -87,6 +87,14 @@ export default async function PlatformAdminPage() {
     }
     // -------------------------
 
+    // -------------------------
+
+    // --- ANALYTICS ---
+    const revenueAgg = await prisma.order.aggregate({
+        _sum: { total: true }
+    });
+    const totalRevenue = revenueAgg._sum.total ? Number(revenueAgg._sum.total) : 0;
+
     const stats = {
         total: stores.length,
         active: stores.filter((s) => s.status === "ACTIVE").length,
@@ -105,13 +113,13 @@ export default async function PlatformAdminPage() {
                 <div className="absolute top-[40%] left-[40%] w-[40%] h-[40%] rounded-full bg-cyan-400/10 blur-[100px]" />
             </div>
 
-            <main className="relative z-10 p-6 max-w-7xl mx-auto">
+            <main className="relative z-10 p-6 max-w-[1600px] mx-auto">
                 {/* Header */}
                 <header className="mb-12 mt-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/40 backdrop-blur-md border border-white/50 text-xs font-bold uppercase tracking-wider text-gray-600 mb-4 shadow-sm">
                             <Shield className="fill-gray-600" size={12} />
-                            Platform Access
+                            Platform Admin
                         </div>
                         <h1 className="text-5xl font-black tracking-tight text-gray-900 mb-2">
                             Overview
@@ -133,7 +141,18 @@ export default async function PlatformAdminPage() {
                 </header>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-12">
+                    {/* Revenue Card - Spans 2 cols on huge screens */}
+                    <div className="md:col-span-2 xl:col-span-2 bg-white/40 backdrop-blur-xl rounded-[2rem] p-8 border border-white/60 shadow-xl shadow-gray-200/40 relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400 to-emerald-600 opacity-10 rounded-bl-[100px] transition group-hover:scale-110 group-hover:opacity-20" />
+                        <p className="text-xs font-black text-gray-400 uppercase tracking-wider mb-2 z-10 relative">Total Platform Revenue</p>
+                        <div className="flex items-end gap-2 relative z-10">
+                            <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-600 to-emerald-800">
+                                ₵{totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </span>
+                        </div>
+                    </div>
+
                     <StatCard label="Total Stores" value={stats.total} gradient="from-blue-500 to-blue-600" />
                     <StatCard label="Active" value={stats.active} gradient="from-green-500 to-emerald-600" />
                     <StatCard label="Suspended" value={stats.suspended} gradient="from-red-500 to-rose-600" />
