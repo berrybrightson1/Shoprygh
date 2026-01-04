@@ -80,7 +80,7 @@ export async function syncCustomersFromOrders() {
     }
 
     revalidatePath(`/${session.storeSlug}/admin/customers`);
-    return { newCount, updateCount };
+    // return { newCount, updateCount }; // Commented out to satisfy form action type
 }
 
 export async function updateCustomerNotes(formData: FormData) {
