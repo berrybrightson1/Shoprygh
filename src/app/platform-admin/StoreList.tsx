@@ -54,9 +54,9 @@ export default function StoreList({ stores }: { stores: Store[] }) {
             {/* Column Headers (Hidden on Mobile) */}
             <div className="hidden md:grid grid-cols-12 gap-4 px-6 mb-2 text-xs font-black text-gray-500 uppercase tracking-wider">
                 <div className="col-span-4 pl-2">Store</div>
-                <div className="col-span-3">Owner</div>
+                <div className="col-span-2">Owner</div>
                 <div className="col-span-2">Status</div>
-                <div className="col-span-2">Stats</div>
+                <div className="col-span-3">Stats</div>
                 <div className="col-span-1 text-right pr-2">Actions</div>
             </div>
 
@@ -87,7 +87,7 @@ export default function StoreList({ stores }: { stores: Store[] }) {
                             </div>
 
                             {/* Owner Info */}
-                            <div className="md:col-span-3">
+                            <div className="md:col-span-2">
                                 <p className="font-bold text-gray-900 text-sm">{store.users[0]?.name || "N/A"}</p>
                                 <p className="text-xs text-gray-600 font-medium truncate">{store.users[0]?.email || "N/A"}</p>
                             </div>
@@ -121,7 +121,7 @@ export default function StoreList({ stores }: { stores: Store[] }) {
                             </div>
 
                             {/* Stats */}
-                            <div className="md:col-span-2 flex gap-4">
+                            <div className="md:col-span-3 flex gap-4">
                                 <div>
                                     <span className="block font-black text-gray-900 text-lg">{store._count.products}</span>
                                     <span className="text-[9px] uppercase text-gray-500 font-black tracking-wider">Items</span>

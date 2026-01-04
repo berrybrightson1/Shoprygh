@@ -82,7 +82,7 @@ export default async function PlatformAdminPage() {
                 data: {
                     title: `System Update v${currentVersion}`,
                     version: currentVersion,
-                    content: "• General system improvements and performance optimizations.\n• Bug fixes and stability enhancements.",
+                    content: "• UI Polishing: Improved layout spacing for Admin Store List.\n• Modernization: Replaced legacy alerts with modern toast notifications.\n• Security: Enhanced confirmation flows for critical actions.\n• Fixes: Resolved coupon validation and build issues.",
                     type: "UPDATE"
                 }
             });
