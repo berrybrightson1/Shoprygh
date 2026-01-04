@@ -172,7 +172,7 @@ export default async function PlatformAdminPage() {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <StoreActions store={store} />
+                                                <StoreActions store={{ ...store, tier: store.tier }} />
                                             </td>
                                         </tr>
                                     ))}
