@@ -47,9 +47,17 @@ export default async function PlatformAdminPage() {
 
     // --- AUTO UPDATE LOGIC ---
     // 1. Get Current App Version from package.json
-    // We import it this way server-side to avoid bundling issues
-    const packageJson = await import("@/../package.json");
-    const currentVersion = packageJson.version; // e.g., "1.1.0"
+    let currentVersion = "1.0.0";
+    try {
+        // We import it this way server-side to avoid bundling issues
+        // Use a relative path that works in both dev and prod if possible, 
+        // or strictly catching the error if it fails
+        const packageJson = await import("../../../package.json");
+        currentVersion = packageJson.version;
+    } catch (error) {
+        console.warn("[PlatformAdmin] Could not load package.json version:", error);
+    }
+    // const currentVersion = packageJson.version; // e.g., "1.1.0"
 
     // 2. Get Latest Update from DB
     const latestUpdate = await prisma.systemUpdate.findFirst({
