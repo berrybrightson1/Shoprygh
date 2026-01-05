@@ -216,99 +216,36 @@ export default function CreatorStudio({
                         }}
                         className="space-y-8"
                     >
-                        {/* 1. Basic Info */}
-                        <section className="space-y-4">
-                            <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                <Package size={14} /> Basic Details
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <div className="space-y-1.5">
-                                    <label className="block text-xs font-bold text-gray-600 uppercase ml-1">Product Name</label>
-                                    <input
-                                        name="name"
-                                        title="Product Name"
-                                        value={name}
-                                        onChange={e => setName(e.target.value)}
-                                        placeholder="e.g. Huggies Gold"
-                                        className={inputClass}
-                                        required
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <label className="block text-xs font-bold text-gray-600 uppercase ml-1">Price (₵)</label>
-                                        <input
-                                            name="price"
-                                            title="Price"
-                                            value={price}
-                                            onChange={e => setPrice(e.target.value)}
-                                            type="number"
-                                            step="0.01"
-                                            placeholder="0.00"
-                                            className={inputClass}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <label className="block text-xs font-bold text-gray-600 uppercase ml-1 flex items-center gap-1">
-                                            Cost (₵) <span className="text-[9px] bg-gray-200 text-gray-600 px-1 rounded">PROFIT</span>
-                                        </label>
-                                        <input
-                                            name="costPrice"
-                                            title="Cost Price (Hidden)"
-                                            type="number"
-                                            step="0.01"
-                                            placeholder="0.00"
-                                            className={`${inputClass} bg-gray-100 border-dashed`}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-1.5">
-                                    <label className="block text-xs font-bold text-gray-600 uppercase ml-1">Stock</label>
-                                    <input
-                                        name="stockQty"
-                                        title="Stock Quantity"
-                                        type="number"
-                                        defaultValue="10"
-                                        className={`${inputClass} text-center`}
-                                    />
-                                </div>
-                            </div>
-                        </section>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                        <div className="border-t border-gray-100" />
-
-                        {/* 2. Visuals */}
-                        <section className="space-y-4">
-                            <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                <ImageIcon size={14} /> Visuals
-                            </h3>
-                            <div className="flex flex-col gap-4">
-                                <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar snap-x px-1">
-                                    {/* Main Image Uploader */}
-                                    <div className="snap-start shrink-0 w-32 h-32 md:w-36 md:h-36 relative group bg-gray-50 hover:bg-white border-2 border-dashed border-gray-200 hover:border-purple-500 rounded-3xl flex flex-col items-center justify-center overflow-hidden transition-all cursor-pointer shadow-sm hover:shadow-lg hover:-translate-y-1">
-                                        {mainImage ? (
-                                            <>
-                                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img src={mainImage} className="w-full h-full object-cover" alt="Main" />
-                                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
-                                                    <p className="text-white font-bold text-[10px] uppercase tracking-wide border border-white/50 px-3 py-1 rounded-full">Change</p>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className="text-center p-3">
-                                                <div className="w-10 h-10 bg-white shadow-md shadow-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-2 text-purple-600 group-hover:scale-110 transition-transform">
-                                                    <ImageIcon size={18} />
-                                                </div>
-                                                <p className="text-[9px] font-black text-gray-400 uppercase group-hover:text-purple-600 transition-colors">Cover Image</p>
+                            {/* COL 1: Visuals (4/12) */}
+                            <div className="lg:col-span-4 space-y-4">
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Visuals</label>
+                                {/* Main Image */}
+                                <div className="aspect-square relative group bg-gray-50 hover:bg-white border-2 border-dashed border-gray-200 hover:border-brand-purple rounded-3xl flex flex-col items-center justify-center overflow-hidden transition-all cursor-pointer shadow-sm">
+                                    {mainImage ? (
+                                        <>
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={mainImage} className="w-full h-full object-cover" alt="Main" />
+                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+                                                <p className="text-white font-bold text-[10px] uppercase tracking-wide border border-white/50 px-3 py-1 rounded-full">Change Cover</p>
                                             </div>
-                                        )}
-                                        <input type="file" title="Upload cover image" aria-label="Upload cover image" accept="image/*" onChange={handleMainImage} className="absolute inset-0 opacity-0 cursor-pointer" />
-                                    </div>
+                                        </>
+                                    ) : (
+                                        <div className="text-center p-4">
+                                            <div className="w-12 h-12 bg-white shadow-md shadow-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-3 text-brand-purple group-hover:scale-110 transition-transform">
+                                                <ImageIcon size={20} />
+                                            </div>
+                                            <p className="text-xs font-bold text-gray-400 uppercase group-hover:text-brand-purple transition-colors">Cover Image</p>
+                                        </div>
+                                    )}
+                                    <input type="file" title="Upload cover" aria-label="Upload cover" accept="image/*" onChange={handleMainImage} className="absolute inset-0 opacity-0 cursor-pointer" />
+                                </div>
 
-                                    {/* Gallery Images */}
+                                {/* Gallery Row */}
+                                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
                                     {gallery.map((url, idx) => (
-                                        <div key={idx} className="snap-start shrink-0 w-32 h-32 md:w-36 md:h-36 relative rounded-3xl overflow-hidden border border-gray-200 group bg-gray-100 shadow-sm hover:shadow-md transition-all">
+                                        <div key={idx} className="shrink-0 w-16 h-16 relative rounded-xl overflow-hidden border border-gray-200 group bg-gray-100">
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img src={url} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
                                             <button
@@ -319,104 +256,150 @@ export default function CreatorStudio({
                                                     setGallery(prev => prev.filter((_, i) => i !== idx));
                                                     galleryFilesRef.current = galleryFilesRef.current.filter((_, i) => i !== idx);
                                                 }}
-                                                className="absolute top-2 right-2 p-1.5 bg-white/90 text-red-500 rounded-xl shadow-sm opacity-0 group-hover:opacity-100 transition-all hover:scale-110 hover:bg-red-50"
+                                                className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-white"
                                             >
-                                                <X size={14} />
+                                                <X size={12} />
                                             </button>
                                         </div>
                                     ))}
-
-                                    {/* Add More Button */}
-                                    <div className="snap-start shrink-0 w-32 h-32 md:w-36 md:h-36 bg-gray-50 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center hover:border-purple-500 hover:text-purple-600 text-gray-300 transition-all cursor-pointer relative group hover:bg-purple-50/10">
-                                        <Plus size={28} className="group-hover:scale-110 transition-transform" />
-                                        <span className="text-[9px] font-bold uppercase mt-2">Add Photo</span>
-                                        <input type="file" title="Upload gallery images" aria-label="Upload gallery images" multiple accept="image/*" onChange={handleGallery} className="absolute inset-0 opacity-0 cursor-pointer" />
+                                    <div className="shrink-0 w-16 h-16 bg-gray-50 border border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-400 hover:text-brand-purple hover:border-brand-purple hover:bg-purple-50 transition-colors relative cursor-pointer">
+                                        <Plus size={16} />
+                                        <input type="file" title="Add gallery image" aria-label="Add gallery image" multiple accept="image/*" onChange={handleGallery} className="absolute inset-0 opacity-0 cursor-pointer" />
                                     </div>
                                 </div>
                             </div>
-                        </section>
 
-                        <div className="border-t border-gray-100" />
+                            {/* COL 2: Details (8/12) */}
+                            <div className="lg:col-span-8 space-y-5">
+                                <div className="space-y-4">
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Details</label>
 
-                        {/* 3. Classification & AI */}
-                        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-5">
-                                <div className="space-y-1.5">
-                                    <label className="block text-xs font-bold text-gray-600 uppercase ml-1">Category</label>
-                                    <div className="relative">
-                                        <select
-                                            name="category"
-                                            title="Select Category"
-                                            aria-label="Select Category"
-                                            value={category}
-                                            onChange={e => setCategory(e.target.value)}
-                                            className={`${inputClass} appearance-none cursor-pointer`}
-                                        >
-                                            {CATEGORIES.map(cat => (
-                                                <option key={cat} value={cat}>{cat}</option>
+                                    {/* Product Name */}
+                                    <input
+                                        name="name"
+                                        title="Product Name"
+                                        value={name}
+                                        onChange={e => setName(e.target.value)}
+                                        placeholder="Product Name (e.g. Huggies Gold)"
+                                        className={`${inputClass} text-lg`}
+                                        required
+                                    />
+
+                                    {/* Price / Cost / Stock Grid */}
+                                    <div className="grid grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Price</label>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">₵</span>
+                                                <input
+                                                    name="price"
+                                                    title="Price"
+                                                    value={price}
+                                                    onChange={e => setPrice(e.target.value)}
+                                                    type="number"
+                                                    step="0.01"
+                                                    placeholder="0.00"
+                                                    className={`${inputClass} pl-7`}
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Cost <span className="bg-gray-100 px-1 rounded text-gray-500">PROFIT</span></label>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">₵</span>
+                                                <input
+                                                    name="costPrice"
+                                                    title="Cost Price"
+                                                    type="number"
+                                                    step="0.01"
+                                                    placeholder="0.00"
+                                                    className={`${inputClass} pl-7 bg-gray-50/30`}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Stock</label>
+                                            <input
+                                                name="stockQty"
+                                                title="Stock Quantity"
+                                                type="number"
+                                                defaultValue="10"
+                                                className={inputClass}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Category & Tags Grid */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="relative">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Category</label>
+                                            <select
+                                                name="category"
+                                                title="Category"
+                                                value={category}
+                                                onChange={e => setCategory(e.target.value)}
+                                                className={`${inputClass} appearance-none cursor-pointer`}
+                                            >
+                                                {CATEGORIES.map(cat => (
+                                                    <option key={cat} value={cat}>{cat}</option>
+                                                ))}
+                                            </select>
+                                            <ChevronDown className="absolute right-4 top-[38px] text-gray-400 pointer-events-none" size={16} />
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Tags</label>
+                                            <div className="relative">
+                                                <input
+                                                    value={tagInput}
+                                                    title="Tags"
+                                                    onChange={e => setTagInput(e.target.value)}
+                                                    onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                                                    placeholder="Add tag..."
+                                                    className={inputClass}
+                                                />
+                                                <Tag size={14} className="absolute right-4 top-1/2 -translate-y-[20%] text-gray-400 opacity-50" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Valid Tags List */}
+                                    {tags.length > 0 && (
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {tags.map(tag => (
+                                                <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 bg-purple-50 text-purple-700 text-[10px] font-bold rounded-md border border-purple-100">
+                                                    {tag}
+                                                    <button type="button" title="Remove tag" onClick={() => removeTag(tag)} className="hover:text-purple-900"><X size={10} /></button>
+                                                </span>
                                             ))}
-                                        </select>
-                                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <label className="block text-xs font-bold text-gray-600 uppercase ml-1">Tags</label>
-                                    <div className="relative">
-                                        <input
-                                            value={tagInput}
-                                            title="Add a tag"
-                                            aria-label="Add a tag"
-                                            onChange={e => setTagInput(e.target.value)}
-                                            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                                            placeholder="Type tag & hit Enter..."
-                                            className={`${inputClass}`}
-                                        />
-                                        <Tag size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 opacity-50" />
+                                {/* Description */}
+                                <div className="space-y-1.5 pt-2">
+                                    <div className="flex justify-between items-center px-1">
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest">Description</label>
+                                        <button
+                                            type="button"
+                                            onClick={generateDescription}
+                                            disabled={isGeneratingAI}
+                                            className="text-[10px] font-black text-white bg-black hover:bg-gray-800 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-md shadow-gray-200 hover:-translate-y-0.5 disabled:opacity-50"
+                                        >
+                                            {isGeneratingAI ? <span className="animate-spin w-3 h-3 border-2 border-white/30 border-t-white rounded-full" /> : <Wand2 size={12} />}
+                                            AI Generate
+                                        </button>
                                     </div>
-                                    <div className="flex flex-wrap gap-2 mt-3 min-h-[30px]">
-                                        {tags.map(tag => (
-                                            <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-700 text-[10px] font-bold rounded-lg border border-purple-100 animate-in zoom-in-50 duration-200">
-                                                {tag}
-                                                <button type="button" title="Remove tag" onClick={() => removeTag(tag)} className="hover:text-purple-900 bg-white/50 rounded-full p-0.5"><X size={10} /></button>
-                                            </span>
-                                        ))}
-                                    </div>
+                                    <textarea
+                                        name="description"
+                                        value={description}
+                                        onChange={e => setDescription(e.target.value)}
+                                        placeholder="Product description..."
+                                        className="w-full bg-gray-50/50 hover:bg-white focus:bg-white border border-gray-200 focus:border-purple-500 rounded-2xl px-5 py-4 min-h-[120px] resize-none font-medium text-gray-600 text-sm outline-none leading-relaxed focus:ring-4 focus:ring-purple-500/10 transition-all"
+                                    />
                                 </div>
                             </div>
-
-                            <div className="flex flex-col h-full space-y-1.5">
-                                <div className="flex justify-between items-center px-1">
-                                    <label className="block text-xs font-bold text-gray-600 uppercase">Description</label>
-                                    <button
-                                        type="button"
-                                        onClick={generateDescription}
-                                        disabled={isGeneratingAI}
-                                        className="text-[10px] font-black text-white bg-black hover:bg-gray-800 px-3 py-1 rounded-lg flex items-center gap-1.5 transition-all shadow-lg shadow-gray-200 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-wait"
-                                    >
-                                        {isGeneratingAI ? (
-                                            <>
-                                                <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                Generating...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Wand2 size={10} />
-                                                AI Generate
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
-                                <textarea
-                                    name="description"
-                                    title="Product Description"
-                                    value={description}
-                                    onChange={e => setDescription(e.target.value)}
-                                    placeholder="Describe your product vertically..."
-                                    className={`w-full flex-1 bg-gray-50/50 hover:bg-white focus:bg-white border border-gray-200 focus:border-purple-500 rounded-2xl px-5 py-4 min-h-[140px] resize-none font-medium text-gray-600 text-sm outline-none leading-relaxed focus:ring-4 focus:ring-purple-500/10 transition-all`}
-                                />
-                            </div>
-                        </section>
+                        </div>
 
                         <div className="border-t border-gray-100" />
 

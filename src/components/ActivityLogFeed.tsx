@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, ShoppingBag, User, Settings, FileText, Lock, Calendar } from "lucide-react";
+import { Shield, ShoppingBag, User, Settings, FileText, Lock, Calendar, Sparkles, Megaphone } from "lucide-react";
 import { useState, useMemo } from "react";
 
 type AuditLog = {
@@ -142,6 +142,8 @@ function ActionIcon({ action }: { action: string }) {
     if (action.includes("SETTINGS")) return <Settings size={18} className="text-orange-600" />;
     if (action.includes("PRODUCT")) return <ShoppingBag size={18} className="text-indigo-600" />;
     if (action.includes("EXPORT")) return <FileText size={18} className="text-gray-600" />;
+    if (action.includes("AI")) return <Sparkles size={18} className="text-brand-purple" />;
+    if (action.includes("BROADCAST")) return <Megaphone size={18} className="text-red-500" />;
 
     return <Shield size={18} className="text-gray-400" />;
 }

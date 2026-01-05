@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Flag, Loader2, AlertTriangle, X } from "lucide-react";
-import { reportCustomer } from "@/app/actions/safety";
+import { reportCustomer } from "@/app/actions/customer";
 import { toast } from "sonner";
 
 interface ReportCustomerButtonProps {

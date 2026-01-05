@@ -8,6 +8,7 @@ type Store = {
     id: string;
     name: string;
     slug: string;
+    logo: string | null;
     status: "ACTIVE" | "SUSPENDED" | "DELETED";
     tier: string;
     users: { name: string | null; email: string | null }[];
@@ -73,8 +74,13 @@ export default function StoreList({ stores }: { stores: Store[] }) {
                         >
                             {/* Store Info */}
                             <div className="md:col-span-4 flex items-center gap-5">
-                                <div className="w-16 h-16 rounded-2xl bg-gray-100 flex-shrink-0 flex items-center justify-center text-2xl font-black text-gray-600 group-hover:bg-brand-cyan group-hover:text-white transition duration-300">
-                                    {store.name.charAt(0)}
+                                <div className="w-16 h-16 rounded-2xl bg-gray-100 flex-shrink-0 flex items-center justify-center text-2xl font-black text-gray-600 group-hover:bg-brand-cyan group-hover:text-white transition duration-300 overflow-hidden relative border border-gray-100">
+                                    {store.logo ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img src={store.logo} alt={store.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                        store.name.charAt(0)
+                                    )}
                                 </div>
                                 <div>
                                     <p className="font-bold text-gray-900 text-lg leading-tight group-hover:text-brand-cyan transition">

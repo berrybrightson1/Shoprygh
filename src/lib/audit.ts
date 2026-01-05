@@ -22,6 +22,7 @@ export type ActivityAction =
     | "ORDER_UPDATED"
     | "ORDER_COMPLETED"
     | "ORDER_CANCELLED"
+    | "ORDER_DELETED"
     // Customers
     | "CUSTOMER_CREATED"
     | "CUSTOMER_UPDATED"
@@ -61,15 +62,15 @@ export async function logActivity(
     metadata?: Record<string, unknown>
 ) {
     const session = await getSession();
-    if (!session || !session.userId) {
-        console.warn("[AUDIT] Cannot log activity - no user session");
+    if (!session || !session.id) {
+        console.warn(`[AUDIT] Cannot log activity - no user session (Keys: ${Object.keys(session || {}).join(', ')})`);
         return;
     }
 
     try {
         await prisma.auditLog.create({
             data: {
-                userId: session.userId,
+                userId: session.id, // Fixed: use session.id instead of session.userId
                 action,
                 description,
                 entityType,

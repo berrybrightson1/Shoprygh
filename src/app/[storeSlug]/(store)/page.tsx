@@ -26,15 +26,16 @@ export default async function StorePage({ params }: Props) {
             storeId: store.id,
             isArchived: false
         },
-        orderBy: { createdAt: "desc" }
+        orderBy: { createdAt: 'desc' }
     });
 
-    const serializedProducts = products.map(p => ({
-        ...p,
-        priceRetail: Number(p.priceRetail),
-        priceWholesale: p.priceWholesale ? Number(p.priceWholesale) : null,
-        stockQty: Number(p.stockQty),
-        createdAt: p.createdAt.toISOString()
+    // 👇 THIS IS THE FIX
+    const serializedProducts = products.map(product => ({
+        ...product,
+        priceRetail: product.priceRetail.toNumber(),
+        priceWholesale: product.priceWholesale ? product.priceWholesale.toNumber() : null,
+        costPrice: product.costPrice ? product.costPrice.toNumber() : null,
+        createdAt: product.createdAt.toISOString()
     }));
 
     return <StoreInterface initialProducts={serializedProducts} storeId={store.id} storeSlug={storeSlug} />;

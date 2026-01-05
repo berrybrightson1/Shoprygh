@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Lock, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
-import { login } from "./actions";
+import { Lock, ArrowLeft, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { login, magicAdminLogin } from "./actions";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -11,6 +11,7 @@ export default function LoginPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     async function handleSubmit(formData: FormData) {
         setIsLoading(true);
@@ -74,13 +75,22 @@ export default function LoginPage() {
 
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Password</label>
-                            <input
-                                name="password"
-                                type="password"
-                                required
-                                placeholder="••••••••"
-                                className="w-full border border-gray-200 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400"
-                            />
+                            <div className="relative">
+                                <input
+                                    name="password"
+                                    type={showPassword ? "text" : "password"}
+                                    required
+                                    placeholder="••••••••"
+                                    className="w-full border border-gray-200 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400 pr-12"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors outline-none"
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
+                            </div>
                         </div>
 
                         <button
@@ -105,6 +115,28 @@ export default function LoginPage() {
                                 Create one here
                             </Link>
                         </p>
+                    </div>
+
+                    {/* Magic Admin Login (Developer Only) */}
+                    <div className="mt-4 text-center">
+                        <form action={async () => {
+                            setIsLoading(true);
+                            const res = await magicAdminLogin();
+                            if (res?.success && res?.url) {
+                                router.push(res.url);
+                            } else if (res?.error) {
+                                toast.error(res.error);
+                                setIsLoading(false);
+                            }
+                        }}>
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="text-xs text-gray-300 font-mono hover:text-gray-900 transition underline decoration-dotted"
+                            >
+                                [DEV] Magic Admin Access
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

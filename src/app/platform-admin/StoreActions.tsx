@@ -61,6 +61,7 @@ export default function StoreActions({ store }: StoreActionsProps) {
             <Link
                 href={`/${store.slug}`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                 title="Visit Store"
             >

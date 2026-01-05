@@ -3,7 +3,7 @@ import AdminRightSidebar from "@/components/AdminRightSidebar";
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
-import VerificationBanner from "@/components/VerificationBanner";
+
 
 export default async function AdminLayout({
     children,
@@ -64,7 +64,7 @@ export default async function AdminLayout({
             <div className="flex-1 flex overflow-hidden relative z-10">
                 {/* CENTER CONTENT */}
                 <main className="flex-1 overflow-y-auto p-4 md:p-8 no-scrollbar relative flex flex-col">
-                    <VerificationBanner user={session} />
+
                     {children}
                 </main>
 

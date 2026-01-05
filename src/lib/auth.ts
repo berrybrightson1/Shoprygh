@@ -3,6 +3,11 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 const SECRET_KEY = process.env.JWT_SECRET || "super-secret-key-change-this-in-env";
+
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+    console.warn("⚠️  SECURITY WARNING: Using default JWT_SECRET in production. Please set JWT_SECRET environment variable.");
+}
+
 const key = new TextEncoder().encode(SECRET_KEY);
 
 export async function encrypt(payload: any) {

@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "@/lib/audit";
 
 export type CartItemSnapshot = {
     id: string;
@@ -55,6 +56,7 @@ export async function updateOrderStatus(storeId: string, orderId: string, newSta
         where: { id: orderId, storeId }, // Ensure tenancy
         data: { status: newStatus }
     });
+    await logActivity("ORDER_UPDATED", `Order #${orderId.slice(-6)} status: ${newStatus}`, "ORDER", orderId, { status: newStatus });
     revalidatePath(`/${storeId}/admin/orders`);
 }
 
@@ -62,6 +64,7 @@ export async function deleteOrder(storeId: string, orderId: string) {
     await prisma.order.delete({
         where: { id: orderId, storeId } // Ensure tenancy
     });
+    await logActivity("ORDER_DELETED", `Order #${orderId.slice(-6)} deleted`, "ORDER", orderId);
     revalidatePath(`/${storeId}/admin/orders`);
 }
 
