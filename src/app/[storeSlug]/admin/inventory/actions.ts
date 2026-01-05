@@ -70,7 +70,7 @@ export async function createProduct(storeId: string, formData: FormData) {
         }
     });
 
-    await logActivity("CREATE_PRODUCT", `Created product: ${name}`, "PRODUCT", product.id, { price: priceRetail, stock: stockQty });
+    await logActivity("PRODUCT_CREATED", `Created product: ${name}`, "PRODUCT", product.id, { price: priceRetail, stock: stockQty });
 
     revalidatePath(`/`, 'layout'); // Revalidate everything to be safe 
 }
@@ -85,7 +85,7 @@ export async function deleteProduct(storeId: string, formData: FormData) {
         where: { id, storeId },
         data: { isArchived: true }
     });
-    await logActivity("ARCHIVE_PRODUCT", `Archived product ${id}`, "PRODUCT", id);
+    await logActivity("PRODUCT_DELETED", `Archived product ${id}`, "PRODUCT", id);
     revalidatePath(`/`); // Broad revalidation
 }
 
@@ -94,7 +94,8 @@ export async function updateStock(storeId: string, formData: FormData) {
     const stockQty = parseInt(formData.get("stockQty") as string);
     if (!id || isNaN(stockQty)) return;
     await prisma.product.updateMany({ where: { id, storeId }, data: { stockQty } });
-    revalidatePath(`/`);
+    await logActivity("STOCK_UPDATED", `Updated stock to ${stockQty} units`, "PRODUCT", id, { newStock: stockQty });
+    revalidatePath(`/`, 'layout');
 }
 
 export async function updatePrice(storeId: string, formData: FormData) {
@@ -102,7 +103,8 @@ export async function updatePrice(storeId: string, formData: FormData) {
     const price = parseFloat(formData.get("price") as string);
     if (!id || isNaN(price)) return;
     await prisma.product.updateMany({ where: { id, storeId }, data: { priceRetail: price } });
-    revalidatePath(`/`);
+    await logActivity("PRICE_UPDATED", `Updated price to ₵${price}`, "PRODUCT", id, { newPrice: price });
+    revalidatePath(`/`, 'layout');
 }
 
 export async function updateCategory(storeId: string, formData: FormData) {
@@ -110,5 +112,6 @@ export async function updateCategory(storeId: string, formData: FormData) {
     const category = formData.get("category") as string;
     if (!id || !category) return;
     await prisma.product.updateMany({ where: { id, storeId }, data: { category } });
-    revalidatePath(`/`);
+    await logActivity("CATEGORY_UPDATED", `Moved product to ${category}`, "PRODUCT", id, { newCategory: category });
+    revalidatePath(`/`, 'layout');
 }

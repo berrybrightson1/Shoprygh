@@ -50,6 +50,7 @@ model Store {
   
   // CRM
   customers   Customer[]
+  customerReports CustomerReport[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -78,6 +79,14 @@ model Customer {
 
   @@unique([storeId, phone]) // Unique customer per store by phone
   @@unique([storeId, email]) // Unique customer per store by email
+
+  // Trust & Safety
+  isVerified      Boolean  @default(false)
+  otpCode         String?
+  otpExpiresAt    DateTime?
+  trustScore      Int      @default(100)
+  status          String   @default("ACTIVE") // ACTIVE, RESTRICTED, BANNED
+  reports         CustomerReport[]
 }
 
 // --- Marketing Models ---
@@ -158,12 +167,19 @@ model User {
   role      String   @default("STAFF") // "OWNER" | "STAFF"
   isPlatformAdmin Boolean @default(false)
   
-  storeId   String
-  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  // Optional - Platform Admins don't need a store
+  storeId   String?
+  store     Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)
   
   auditLogs AuditLog[]
 
   createdAt DateTime @default(now())
+
+  // Trust & Safety
+  phone           String?  @unique // Optional for existing, unique for new
+  isVerified      Boolean  @default(false)
+  otpCode         String?
+  otpExpiresAt    DateTime?
 }
 
 model AuditLog {
@@ -332,4 +348,19 @@ model DeliveryZone {
   fee         Decimal
   description String?
   createdAt   DateTime @default(now())
+}
+
+model CustomerReport {
+  id          String   @id @default(cuid())
+  
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  
+  reason      String   // "Fake Payment", "Refused Delivery", "Abusive"
+  createdAt   DateTime @default(now())
+
+  @@unique([customerId, storeId]) // One report per store per customer
 }

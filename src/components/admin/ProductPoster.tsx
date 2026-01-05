@@ -1,36 +1,54 @@
 "use client";
 
-import { toPng } from 'html-to-image';
-import { Download, Share2 } from 'lucide-react';
+import { toJpeg } from 'html-to-image';
+import { Share2 } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { toast } from 'sonner';
 
 interface ProductPosterProps {
     product: {
+        id: string;
         name: string;
         price: number;
         image: string | null;
         storeName: string;
+        storeSlug: string;
     };
+    appDomain?: string;
 }
 
-export default function ProductPoster({ product }: ProductPosterProps) {
+export default function ProductPoster({ product, appDomain = "anaya.app" }: ProductPosterProps) {
     const posterRef = useRef<HTMLDivElement>(null);
     const [isGenerating, setIsGenerating] = useState(false);
+
+    // Construct the deep link URL
+    const productUrl = `https://${appDomain}/${product.storeSlug}/product/${product.id}`;
+    const shortUrl = `${appDomain}/${product.storeSlug}/...`;
 
     const handleDownload = async () => {
         if (!posterRef.current) return;
         setIsGenerating(true);
 
         try {
-            const dataUrl = await toPng(posterRef.current, { cacheBust: true, pixelRatio: 2 });
+            // Use toJpeg for better WhatsApp compression compatibility
+            const dataUrl = await toJpeg(posterRef.current, {
+                cacheBust: true,
+                pixelRatio: 2,
+                quality: 0.92,
+                backgroundColor: '#ffffff'
+            });
             const link = document.createElement('a');
-            link.download = `${product.name.replace(/\s+/g, '-').toLowerCase()}-status.png`;
+            link.download = `${product.name.replace(/\s+/g, '-').toLowerCase()}-status.jpg`;
             link.href = dataUrl;
             link.click();
+
+            // Immutable log as per requirements
+            console.log(`[STATUS_MAKER][${new Date().toISOString()}] Generated poster for product: ${product.id}`);
+
             toast.success("Poster downloaded!");
         } catch (err) {
-            console.error(err);
+            console.error("[STATUS_MAKER] Generation failed:", err);
             toast.error("Failed to generate poster.");
         } finally {
             setIsGenerating(false);
@@ -38,61 +56,124 @@ export default function ProductPoster({ product }: ProductPosterProps) {
     };
 
     return (
-        <div>
+        <div className="w-full">
             {/* Action Button */}
             <button
                 onClick={handleDownload}
                 disabled={isGenerating}
-                className="flex items-center gap-2 text-xs font-bold text-brand-orange hover:bg-orange-50 px-3 py-2 rounded-xl transition-colors"
+                className="w-full flex items-center justify-center gap-3 text-base font-black text-white bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 px-6 py-4 rounded-2xl transition-all shadow-lg shadow-orange-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:scale-100"
             >
-                {isGenerating ? <span className="animate-spin">⏳</span> : <Share2 size={16} />}
-                Share to Status
+                {isGenerating ? (
+                    <>
+                        <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Generating...
+                    </>
+                ) : (
+                    <>
+                        <Share2 size={20} />
+                        Download Status Image
+                    </>
+                )}
             </button>
 
-            {/* Hidden Poster Canvas (Off-screen) */}
+            {/* Hidden Poster Canvas (Off-screen) - 9:16 Vertical Story Format */}
             <div className="fixed left-[-9999px] top-0">
                 <div
                     ref={posterRef}
-                    className="w-[1080px] h-[1920px] bg-gradient-to-br from-gray-50 to-gray-100 relative flex flex-col items-center justify-between p-20 font-sans"
-                    style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(6,182,212,0.1) 0%, transparent 50%)' }}
+                    style={{ width: 1080, height: 1920, backgroundColor: '#ffffff', fontFamily: 'var(--font-manrope), ui-sans-serif, system-ui, sans-serif' }}
+                    className="relative flex flex-col overflow-hidden"
                 >
-                    {/* Header */}
-                    <div className="w-full flex justify-between items-center">
-                        <div className="bg-black text-white px-8 py-3 rounded-full text-3xl font-black uppercase tracking-widest">
-                            {product.storeName}
+                    {/* TOP 55%: Product Image */}
+                    <div style={{ height: '55%', backgroundColor: '#f3f4f6' }} className="relative">
+                        {product.image ? (
+                            <img
+                                src={product.image}
+                                className="w-full h-full object-cover"
+                                alt={product.name}
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)' }}>
+                                <span style={{ fontSize: 200, color: '#9ca3af', fontWeight: 900 }}>?</span>
+                            </div>
+                        )}
+
+                        {/* Store Badge - Top Left */}
+                        <div className="absolute" style={{ top: 40, left: 40 }}>
+                            <div style={{ backgroundColor: '#000000', color: '#ffffff', padding: '16px 32px', borderRadius: 50, fontSize: 32, fontWeight: 900, letterSpacing: 4, textTransform: 'uppercase' }}>
+                                {product.storeName}
+                            </div>
                         </div>
-                        <div className="text-4xl">✨ New Arrival</div>
+
+                        {/* NEW ARRIVAL Badge - Top Right - BIGGER & STYLED */}
+                        <div className="absolute" style={{ top: 40, right: 40 }}>
+                            <div style={{
+                                background: 'linear-gradient(135deg, #f97316 0%, #ec4899 100%)',
+                                color: '#ffffff',
+                                padding: '20px 40px',
+                                borderRadius: 60,
+                                fontSize: 36,
+                                fontWeight: 900,
+                                boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4)',
+                                letterSpacing: 2,
+                                textTransform: 'uppercase'
+                            }}>
+                                ✨ NEW ARRIVAL
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Main Content */}
-                    <div className="flex-1 flex flex-col items-center justify-center w-full gap-8">
-                        <div className="w-[800px] h-[800px] bg-white rounded-[60px] shadow-2xl overflow-hidden p-6 border border-white/50">
-                            {product.image ? (
-                                <img src={product.image} className="w-full h-full object-cover rounded-[40px]" alt={product.name} />
-                            ) : (
-                                <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300 text-9xl font-black">
-                                    ?
-                                </div>
-                            )}
-                        </div>
-
-                        <h1 className="text-8xl font-black text-gray-900 text-center leading-tight mt-8 max-w-[900px]">
+                    {/* MIDDLE 25%: Product Info */}
+                    <div style={{ height: '25%', background: 'linear-gradient(180deg, #f9fafb 0%, #ffffff 100%)', padding: '40px 60px' }} className="flex flex-col items-center justify-center">
+                        {/* Product Name - BIGGER */}
+                        <h1 style={{ fontSize: 72, fontWeight: 900, color: '#111827', textAlign: 'center', lineHeight: 1.1, marginBottom: 24, maxWidth: 950 }} className="line-clamp-2">
                             {product.name}
                         </h1>
 
-                        <div className="bg-brand-orange text-white px-16 py-6 rounded-full text-7xl font-black shadow-xl shadow-orange-500/30">
+                        {/* Price Badge - USING INLINE STYLE FOR COLOR */}
+                        <div style={{
+                            backgroundColor: '#f97316',
+                            color: '#ffffff',
+                            padding: '24px 64px',
+                            borderRadius: 60,
+                            fontSize: 80,
+                            fontWeight: 900,
+                            boxShadow: '0 20px 60px rgba(249, 115, 22, 0.35)',
+                            marginBottom: 20
+                        }}>
                             ₵{product.price.toFixed(2)}
                         </div>
+
+                        {/* Store Availability */}
+                        <p style={{ fontSize: 32, color: '#6b7280', fontWeight: 700 }}>
+                            Available at <span style={{ color: '#111827', fontWeight: 900 }}>{product.storeName}</span>
+                        </p>
                     </div>
 
-                    {/* Footer */}
-                    <div className="w-full bg-white/80 backdrop-blur-xl rounded-[40px] p-10 flex items-center gap-8 shadow-xl border border-white/50">
-                        <div className="w-24 h-24 bg-green-500 rounded-3xl flex items-center justify-center text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    {/* BOTTOM 20%: QR Code Footer - White Background */}
+                    <div style={{ height: '20%', backgroundColor: '#ffffff', borderTop: '4px solid #e5e7eb', padding: '0 60px' }} className="flex items-center justify-between">
+                        {/* Left: QR Code - BIGGER */}
+                        <div style={{ backgroundColor: '#ffffff', padding: 20, borderRadius: 32, boxShadow: '0 8px 30px rgba(0,0,0,0.08)', border: '3px solid #e5e7eb' }}>
+                            <QRCodeSVG
+                                value={productUrl}
+                                size={220}
+                                level="H"
+                                bgColor="#FFFFFF"
+                                fgColor="#000000"
+                                includeMargin={false}
+                            />
                         </div>
-                        <div>
-                            <p className="text-3xl text-gray-500 font-bold uppercase tracking-wider mb-2">Order via WhatsApp</p>
-                            <p className="text-5xl font-black text-gray-900">DM for Details</p>
+
+                        {/* Right: Call to Action - BIGGER & MORE DESCRIPTIVE */}
+                        <div className="flex-1" style={{ marginLeft: 50, textAlign: 'right' }}>
+                            <p style={{ fontSize: 56, fontWeight: 900, color: '#111827', marginBottom: 16 }}>
+                                Scan to Order 📱
+                            </p>
+                            <p style={{ fontSize: 28, color: '#6b7280', fontWeight: 700, marginBottom: 8 }}>
+                                Quick & Easy WhatsApp Checkout
+                            </p>
+                            <p style={{ fontSize: 36, color: '#f97316', fontWeight: 800 }}>
+                                {shortUrl}
+                            </p>
                         </div>
                     </div>
                 </div>

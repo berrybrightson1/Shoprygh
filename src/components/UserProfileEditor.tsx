@@ -65,7 +65,7 @@ export default function UserProfileEditor({ user }: UserProfileEditorProps) {
                     <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100 border border-gray-200">
                             <img
-                                src={selectedAvatar || `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(user.name)}`}
+                                src={selectedAvatar || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(user.name)}`}
                                 alt="Current Avatar"
                                 className="w-full h-full object-cover"
                             />

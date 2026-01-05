@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "@/lib/audit";
 
 export async function syncCustomersFromOrders() {
     const session = await getSession();
@@ -79,6 +80,7 @@ export async function syncCustomersFromOrders() {
         }
     }
 
+    await logActivity("CUSTOMER_UPDATED", `Synced ${newCount} new and ${updateCount} existing customers from orders`, "CUSTOMER");
     revalidatePath(`/${session.storeSlug}/admin/customers`);
     // return { newCount, updateCount }; // Commented out to satisfy form action type
 }
@@ -95,5 +97,6 @@ export async function updateCustomerNotes(formData: FormData) {
         data: { notes }
     });
 
+    await logActivity("CUSTOMER_UPDATED", `Updated notes for customer`, "CUSTOMER", customerId);
     revalidatePath(`/${session.storeSlug}/admin/customers`);
 }

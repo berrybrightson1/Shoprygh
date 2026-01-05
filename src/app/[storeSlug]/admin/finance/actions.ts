@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "@/lib/audit";
 
 export async function requestPayout(formData: FormData) {
     const session = await getSession();
@@ -57,5 +58,6 @@ export async function requestPayout(formData: FormData) {
         });
     });
 
+    await logActivity("PAYOUT_REQUESTED", `Requested payout of ₵${amount} via ${method} to ${destination}`, "STORE", session.storeId, { amount, method });
     revalidatePath(`/${session.storeSlug}/admin/finance`);
 }

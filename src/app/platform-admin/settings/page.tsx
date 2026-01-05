@@ -53,7 +53,7 @@ export default async function PlatformSettingsPage() {
                         <div className="pt-6 border-t border-gray-200">
                             <div className="flex items-center gap-3 px-3">
                                 <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
-                                    <img src={user.image || `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(user.name)}`} alt="User" className="w-full h-full object-cover" />
+                                    <img src={user.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(user.name)}`} alt="User" className="w-full h-full object-cover" />
                                 </div>
                                 <div className="overflow-hidden">
                                     <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>

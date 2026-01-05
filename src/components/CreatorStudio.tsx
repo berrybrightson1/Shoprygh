@@ -120,19 +120,31 @@ export default function CreatorStudio({
     };
 
     // --- AI Logic ---
-    const generateDescription = () => {
+    const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+
+    const generateDescription = async () => {
         if (!name) {
             toast.error("Please enter a product name first!");
             return;
         }
 
-        const templates = [
-            `Experience the best quality with ${name}. Perfect for your ${category.toLowerCase()} needs.`,
-            `High quality ${category.toLowerCase()} product. ${name} is designed for comfort and durability.`,
-            `Get the amazing ${name} now. A clear favorite in our ${category} collection.`
-        ];
-        setDescription(templates[Math.floor(Math.random() * templates.length)]);
-        toast.success("Description generated!");
+        setIsGeneratingAI(true);
+        try {
+            const { generateProductDescription } = await import("@/app/actions/ai");
+            const result = await generateProductDescription(name, tags);
+
+            if (result.success && result.description) {
+                setDescription(result.description);
+                toast.success("AI description generated!");
+            } else {
+                toast.error(result.error || "Failed to generate description");
+            }
+        } catch (error) {
+            console.error("AI generation error:", error);
+            toast.error("Something went wrong. Please try again.");
+        } finally {
+            setIsGeneratingAI(false);
+        }
     };
 
 
@@ -379,9 +391,20 @@ export default function CreatorStudio({
                                     <button
                                         type="button"
                                         onClick={generateDescription}
-                                        className="text-[10px] font-black text-white bg-black hover:bg-gray-800 px-3 py-1 rounded-lg flex items-center gap-1.5 transition-all shadow-lg shadow-gray-200 hover:-translate-y-0.5"
+                                        disabled={isGeneratingAI}
+                                        className="text-[10px] font-black text-white bg-black hover:bg-gray-800 px-3 py-1 rounded-lg flex items-center gap-1.5 transition-all shadow-lg shadow-gray-200 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-wait"
                                     >
-                                        <Wand2 size={10} /> AI Generate
+                                        {isGeneratingAI ? (
+                                            <>
+                                                <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                Generating...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Wand2 size={10} />
+                                                AI Generate
+                                            </>
+                                        )}
                                     </button>
                                 </div>
                                 <textarea

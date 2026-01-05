@@ -1,12 +1,13 @@
-'use server';
+"use server";
 
-import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { compare } from "bcryptjs";
 import { encrypt } from "@/lib/auth";
 import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 
 export async function login(formData: FormData) {
+    const supabase = await createClient();
+
     const email = (formData.get("email") as string).trim().toLowerCase();
     const password = formData.get("password") as string;
 
@@ -14,26 +15,35 @@ export async function login(formData: FormData) {
         return { error: "Email and password are required" };
     }
 
-    // 1. Find User
+    // 1. Authenticate with Supabase
+    const { data: { user: supabaseUser }, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if (authError || !supabaseUser) {
+        return { error: "Invalid email or password" };
+    }
+
+    // 2. Find Prisma User (Source of Truth for App Data)
     const user = await prisma.user.findUnique({
-        where: { email },
-        include: { store: true } // Crucial: Fetch the linked store
+        where: { email }, // Link via email
+        include: { store: true }
     });
 
     if (!user) {
-        return { error: `User not found: "${email}"` };
+        // Edge case: User in Supabase but not Prisma?
+        return { error: "Account config error. Contact support." };
     }
-
-    // 2. Verify Password
-    const isValid = await compare(password, user.password);
-    if (!isValid) return { error: "Invalid password" };
 
     // Check for Store OR Platform Admin privileges
     if (!user.store && !user.isPlatformAdmin) {
         return { error: "No store account found. Please signup." };
     }
 
-    // 3. Create Session
+    // 3. Create Legacy Session (Bridge for existing App Logic)
+    // We keep this so we don't have to refactor every `getSession` call right now.
+    // The "True" session is Supabase (checked here), this is just a cached claim.
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
     const sessionPayload = {
         id: user.id,
@@ -43,14 +53,15 @@ export async function login(formData: FormData) {
         isPlatformAdmin: user.isPlatformAdmin,
         storeId: user.store?.id,
         storeSlug: user.store?.slug,
+        phone: user.phone,
+        isVerified: user.isVerified, // Trust Prisma state
         expires
     };
 
     const session = await encrypt(sessionPayload);
-
     (await cookies()).set("session", session, { expires, httpOnly: true });
 
-    // 4. Return Redirect URL (Don't redirect here to avoid try/catch issues on client)
+    // 4. Return Redirect URL
     let redirectTo = '/login';
     if (user.isPlatformAdmin) {
         redirectTo = '/platform-admin';

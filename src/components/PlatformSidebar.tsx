@@ -34,7 +34,7 @@ export default function PlatformSidebar({ user }: { user: any }) {
 
                 <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
                     <img
-                        src={currentUser.image || `https://api.dicebear.com/9.x/notionists/svg?seed=Platform&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                        src={currentUser.image || `https://api.dicebear.com/9.x/micah/svg?seed=Platform&backgroundColor=b6e3f4,c0aede,d1d4f9`}
                         alt={currentUser.name}
                         className="w-full h-full object-cover"
                     />
@@ -56,7 +56,7 @@ export default function PlatformSidebar({ user }: { user: any }) {
                 <div className="p-8 flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-gray-200 border border-gray-100 bg-white">
                         <img
-                            src={`https://api.dicebear.com/9.x/notionists/svg?seed=Platform&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                            src={`https://api.dicebear.com/9.x/micah/svg?seed=Platform&backgroundColor=b6e3f4,c0aede,d1d4f9`}
                             alt="Platform"
                             className="w-full h-full object-cover"
                         />
@@ -110,7 +110,7 @@ export default function PlatformSidebar({ user }: { user: any }) {
                     >
                         <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shrink-0 border border-gray-200">
                             <img
-                                src={currentUser.image || `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(currentUser.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                                src={currentUser.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(currentUser.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
                                 alt={currentUser.name}
                                 className="w-full h-full object-cover"
                             />

@@ -1,30 +1,82 @@
-
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
+export type ActivityAction =
+    // Auth
+    | "LOGIN"
+    | "LOGOUT"
+    // Products
+    | "PRODUCT_CREATED"
+    | "PRODUCT_UPDATED"
+    | "PRODUCT_DELETED"
+    | "STOCK_UPDATED"
+    | "PRICE_UPDATED"
+    | "CATEGORY_UPDATED"
+    // Orders
+    | "ORDER_CREATED"
+    | "ORDER_UPDATED"
+    | "ORDER_COMPLETED"
+    | "ORDER_CANCELLED"
+    // Customers
+    | "CUSTOMER_CREATED"
+    | "CUSTOMER_UPDATED"
+    | "CUSTOMER_DELETED"
+    // Settings
+    | "PROFILE_UPDATED"
+    | "SETTINGS_UPDATED"
+    | "DELIVERY_ZONE_CREATED"
+    | "DELIVERY_ZONE_UPDATED"
+    | "DELIVERY_ZONE_DELETED"
+    // Finance
+    | "PAYOUT_REQUESTED"
+    | "PAYOUT_CANCELLED"
+    // Marketing
+    | "COUPON_CREATED"
+    | "COUPON_UPDATED"
+    | "COUPON_DELETED"
+    | "BROADCAST_SENT"
+    // Staff
+    | "STAFF_INVITED"
+    | "STAFF_REMOVED"
+    | "STAFF_ROLE_UPDATED"
+    // Other
+    | "DATA_EXPORTED"
+    | "UPDATE_PLAN"
+    | "AI_DESCRIPTION_GENERATED";
+
+/**
+ * Log an activity/audit entry for the current user
+ * Creates an immutable record of seller actions
+ */
 export async function logActivity(
-    action: string,
+    action: ActivityAction,
     description: string,
     entityType?: string,
     entityId?: string,
-    metadata?: any
+    metadata?: Record<string, unknown>
 ) {
     const session = await getSession();
-    if (!session || !session.id) return; // Cannot log anonymous actions for now
+    if (!session || !session.userId) {
+        console.warn("[AUDIT] Cannot log activity - no user session");
+        return;
+    }
 
     try {
         await prisma.auditLog.create({
             data: {
-                userId: session.id,
+                userId: session.userId,
                 action,
                 description,
                 entityType,
                 entityId,
-                metadata: metadata ? JSON.stringify(metadata) : undefined
+                metadata: metadata ? JSON.parse(JSON.stringify(metadata)) : undefined
             }
         });
+
+        // Immutable console log for server monitoring
+        console.log(`[AUDIT][${new Date().toISOString()}] ${action}: ${description}`);
     } catch (error) {
-        console.error("Failed to write audit log:", error);
+        console.error("[AUDIT] Failed to write audit log:", error);
         // Fail silently so we don't block the main action
     }
 }

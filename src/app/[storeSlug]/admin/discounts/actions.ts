@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { logActivity } from "@/lib/audit";
 
 const CouponSchema = z.object({
     code: z.string().min(3, "Code must be at least 3 characters").regex(/^[A-Z0-9_-]+$/, "Code must be alphanumeric (uppercase)"),
@@ -44,9 +45,9 @@ export async function createCoupon(formData: FormData) {
         throw new Error("Failed to create coupon. Code might already exist.");
     }
 
-    // Determine slug for redirect
     const store = await prisma.store.findUnique({ where: { id: rawData.storeId }, select: { slug: true } });
     if (store) {
+        await logActivity("COUPON_CREATED", `Created coupon ${rawData.code}`, "COUPON");
         revalidatePath(`/${store.slug}/admin/discounts`);
         redirect(`/${store.slug}/admin/discounts`);
     }
@@ -55,6 +56,7 @@ export async function createCoupon(formData: FormData) {
 export async function deleteCoupon(couponId: string, storeSlug: string) {
     try {
         await prisma.coupon.delete({ where: { id: couponId } });
+        await logActivity("COUPON_DELETED", `Deleted coupon`, "COUPON", couponId);
         revalidatePath(`/${storeSlug}/admin/discounts`);
     } catch (e) {
         return { error: "Failed to delete" };
@@ -66,6 +68,7 @@ export async function toggleCouponStatus(couponId: string, storeSlug: string, cu
         where: { id: couponId },
         data: { isActive: !currentStatus }
     });
+    await logActivity("COUPON_UPDATED", `${!currentStatus ? 'Activated' : 'Deactivated'} coupon`, "COUPON", couponId);
     revalidatePath(`/${storeSlug}/admin/discounts`);
 }
 

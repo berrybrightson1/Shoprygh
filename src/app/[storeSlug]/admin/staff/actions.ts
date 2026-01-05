@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { hash } from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
+import { logActivity } from '@/lib/audit';
 
 export async function createUser(storeId: string, formData: FormData) {
     const email = formData.get('email') as string;
@@ -23,11 +24,13 @@ export async function createUser(storeId: string, formData: FormData) {
         }
     });
 
+    await logActivity("STAFF_INVITED", `Added new staff member: ${name} (${role})`, "STAFF", undefined, { email, role });
     revalidatePath(`/${storeId}/admin/staff`);
 }
 
 export async function deleteUser(storeId: string, formData: FormData) {
     const id = formData.get('id') as string;
-    await prisma.user.delete({ where: { id, storeId } }); // Ensure we only delete users from this store
+    await prisma.user.delete({ where: { id, storeId } });
+    await logActivity("STAFF_REMOVED", `Removed staff member`, "STAFF", id);
     revalidatePath(`/${storeId}/admin/staff`);
 }

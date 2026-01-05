@@ -10,10 +10,11 @@ import ActivityLogFeed from "@/components/ActivityLogFeed";
 interface DashboardShellProps {
     children: React.ReactNode;
     session: { email: string };
+    user: { name: string | null; image: string | null; isPlatformAdmin: boolean };
     logs: any[];
 }
 
-export default function DashboardShell({ children, session, logs }: DashboardShellProps) {
+export default function DashboardShell({ children, session, user, logs }: DashboardShellProps) {
     const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
     const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
 
@@ -79,14 +80,18 @@ export default function DashboardShell({ children, session, logs }: DashboardShe
                 <div className="p-8 pb-6">
                     <div className="bg-gray-50 rounded-[24px] p-6 flex flex-col items-center text-center border border-gray-100">
                         <div className="relative mb-3">
-                            <div className="w-20 h-20 bg-gradient-to-tr from-brand-cyan to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-cyan-500/30">
-                                SA
+                            <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-lg shadow-gray-200 overflow-hidden bg-gray-50 border-4 border-white">
+                                <img
+                                    src={user?.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(user?.name || 'Super Admin')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                                    alt={user?.name || "Super Admin"}
+                                    className="w-full h-full object-cover"
+                                />
                             </div>
                             <div className="absolute bottom-0 right-0 w-6 h-6 bg-white rounded-full flex items-center justify-center">
                                 <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
                             </div>
                         </div>
-                        <h3 className="font-bold text-lg text-gray-900">Super Admin</h3>
+                        <h3 className="font-bold text-lg text-gray-900">{user?.name || "Super Admin"}</h3>
                         <p className="text-xs text-gray-500 font-medium mb-4">{session.email}</p>
                         <div className="flex gap-2 w-full justify-center">
                             <BroadcastModal />

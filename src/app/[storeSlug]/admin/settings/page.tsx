@@ -8,6 +8,7 @@ import ProfileEditor from "./ProfileEditor";
 import UserProfileEditor from "@/components/UserProfileEditor";
 import PasswordUpdateForm from "./PasswordUpdateForm";
 import ActivityLogFeed from "@/components/ActivityLogFeed";
+import BackfillButton from "./BackfillButton";
 
 export default async function SettingsPage({ params }: { params: Promise<{ storeSlug: string }> }) {
     const session = await getSession();
@@ -166,6 +167,9 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                         <div className="-mx-4">
                             <SellerActivityFeed userId={session.id} />
                         </div>
+
+                        {/* Backfill historical data button */}
+                        <BackfillButton />
                     </div>
                 </div>
             </div>

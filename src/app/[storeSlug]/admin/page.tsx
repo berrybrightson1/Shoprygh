@@ -99,11 +99,9 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
     return (
         <div className="max-w-[1600px] mx-auto space-y-8">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
-                        <span className="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center shadow-lg shadow-gray-900/20">
-                            <LayoutDashboard size={20} />
-                        </span>
+                {/* Add left padding on desktop to avoid overlap with sidebar toggle button */}
+                <div className="md:pl-16">
+                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">
                         Store Cockpit
                     </h1>
                     <p className="text-gray-500 font-bold mt-2 ml-1">Here's what's happening in your store today.</p>

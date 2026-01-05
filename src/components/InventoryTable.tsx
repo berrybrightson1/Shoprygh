@@ -71,7 +71,7 @@ function EditableCell({
     );
 }
 
-export default function InventoryTable({ products, storeId }: { products: any[], storeId: string }) {
+export default function InventoryTable({ products, storeId, storeName, storeSlug }: { products: any[], storeId: string, storeName: string, storeSlug: string }) {
     const { currentUser } = useAdminStore();
     const isOwner = currentUser?.role === 'Owner Access';
 
@@ -268,10 +268,12 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                                         <button
                                             title="Generate Status"
                                             onClick={() => setStatusProduct({
+                                                id: p.id,
                                                 name: p.name,
                                                 price: Number(p.priceRetail),
                                                 image: p.image,
-                                                storeName: "Anaya Baby Care" // This should ideally come from props or context
+                                                storeName: storeName,
+                                                storeSlug: storeSlug
                                             })}
                                             className="p-2.5 bg-gray-50 hover:bg-orange-50 text-gray-400 hover:text-brand-orange rounded-xl transition-all"
                                         >
@@ -309,17 +311,104 @@ export default function InventoryTable({ products, storeId }: { products: any[],
                 </table>
             </div>
 
-            {/* Status Maker Modal */}
+            {/* Status Maker Modal - Professional Redesign */}
             {statusProduct && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
-                    <div className="bg-white rounded-[40px] p-6 max-h-[90vh] overflow-y-auto relative no-scrollbar">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in">
+                    <div className="bg-white rounded-[28px] shadow-2xl max-w-lg w-full relative animate-in zoom-in-95 duration-300 overflow-hidden">
+                        {/* Close Button */}
                         <button
                             onClick={() => setStatusProduct(null)}
-                            className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-20"
+                            className="absolute top-4 right-4 p-2.5 bg-black/5 hover:bg-black/10 rounded-full transition-colors z-20"
                         >
-                            <X size={20} />
+                            <X size={18} className="text-gray-600" />
                         </button>
-                        <ProductPoster product={statusProduct} />
+
+                        {/* Top Section - Poster Preview Mockup */}
+                        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6 relative">
+                            {/* Phone Frame Mockup */}
+                            <div className="mx-auto w-40 bg-black rounded-[20px] p-1.5 shadow-2xl shadow-black/50">
+                                <div className="bg-white rounded-[16px] overflow-hidden aspect-[9/16]">
+                                    {/* Mini Poster Preview */}
+                                    <div className="h-[55%] bg-gray-100 relative">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                            src={statusProduct.image || "/placeholder.png"}
+                                            alt={statusProduct.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute top-2 left-2 bg-black text-white text-[6px] px-2 py-0.5 rounded-full font-bold uppercase">
+                                            {statusProduct.storeName}
+                                        </div>
+                                        <div className="absolute top-2 right-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white text-[5px] px-1.5 py-0.5 rounded-full font-bold">
+                                            ✨ NEW
+                                        </div>
+                                    </div>
+                                    <div className="h-[25%] flex flex-col items-center justify-center px-2 bg-gray-50">
+                                        <p className="text-[7px] font-bold text-gray-900 text-center truncate w-full">{statusProduct.name}</p>
+                                        <div className="bg-orange-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full mt-1">
+                                            ₵{statusProduct.price.toFixed(0)}
+                                        </div>
+                                    </div>
+                                    <div className="h-[20%] bg-white flex items-center justify-center border-t border-gray-100">
+                                        <div className="w-6 h-6 bg-gray-200 rounded" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Floating Labels */}
+                            <div className="absolute top-4 left-4 flex items-center gap-2">
+                                <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                                    <Share2 size={14} className="text-white" />
+                                </div>
+                            </div>
+                            <p className="text-center text-white/60 text-xs font-medium mt-4">Preview</p>
+                        </div>
+
+                        {/* Bottom Section - Info & Action */}
+                        <div className="p-6">
+                            {/* Title */}
+                            <h2 className="text-xl font-black text-gray-900 text-center mb-1">Create Status Image</h2>
+                            <p className="text-sm text-gray-500 text-center mb-5">Ready to share on WhatsApp & Instagram Stories</p>
+
+                            {/* Product Summary Card */}
+                            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-4 flex items-center gap-4 mb-5 border border-gray-200/50">
+                                <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border-2 border-white shadow-md shrink-0">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={statusProduct.image || "/placeholder.png"}
+                                        alt={statusProduct.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-bold text-gray-900 truncate text-sm">{statusProduct.name}</h3>
+                                    <p className="text-xl font-black bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
+                                        ₵{statusProduct.price.toFixed(2)}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Features - Horizontal */}
+                            <div className="flex items-center justify-center gap-4 mb-5 text-xs text-gray-500">
+                                <span className="flex items-center gap-1.5">
+                                    <span className="w-4 h-4 rounded-full bg-green-500 text-white flex items-center justify-center text-[8px] font-bold">✓</span>
+                                    QR Code
+                                </span>
+                                <span className="w-1 h-1 rounded-full bg-gray-300" />
+                                <span className="flex items-center gap-1.5">
+                                    <span className="w-4 h-4 rounded-full bg-green-500 text-white flex items-center justify-center text-[8px] font-bold">✓</span>
+                                    9:16 Format
+                                </span>
+                                <span className="w-1 h-1 rounded-full bg-gray-300" />
+                                <span className="flex items-center gap-1.5">
+                                    <span className="w-4 h-4 rounded-full bg-green-500 text-white flex items-center justify-center text-[8px] font-bold">✓</span>
+                                    HD Quality
+                                </span>
+                            </div>
+
+                            {/* Download Button */}
+                            <ProductPoster product={statusProduct} />
+                        </div>
                     </div>
                 </div>
             )}

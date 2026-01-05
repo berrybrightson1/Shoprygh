@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "@/lib/audit";
 
 export async function createCoupon(formData: FormData) {
     const session = await getSession();
@@ -30,6 +31,7 @@ export async function createCoupon(formData: FormData) {
                 expiresAt
             }
         });
+        await logActivity("COUPON_CREATED", `Created coupon ${code} (${type}: ${value})`, "COUPON");
     } catch (e) {
         // Unique constraint violation usually
         throw new Error("Coupon code already exists.");
@@ -46,10 +48,11 @@ export async function toggleCouponStatus(formData: FormData) {
     const isActive = formData.get("isActive") === "true";
 
     await prisma.coupon.update({
-        where: { id: couponId, storeId: session.storeId }, // Ensure ownership
+        where: { id: couponId, storeId: session.storeId },
         data: { isActive: !isActive }
     });
 
+    await logActivity("COUPON_UPDATED", `${!isActive ? 'Activated' : 'Deactivated'} coupon`, "COUPON", couponId);
     revalidatePath(`/${session.storeSlug}/admin/marketing`);
 }
 
@@ -63,5 +66,6 @@ export async function deleteCoupon(formData: FormData) {
         where: { id: couponId, storeId: session.storeId }
     });
 
+    await logActivity("COUPON_DELETED", `Deleted coupon`, "COUPON", couponId);
     revalidatePath(`/${session.storeSlug}/admin/marketing`);
 }

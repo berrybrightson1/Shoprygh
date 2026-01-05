@@ -20,7 +20,7 @@ export default function AdminRightSidebar({ user, logs }: { user: any, logs: any
                         {/* Avatar */}
                         <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-lg shadow-gray-200 overflow-hidden bg-gray-50 border-4 border-white">
                             <img
-                                src={user.image || `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(user.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                                src={user.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(user.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
                                 alt={user.name}
                                 className="w-full h-full object-cover"
                             />

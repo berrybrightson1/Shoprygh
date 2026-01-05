@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { deleteOrder, updateOrderStatus } from "@/app/[storeSlug]/(store)/actions"; // We'll assume these are available or use inline actions if preferred, but separate is cleaner.
 import { Trash2, CheckCircle2, XCircle, Clock, ShoppingBag } from "lucide-react";
 import { revalidatePath } from "next/cache";
+import ReportCustomerButton from "@/components/admin/ReportCustomerButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,10 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
     const orders = await prisma.order.findMany({
         where: { storeId: store.id }, // Filter by Store
         orderBy: { createdAt: 'desc' },
-        include: { items: true }
+        include: {
+            items: true,
+            customer: true // Include customer for reporting
+        }
     });
 
     const updateStatusWithStore = updateOrderStatus.bind(null, store.id);
@@ -65,15 +69,25 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                                         <div className="text-xs text-gray-500 font-medium">{new Date(order.createdAt).toLocaleTimeString()}</div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        {order.customerPhone ? (
-                                            <a
-                                                href={`tel:${order.customerPhone}`}
-                                                className="font-black text-gray-900 hover:text-brand-cyan hover:underline"
-                                            >
-                                                {order.customerPhone}
-                                            </a>
-                                        ) : (
-                                            <span className="text-gray-500 text-xs italic font-bold">N/A</span>
+                                        <div>
+                                            {order.customerPhone ? (
+                                                <a
+                                                    href={`tel:${order.customerPhone}`}
+                                                    className="font-black text-gray-900 hover:text-brand-cyan hover:underline"
+                                                >
+                                                    {order.customerPhone}
+                                                </a>
+                                            ) : (
+                                                <span className="text-gray-500 text-xs italic font-bold">N/A</span>
+                                            )}
+                                        </div>
+                                        {/* Trust & Safety Status Indicator */}
+                                        {order.customer && (
+                                            <div className="mt-1 flex items-center gap-1">
+                                                {order.customer.status === "BANNED" && <span className="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-black">BANNED</span>}
+                                                {order.customer.status === "RESTRICTED" && <span className="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded font-black">RESTRICTED</span>}
+                                                {order.customer.isVerified && <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-bold">VERIFIED</span>}
+                                            </div>
                                         )}
                                     </td>
                                     <td className="px-6 py-4">
@@ -102,6 +116,18 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex justify-end gap-2">
+                                            {/* Report Button (Trust & Safety) */}
+                                            {order.customerId && (
+                                                <>
+                                                    <ReportCustomerButton
+                                                        customerId={order.customerId}
+                                                        storeId={store.id}
+                                                        customerName={order.customer?.name || order.customerPhone || "Customer"}
+                                                    />
+                                                    <div className="w-px bg-gray-200 mx-1"></div>
+                                                </>
+                                            )}
+
                                             {/* Status Actions */}
                                             {order.status !== 'COMPLETED' && (
                                                 <form action={async () => {

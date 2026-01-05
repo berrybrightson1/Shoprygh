@@ -14,7 +14,7 @@ export default async function PlatformAdminPage() {
     // Check if user is platform admin
     const user = await prisma.user.findUnique({
         where: { email: session.email },
-        select: { isPlatformAdmin: true },
+        select: { isPlatformAdmin: true, name: true, image: true },
     });
 
     if (!user?.isPlatformAdmin) {
@@ -107,7 +107,7 @@ export default async function PlatformAdminPage() {
     });
 
     return (
-        <DashboardShell session={session} logs={logs as any}>
+        <DashboardShell session={session} user={user} logs={logs as any}>
             <div className="p-8 pl-20">
                 {/* Header */}
                 <div className="flex justify-between items-start mb-8">
