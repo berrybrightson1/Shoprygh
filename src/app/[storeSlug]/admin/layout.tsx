@@ -1,5 +1,6 @@
 import AdminSidebar from "@/components/AdminSidebar";
 import AdminRightSidebar from "@/components/AdminRightSidebar";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
@@ -58,12 +59,17 @@ export default async function AdminLayout({
                 <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-400/10 blur-[130px]" />
             </div>
 
-            {/* LEFT SIDEBAR - Navigation */}
-            {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdate?.createdAt} />}
+            {/* LEFT SIDEBAR - Navigation (Desktop Only) */}
+            <div className="hidden md:flex h-full">
+                {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdate?.createdAt} />}
+            </div>
 
-            <div className="flex-1 flex overflow-hidden relative z-10">
+            {/* MOBILE BOTTOM NAV */}
+            <MobileBottomNav storeSlug={storeSlug} />
+
+            <div className="flex-1 flex overflow-hidden relative z-10 text-gray-900">
                 {/* CENTER CONTENT */}
-                <main className="flex-1 overflow-y-auto p-4 md:p-8 no-scrollbar relative flex flex-col">
+                <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 no-scrollbar relative flex flex-col">
 
                     {children}
                 </main>

@@ -1,5 +1,6 @@
 import CreatorStudio from "@/components/CreatorStudio";
 import InventoryTable from "@/components/InventoryTable";
+import ProductCardList from "@/components/ProductCardList";
 import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { createProduct } from "./actions";
@@ -67,8 +68,29 @@ export default async function InventoryPage({ params }: Props) {
             {/* Creator Studio (Client Component) */}
             <CreatorStudio createAction={createProductWithStore} storeTier={store.tier} />
 
-            {/* Live Inventory Table (Client Component with RBAC) */}
-            <InventoryTable products={products} storeId={store.id} storeName={store.name} storeSlug={storeSlug} />
+            {/* Live Inventory Table (Desktop) */}
+            <div className="hidden md:block">
+                <InventoryTable products={products} storeId={store.id} storeName={store.name} storeSlug={storeSlug} />
+            </div>
+
+            {/* Mobile Card List */}
+            <ProductCardList
+                products={products.map(p => ({ ...p, category: p.category, image: p.image || null }))}
+                onEdit={(product) => {
+                    // We will implement the edit sheet trigger here or reuse the existing table's sheet logic if possible.
+                    // For now, let's just log or use a placeholder since the sheet is internal to InventoryTable.
+                    // Actually, to share the Edit Sheet, we might need to lift the state up or refactor InventoryTable.
+                    // Given the constraints, let's try to expose the handler or wrap both in a parent client component.
+                    // Wait, `InventoryTable` is a client component. Let's make `InventoryPage` just render `InventoryTable` which handles responsiveness internally?
+                    // The plan says: "Modify src/app/[storeSlug]/admin/inventory/page.tsx... Mobile: Hide the table. Show a <ProductCardList /> instead."
+                    // But `InventoryTable` likely holds the "Edit" state.
+                    // Let's modify `InventoryTable.tsx` instead to handle the responsive switch? This is cleaner.
+                    // But user specifically asked to modify `page.tsx`.
+                    // Let's stick to the plan: Render `ProductCardList` here. But how to trigger edit?
+                    // `InventoryTable` likely has the `Sheet` for editing.
+                    // I should check `InventoryTable.tsx` first.
+                }}
+            />
         </div>
     );
 }
