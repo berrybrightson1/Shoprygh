@@ -5,13 +5,18 @@ export type ActivityAction =
     // Auth
     | "LOGIN"
     | "LOGOUT"
-    // Products
-    | "PRODUCT_CREATED"
-    | "PRODUCT_UPDATED"
+    // Store
+    | "CREATE_STORE"
+    | "DELETE_STORE"
+    | "UPDATE_STORE_SETTINGS"
+    // Products (Legacy & New)
+    | "PRODUCT_CREATED" | "CREATE_PRODUCT"
+    | "PRODUCT_UPDATED" | "UPDATE_PRODUCT"
     | "PRODUCT_DELETED"
-    | "STOCK_UPDATED"
-    | "PRICE_UPDATED"
-    | "CATEGORY_UPDATED"
+    | "ARCHIVE_PRODUCT"
+    | "STOCK_UPDATED" | "UPDATE_STOCK"
+    | "PRICE_UPDATED" | "UPDATE_PRICE"
+    | "CATEGORY_UPDATED" | "UPDATE_CATEGORY"
     // Orders
     | "ORDER_CREATED"
     | "ORDER_UPDATED"
@@ -24,7 +29,6 @@ export type ActivityAction =
     // Settings
     | "PROFILE_UPDATED"
     | "SETTINGS_UPDATED"
-    | "UPDATE_STORE_SETTINGS"
     | "DELIVERY_ZONE_CREATED"
     | "DELIVERY_ZONE_UPDATED"
     | "DELIVERY_ZONE_DELETED"
