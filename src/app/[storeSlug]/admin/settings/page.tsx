@@ -2,11 +2,12 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { ArrowLeft, Crown, Camera, Building2, Phone, MapPin } from "lucide-react";
+import { ArrowLeft, Crown } from "lucide-react";
 import { updateStoreTier } from "./actions";
-import { updateStoreProfile } from "./profile-actions";
 import ProfileEditor from "./ProfileEditor";
+import UserProfileEditor from "@/components/UserProfileEditor";
 import PasswordUpdateForm from "./PasswordUpdateForm";
+import ActivityLogFeed from "@/components/ActivityLogFeed";
 
 export default async function SettingsPage({ params }: { params: Promise<{ storeSlug: string }> }) {
     const session = await getSession();
@@ -51,117 +52,134 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-4xl mx-auto">
-                <Link
-                    href={`/${storeSlug}/admin/inventory`}
-                    className="inline-flex items-center gap-2 text-gray-600 hover:text-black transition mb-6"
-                >
-                    <ArrowLeft size={20} />
-                    Back to Dashboard
-                </Link>
+        <div className="p-4 sm:p-8 max-w-[1400px] mx-auto space-y-8">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-8">
+                <div>
+                    <Link
+                        href={`/${storeSlug}/admin/inventory`}
+                        className="inline-flex items-center gap-2 text-gray-400 hover:text-black transition mb-4 font-bold text-xs uppercase tracking-wide"
+                    >
+                        <ArrowLeft size={14} strokeWidth={3} />
+                        Back to Dashboard
+                    </Link>
+                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+                        Settings
+                    </h1>
+                    <p className="text-lg text-gray-500 font-medium mt-2">Manage your store preferences and account details.</p>
+                </div>
+            </header>
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 className="text-3xl font-black text-gray-900">Store Settings</h1>
-                            <p className="text-gray-700 mt-1 font-semibold">{store.name}</p>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left Column: Store & Personal */}
+                <div className="lg:col-span-2 space-y-8">
+                    {/* Store Profile */}
+                    <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
+                        <div className="mb-8">
+                            <h2 className="text-2xl font-black text-gray-900">Store Profile</h2>
+                            <p className="text-gray-400 font-medium">Public information visible to your customers.</p>
                         </div>
-                        <div className="text-right">
-                            <p className="text-xs font-extrabold text-gray-800 uppercase tracking-wide">Store URL</p>
-                            <p className="text-sm text-black font-black">shopry.app/{store.slug}</p>
+                        <ProfileEditor store={store} />
+                    </section>
+
+                    {/* Personal Profile */}
+                    <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
+                        <div className="mb-8">
+                            <h2 className="text-2xl font-black text-gray-900">Personal Profile</h2>
+                            <p className="text-gray-400 font-medium">Your account details and login information.</p>
                         </div>
-                    </div>
-                    <p className="text-gray-700 mb-8">Manage your subscription and account settings</p>
+                        <div className="space-y-8">
+                            <UserProfileEditor user={{ name: session.user?.name || "User", image: session.user?.image || null, email: session.user?.email || "" }} />
+                            <div className="h-px bg-gray-100" />
+                            <PasswordUpdateForm userEmail={session.email} />
+                        </div>
+                    </section>
+                </div>
 
-                    {/* Store Profile Editor */}
-                    {/* Build: 2026-01-03 19:48 */}
-                    <ProfileEditor store={store} />
+                {/* Right Column: Subscription & Activity */}
+                <div className="space-y-8">
+                    {/* Subscription Card */}
+                    <div className="bg-gray-900 text-white rounded-[32px] p-8 shadow-2xl shadow-gray-900/20 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
 
-                    {/* Current Plan */}
-                    <div className="mb-8 p-6 bg-brand-cyan/5 border border-brand-cyan/20 rounded-xl">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-xs font-extrabold text-gray-800 uppercase tracking-wide mb-1">Current Plan</p>
-                                <p className="text-2xl font-black text-gray-900">{tierInfo[store.tier as keyof typeof tierInfo].name}</p>
-                                <p className="text-black mt-1 font-black text-lg">{tierInfo[store.tier as keyof typeof tierInfo].price}</p>
+                        <div className="flex items-center gap-3 mb-8 relative z-10">
+                            <div className="p-2.5 bg-white/10 rounded-xl backdrop-blur-md">
+                                <Crown size={24} className="text-brand-orange" />
                             </div>
-                            <Crown className="text-brand-orange" size={40} />
+                            <div>
+                                <h2 className="text-lg font-black leading-none">Subscription</h2>
+                                <p className="text-gray-400 text-sm font-medium mt-1">Manage your billing</p>
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Plan Selection */}
-                    <h2 className="text-xl font-bold text-gray-900 mb-4">Change Plan</h2>
-                    <form action={updateStoreTier} className="space-y-4">
-                        <input type="hidden" name="storeId" value={store.id} />
-                        <input type="hidden" name="currentTier" value={store.tier} />
+                        <div className="mb-8 p-6 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between relative z-10">
+                            <div>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Current Plan</p>
+                                <p className="text-2xl font-black">{tierInfo[store.tier as keyof typeof tierInfo].name}</p>
+                            </div>
+                            <p className="text-brand-cyan font-black text-xl">{tierInfo[store.tier as keyof typeof tierInfo].price}</p>
+                        </div>
 
-                        {Object.entries(tierInfo).map(([tier, info]) => (
-                            <label
-                                key={tier}
-                                className={`relative flex items-start p-6 border-2 rounded-xl cursor-pointer transition-colors ${store.tier === tier
-                                    ? "border-brand-cyan bg-brand-cyan/5"
-                                    : "border-gray-200 hover:border-black"
-                                    }`}
-                            >
-                                <div className="flex items-center h-5">
+                        <form action={updateStoreTier} className="space-y-3 relative z-10">
+                            <input type="hidden" name="storeId" value={store.id} />
+                            <input type="hidden" name="currentTier" value={store.tier} />
+
+                            {Object.entries(tierInfo).map(([tier, info]) => (
+                                <label
+                                    key={tier}
+                                    className={`relative flex items-center p-4 border rounded-xl cursor-pointer transition-all group ${store.tier === tier
+                                        ? "border-brand-cyan bg-brand-cyan/10"
+                                        : "border-white/10 hover:bg-white/5"
+                                        }`}
+                                >
                                     <input
-                                        id={`plan-${tier}`}
-                                        name="tier"
                                         type="radio"
+                                        name="tier"
                                         value={tier}
                                         defaultChecked={store.tier === tier}
-                                        className="focus:ring-black h-4 w-4 text-black border-gray-300"
+                                        className="sr-only"
                                     />
-                                </div>
-                                <div className="ml-4 flex-1">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <label htmlFor={`plan-${tier}`} className="font-bold text-lg text-gray-900">
-                                            {info.name}
-                                        </label>
-                                        <span className="text-2xl font-black text-brand-orange">{info.price}</span>
-                                    </div>
-                                    <ul className="space-y-1 text-sm text-gray-700">
-                                        {info.features.map((feature, idx) => (
-                                            <li key={idx} className="flex items-center gap-2">
-                                                <span className="text-brand-cyan font-bold">✓</span>
-                                                <span className="text-gray-900">{feature}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    {store.tier === tier && (
-                                        <div className="mt-3 inline-block px-3 py-1 bg-black text-white text-xs font-bold rounded-full">
-                                            CURRENT PLAN
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-center">
+                                            <span className={`font-bold ${store.tier === tier ? 'text-brand-cyan' : 'text-gray-300'}`}>{info.name}</span>
+                                            {store.tier === tier && <div className="w-2 h-2 bg-brand-cyan rounded-full shadow-[0_0_8px_rgba(6,182,212,0.8)]" />}
                                         </div>
-                                    )}
-                                </div>
-                            </label>
-                        ))}
+                                        <div className="text-[10px] text-gray-500 font-medium mt-0.5">{info.price}</div>
+                                    </div>
+                                </label>
+                            ))}
 
-                        <button
-                            type="submit"
-                            className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition shadow-lg mt-6"
-                        >
-                            Update Plan & Proceed to Payment
-                        </button>
-                    </form>
+                            <button
+                                type="submit"
+                                className="w-full bg-white text-black py-4 rounded-xl font-black hover:bg-gray-100 transition shadow-lg mt-4 active:scale-[0.98]"
+                            >
+                                Update Plan
+                            </button>
+                        </form>
+                    </div>
 
-                    {/* Password Update */}
-                    <PasswordUpdateForm userEmail={session.email} />
-
-                    {/* Payment Instructions */}
-                    <div className="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
-                        <h3 className="font-bold text-gray-900 mb-2">Payment Instructions</h3>
-                        <p className="text-sm text-gray-700 mb-4">
-                            After selecting your plan, you'll be redirected to Paystack to complete payment via Mobile Money, Card, or Bank Transfer.
-                        </p>
-                        <p className="text-xs text-gray-500">
-                            <strong>Note:</strong> Integrations are being processed. For now, manual payment is required.
-                            Contact support@shopry.app with your payment reference.
-                        </p>
+                    {/* Activity Feed */}
+                    <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="font-black text-gray-900">Recent Activity</h3>
+                            <Link href="#" className="text-xs font-bold text-gray-400 hover:text-black">View All</Link>
+                        </div>
+                        <div className="-mx-4">
+                            <SellerActivityFeed userId={session.id} />
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     );
+}
+
+async function SellerActivityFeed({ userId }: { userId: string }) {
+    const logs = await prisma.auditLog.findMany({
+        where: { userId },
+        take: 10,
+        orderBy: { createdAt: "desc" },
+        include: { user: { select: { name: true, email: true } } }
+    });
+
+    return <ActivityLogFeed logs={logs as any} />;
 }

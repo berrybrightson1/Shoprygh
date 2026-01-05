@@ -27,6 +27,12 @@ model Store {
   suspensionReason String?
   suspendedAt      DateTime?
   termsAcceptedAt  DateTime?
+
+  // Verification (Ghana Pro)
+  isVerified       Boolean            @default(false)
+  kycDocumentUrl   String?
+  verificationStatus VerificationStatus @default(PENDING)
+  deliveryZones    DeliveryZone[]
   
   users       User[]
   products    Product[]
@@ -64,7 +70,7 @@ model Customer {
   notes       String?  @db.Text
   
   storeId     String
-  store       Store    @relation(fields: [storeId], references: [id])
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   orders      Order[]
   
   createdAt   DateTime @default(now())
@@ -88,7 +94,7 @@ model Coupon {
   isActive    Boolean  @default(true)
   
   storeId     String
-  store       Store    @relation(fields: [storeId], references: [id])
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -112,7 +118,7 @@ model PayoutRequest {
   adminNote   String?  // Why it was rejected/approved
   
   storeId     String
-  store       Store    @relation(fields: [storeId], references: [id])
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -121,13 +127,13 @@ model PayoutRequest {
 model WalletTransaction {
   id          String   @id @default(cuid())
   amount      Decimal
-  type        String   // SALE, PAYOUT, REFUND, FEE
+  type        String   // SALE, Payout, REFUND, FEE
   description String
   
   referenceId String?  // ID of related Order or Payout
   
   storeId     String
-  store       Store    @relation(fields: [storeId], references: [id])
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   
   createdAt   DateTime @default(now())
 }
@@ -148,13 +154,30 @@ model User {
   email     String   @unique
   password  String   // Hashed
   name      String
+  image     String?  // Avatar URL
   role      String   @default("STAFF") // "OWNER" | "STAFF"
   isPlatformAdmin Boolean @default(false)
   
   storeId   String
-  store     Store    @relation(fields: [storeId], references: [id])
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   
+  auditLogs AuditLog[]
+
   createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  action      String   // e.g., "LOGIN", "UPDATED_PROFILE"
+  description String?
+  metadata    Json?    // Old values, IP, etc.
+  
+  entityId    String?  // ID of affected item
+  entityType  String?  // STORE, PRODUCT, ORDER
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Product {
@@ -167,6 +190,7 @@ model Product {
   // Pricing
   priceRetail    Decimal
   priceWholesale Decimal?
+  costPrice      Decimal?  @default(0.00) // Profit Calculation (Ghana Pro)
   
   // Logistics
   sku            String?
@@ -184,10 +208,13 @@ model Product {
   // Bundle Logic
   isBundle       Boolean  @default(false)
   bundleItems    BundleItem[] @relation("ParentBundle")
+
+  // Lifecycle
+  isArchived     Boolean  @default(false)
   
   // Tenancy
   storeId        String
-  store          Store    @relation(fields: [storeId], references: [id])
+  store          Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   
   createdAt      DateTime @default(now())
   orderItems     OrderItem[]
@@ -212,7 +239,7 @@ model BundleItem {
   id        String  @id @default(cuid())
   
   bundleId  String
-  bundle    Product @relation("ParentBundle", fields: [bundleId], references: [id])
+  bundle    Product @relation("ParentBundle", fields: [bundleId], references: [id], onDelete: Cascade)
   
   productId String  
   
@@ -234,7 +261,7 @@ model Order {
   
   // Tenancy
   storeId   String
-  store     Store     @relation(fields: [storeId], references: [id])
+  store     Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -243,7 +270,7 @@ model Order {
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   
   productId String
   product   Product @relation(fields: [productId], references: [id])
@@ -256,7 +283,7 @@ model OrderItem {
 model Subscription {
   id                  String   @id @default(cuid())
   storeId             String
-  store               Store    @relation(fields: [storeId], references: [id])
+  store               Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   
   tier                StoreTier
   status              SubscriptionStatus @default(ACTIVE)
@@ -287,4 +314,22 @@ enum StoreTier {
   HUSTLER
   PRO
   WHOLESALER
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// --- Logistics Models ---
+
+model DeliveryZone {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String   // e.g., "East Legon"
+  fee         Decimal
+  description String?
+  createdAt   DateTime @default(now())
 }

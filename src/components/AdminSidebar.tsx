@@ -2,19 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield, Sparkles, Wallet, Tag } from "lucide-react";
-import { useState } from "react";
+import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield, Sparkles, Wallet, Tag, Truck, PanelLeftClose, ChevronRight, LayoutDashboard } from "lucide-react";
+import { useState, useEffect } from "react";
 import { logout } from "@/app/[storeSlug]/admin/login/actions";
 
 export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate }: { user: any, storeTier?: string, latestUpdateDate?: Date }) {
     const pathname = usePathname();
     const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [isDesktopHidden, setIsDesktopHidden] = useState(true); // Hidden by default on desktop
 
     // Dynamic storeSlug extraction
     const storeSlug = pathname?.split('/')[1] || 'sh';
 
-    // Fallback if no user (should be caught by middleware)
+    // Fallback if no user
     const currentUser = user || { name: "", role: "", email: "", id: "" };
     const initials = currentUser.name ? currentUser.name.charAt(0) : "A";
 
@@ -36,8 +37,12 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                     </div>
                 </div>
 
-                <div className="w-9 h-9 rounded-2xl bg-purple-600 flex items-center justify-center font-black text-white text-sm shadow-lg shadow-purple-200">
-                    {initials}
+                <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
+                    <img
+                        src={currentUser.image || `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(currentUser.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                        alt={currentUser.name}
+                        className="w-full h-full object-cover"
+                    />
                 </div>
             </div>
 
@@ -49,22 +54,37 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                 />
             )}
 
-            <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-white/60 backdrop-blur-2xl border-r border-white/50 flex flex-col h-screen text-gray-600 shadow-2xl shadow-gray-200/50 transition-transform duration-300 ease-in-out md:translate-x-0 md:fixed md:top-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+            {/* Desktop Toggle Button - More Obvious */}
+            <button
+                onClick={() => setIsDesktopHidden(!isDesktopHidden)}
+                className={`hidden md:flex fixed top-4 z-50 bg-gray-900 text-white rounded-full p-3 shadow-lg hover:bg-gray-800 hover:scale-105 transition-all duration-200 items-center justify-center ${isDesktopHidden ? 'left-4' : 'left-[304px]'}`}
+                title={isDesktopHidden ? "Open Menu" : "Close Menu"}
+            >
+                {isDesktopHidden ? <Menu size={20} /> : <PanelLeftClose size={20} />}
+            </button>
+
+            {/* SIDEBAR MAIN */}
+            {/* Note: On desktop (md), we remove 'fixed' and let it be a flex item in the layout */}
+            <aside className={`fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-200 flex flex-col h-screen text-gray-600 transition-all duration-300 ease-in-out md:relative md:flex shrink-0 ${isOpen ? "translate-x-0" : "-translate-x-full"} ${isDesktopHidden ? 'md:w-0 md:overflow-hidden' : 'md:w-72 md:translate-x-0'}`}>
 
                 {/* Header */}
                 <div className="p-8 flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-2xl shadow-xl shadow-purple-500/20 flex items-center justify-center font-black text-2xl">
-                        S
+                    <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-gray-200 border border-gray-100 bg-white">
+                        <img
+                            src={`https://api.dicebear.com/9.x/notionists/svg?seed=Shopry&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                            alt="Shopry"
+                            className="w-full h-full object-cover"
+                        />
                     </div>
                     <div>
-                        <span className="font-black text-2xl text-gray-900 block leading-none tracking-tight">Shopry</span>
+                        <span className="font-black text-xl text-gray-900 block leading-none tracking-tight">Shopry</span>
                         <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1 block">Seller Hub</span>
                     </div>
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-4 space-y-2 mt-2 overflow-y-auto custom-scrollbar">
-                    <div className="px-4 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 mt-2">Menu</div>
+                <nav className="flex-1 px-4 space-y-1 mt-2 overflow-y-auto custom-scrollbar">
+                    <div className="px-4 text-xs font-black text-gray-300 uppercase tracking-widest mb-3 mt-2">Menu</div>
 
                     <NavLink
                         href={`/${storeSlug}`}
@@ -74,7 +94,14 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         isExternal
                     />
 
-                    <div className="h-px bg-gray-100 mx-4 my-3" />
+                    <div className="h-4" /> {/* Spacer */}
+
+                    <NavLink
+                        href={`/${storeSlug}/admin`}
+                        icon={<LayoutDashboard size={20} />}
+                        label="Overview"
+                        active={pathname === `/${storeSlug}/admin` || pathname === `/${storeSlug}/admin/`}
+                    />
 
                     <NavLink
                         href={`/${storeSlug}/admin/inventory`}
@@ -83,7 +110,6 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname?.startsWith(`/${storeSlug}/admin/inventory`)}
                     />
 
-                    {/* Show these for ALL admin users */}
                     <NavLink
                         href={`/${storeSlug}/admin/orders`}
                         icon={<ShoppingBag size={20} />}
@@ -124,13 +150,20 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname?.startsWith(`/${storeSlug}/admin/finance`)}
                     />
 
-                    <div className="h-px bg-gray-100 mx-4 my-3" />
+                    <div className="h-4" /> {/* Spacer */}
 
                     <NavLink
                         href={`/${storeSlug}/admin/settings`}
                         icon={<Store size={20} />}
                         label="Settings"
-                        active={pathname?.startsWith(`/${storeSlug}/admin/settings`)}
+                        active={pathname?.startsWith(`/${storeSlug}/admin/settings`) && !pathname?.includes("/delivery")}
+                    />
+
+                    <NavLink
+                        href={`/${storeSlug}/admin/settings/delivery`}
+                        icon={<Truck size={20} />}
+                        label="Delivery"
+                        active={pathname?.startsWith(`/${storeSlug}/admin/settings/delivery`)}
                     />
 
 
@@ -140,44 +173,32 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                             <div className="h-px bg-gray-100 mx-4 my-3" />
                             <Link
                                 href="/platform-admin"
-                                className="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-500 hover:bg-white hover:text-purple-600 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 group border border-transparent hover:border-purple-100"
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-brand-cyan transition-all duration-200 group"
                             >
-                                <span className="text-gray-400 group-hover:text-purple-500 transition-colors">
+                                <span className="text-gray-400 group-hover:text-brand-cyan transition-colors">
                                     <Shield size={20} />
                                 </span>
-                                <span className="font-bold">Platform Admin</span>
+                                <span className="font-bold text-sm">Platform Admin</span>
                             </Link>
                         </>
                     )}
                 </nav>
 
-                {/* User Profile / Switcher */}
-                <div className="relative p-6 border-t border-white/50 bg-white/30 backdrop-blur-sm mt-auto">
-
-                    {/* Switcher Popup */}
-                    {isSwitcherOpen && (
-                        <div className="absolute bottom-full left-4 right-4 mb-4 bg-white border border-gray-100 rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 z-50">
-                            <div className="p-4 border-b border-gray-50 bg-gray-50/50">
-                                <p className="text-xs font-black text-gray-400 uppercase tracking-wider">Account</p>
-                            </div>
-
-                            <div className="p-2 border-t border-gray-50">
-                                <form action={logout}>
-                                    <button className="w-full text-xs font-bold text-red-500 hover:bg-red-50 hover:text-red-600 py-3 rounded-xl flex items-center justify-center gap-2 transition">
-                                        <LogOut size={14} /> Sign Out
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Profile Trigger */}
+                {/* User Profile / Switcher - Simplified for Design System */}
+                <div className="p-4 border-t border-gray-200">
                     <button
                         onClick={() => setIsSwitcherOpen(!isSwitcherOpen)}
-                        className={`w-full flex items-center gap-3 p-2.5 rounded-2xl transition-all border ${isSwitcherOpen ? "bg-white border-gray-100 shadow-md" : "hover:bg-white/60 hover:border-white hover:shadow-sm border-transparent"}`}
+                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-gray-50 ${isSwitcherOpen ? "bg-gray-50" : ""}`}
                     >
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-purple-500/20">
-                            {initials}
+                        <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shrink-0 border border-gray-200">
+                            <img
+                                src={currentUser.image && currentUser.image.length > 0
+                                    ? currentUser.image
+                                    : `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(currentUser.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`
+                                }
+                                alt={currentUser.name}
+                                className="w-full h-full object-cover"
+                            />
                         </div>
                         <div className="text-left flex-1 min-w-0">
                             <p className="text-sm font-black text-gray-900 leading-tight truncate">{currentUser.name || "User"}</p>
@@ -185,6 +206,17 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         </div>
                         <ChevronUp size={16} className={`text-gray-400 transition-transform duration-300 ${isSwitcherOpen ? "rotate-0" : "rotate-180"}`} />
                     </button>
+
+                    {/* Switcher Dropdown */}
+                    {isSwitcherOpen && (
+                        <div className="mt-2 text-center">
+                            <form action={logout}>
+                                <button className="w-full text-xs font-bold text-red-500 hover:bg-red-50 py-3 rounded-xl flex items-center justify-center gap-2 transition">
+                                    <LogOut size={14} /> Sign Out
+                                </button>
+                            </form>
+                        </div>
+                    )}
                 </div>
             </aside>
         </>
@@ -196,31 +228,36 @@ function NavLink({ href, icon, label, active = false, isExternal = false }: { hr
         <Link
             href={href}
             target={isExternal ? "_blank" : undefined}
-            className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group relative ${active
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20 font-black overflow-hidden"
-                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 group-hover:translate-x-1"
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative mb-1 ${active
+                ? "bg-gray-900 text-white shadow-lg shadow-gray-900/20"
+                : "text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium"
                 }`}
         >
-            {active && <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 mix-blend-multiply opacity-50" />}
-
-            <span className={`relative z-10 transition-colors ${active ? "text-white" : "text-gray-400 group-hover:text-gray-900"}`}>
+            <span className={`relative z-10 transition-colors ${active ? "text-brand-orange" : "text-gray-400 group-hover:text-gray-900"}`}>
                 {icon}
             </span>
-            <span className={`relative z-10 font-bold ${active ? "text-white" : "text-gray-700 group-hover:text-gray-900"}`}>{label}</span>
+            <span className={`relative z-10 text-sm tracking-tight ${active ? "font-black" : ""}`}>{label}</span>
+
+            {active && (
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-brand-orange rounded-l-full" />
+            )}
         </Link>
     );
 }
 
 function UpdatesNavLink({ href, latestUpdateDate, active }: { href: string, latestUpdateDate?: Date, active?: boolean }) {
+    const [isMounted, setIsMounted] = useState(false);
     const [lastRead, setLastRead] = useState<number>(0);
 
-    // Initialize from localStorage on mount
-    useState(() => {
+    // Set mounted state after hydration
+    useEffect(() => {
+        setIsMounted(true);
+        // Initialize from localStorage on mount
         if (typeof window !== 'undefined') {
             const stored = localStorage.getItem('lastReadUpdates');
             if (stored) setLastRead(parseInt(stored));
         }
-    });
+    }, []);
 
     const hasNewUpdates = latestUpdateDate &&
         (new Date().getTime() - new Date(latestUpdateDate).getTime() < 3 * 24 * 60 * 60 * 1000) &&
@@ -242,8 +279,8 @@ function UpdatesNavLink({ href, latestUpdateDate, active }: { href: string, late
                 label="Updates"
                 active={active}
             />
-            {hasNewUpdates && (
-                <span className="absolute top-3 right-4 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white animate-pulse pointer-events-none shadow-sm" />
+            {isMounted && hasNewUpdates && (
+                <span className="absolute top-3 right-4 w-2 h-2 bg-brand-cyan rounded-full border border-white" />
             )}
         </div>
     );

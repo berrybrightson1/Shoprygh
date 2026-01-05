@@ -41,18 +41,21 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
     };
 
     return (
-        <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
+        <div className="bg-white p-6 rounded-2xl border border-gray-200 mb-8">
             {/* Header with Save Button */}
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h2 className="text-2xl font-black text-gray-900">Store Profile</h2>
+                    <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                        <Building2 size={24} className="text-gray-400" />
+                        Store Profile
+                    </h2>
                     <p className="text-sm text-gray-600 mt-1">Update your store information and branding</p>
                 </div>
                 <button
                     type="submit"
                     form="profile-form"
                     disabled={isSubmitting}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-600/20 hover:shadow-xl hover:bg-blue-700 transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-gray-200 hover:shadow-xl hover:bg-gray-800 transition-all disabled:opacity-50"
                 >
                     <Save size={18} />
                     {isSubmitting ? "Saving..." : "Save Changes"}

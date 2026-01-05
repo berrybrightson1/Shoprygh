@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "@/lib/audit";
 
 export async function createProduct(storeId: string, formData: FormData) {
     const name = formData.get("name") as string;
@@ -43,7 +44,7 @@ export async function createProduct(storeId: string, formData: FormData) {
     const variantsJson = formData.get("variants") as string;
     const variantsData = variantsJson ? JSON.parse(variantsJson) : []; // Expecting [{name, price, stockQty, sku}]
 
-    await prisma.product.create({
+    const product = await prisma.product.create({
         data: {
             name,
             priceRetail,
@@ -69,6 +70,8 @@ export async function createProduct(storeId: string, formData: FormData) {
         }
     });
 
+    await logActivity("CREATE_PRODUCT", `Created product: ${name}`, "PRODUCT", product.id, { price: priceRetail, stock: stockQty });
+
     revalidatePath(`/`, 'layout'); // Revalidate everything to be safe 
 }
 
@@ -76,7 +79,13 @@ export async function deleteProduct(storeId: string, formData: FormData) {
     const id = formData.get("id") as string;
     if (!id) return;
     // Ensure product belongs to store
-    await prisma.product.deleteMany({ where: { id, storeId } });
+    // Ensure product belongs to store
+    // Ensure product belongs to store
+    await prisma.product.updateMany({
+        where: { id, storeId },
+        data: { isArchived: true }
+    });
+    await logActivity("ARCHIVE_PRODUCT", `Archived product ${id}`, "PRODUCT", id);
     revalidatePath(`/`); // Broad revalidation
 }
 

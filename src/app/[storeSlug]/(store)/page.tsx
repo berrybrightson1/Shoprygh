@@ -22,7 +22,10 @@ export default async function StorePage({ params }: Props) {
     }
 
     const products = await prisma.product.findMany({
-        where: { storeId: store.id },
+        where: {
+            storeId: store.id,
+            isArchived: false
+        },
         orderBy: { createdAt: "desc" }
     });
 

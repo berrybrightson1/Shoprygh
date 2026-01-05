@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Search, ShoppingBag, Plus, Home, Heart, User, SlidersHorizontal, ArrowRight, UserCircle2 } from "lucide-react";
+import { Search, ShoppingBag, Plus, Home, Heart, User, SlidersHorizontal, ArrowRight, UserCircle2, Zap } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import Link from "next/link";
 import CartDrawer from "./CartDrawer";
+import { useLikesStore } from "@/store/likes";
 
 // Quick augmentation for the scroll ref hack
 declare global {
@@ -13,8 +14,6 @@ declare global {
         categoryScrollContainer?: HTMLDivElement;
     }
 }
-
-import { useLikesStore } from "@/store/likes";
 
 function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }) {
     const addItem = useCartStore((state) => state.addItem);
@@ -29,10 +28,13 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
     return (
         <div className="group relative flex flex-col h-full animate-in fade-in zoom-in duration-300">
             <Link href={`/${storeSlug}/product/${product.id}`} className="block">
-                <div className="relative aspect-[4/5] bg-gray-100 rounded-[24px] overflow-hidden mb-3">
+                <div className="relative aspect-[4/5] bg-gray-100 rounded-[28px] overflow-hidden mb-3 shadow-sm border border-gray-100">
                     {/* Image */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={product.image || "/placeholder.png"} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 shadow-sm" alt={product.name} />
+                    <img src={product.image || "/placeholder.png"} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={product.name} />
+
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                     {/* Heart Button */}
                     <button
@@ -48,16 +50,16 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
                             });
                         }}
                         title={isLiked ? "Unlike" : "Like"}
-                        className={`absolute top-3 right-3 w-8 h-8 backdrop-blur-sm rounded-full flex items-center justify-center transition z-10 ${isLiked
-                            ? "bg-red-50 text-red-500 hover:bg-red-100"
-                            : "bg-white/80 text-gray-600 hover:bg-white hover:text-red-500"
+                        className={`absolute top-3 right-3 w-9 h-9 backdrop-blur-md rounded-full flex items-center justify-center transition-all z-10 active:scale-90 ${isLiked
+                            ? "bg-white text-red-500 shadow-lg shadow-red-500/20"
+                            : "bg-white/60 text-gray-700 hover:bg-white hover:text-red-500"
                             }`}
                     >
-                        <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
+                        <Heart size={18} className={isLiked ? "fill-current" : ""} strokeWidth={2.5} />
                     </button>
 
                     {/* Price Tag */}
-                    <div className="absolute bottom-3 left-3 bg-black text-white text-xs font-bold px-3 py-1.5 rounded-full z-10">
+                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-gray-900 text-xs font-black px-3 py-1.5 rounded-full z-10 shadow-lg shadow-black/5">
                         ₵{price.toFixed(0)}
                     </div>
 
@@ -70,29 +72,25 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
                             addItem({ ...product, priceRetail: price });
                             toggleCart();
                         }}
-                        className="absolute bottom-3 right-3 bg-white text-black w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10"
+                        className="absolute bottom-3 right-3 bg-gray-900 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg shadow-gray-900/20 hover:scale-110 active:scale-95 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10"
                     >
-                        <Plus size={16} />
+                        <Plus size={18} strokeWidth={3} />
                     </button>
                 </div>
 
-                <div className="space-y-1 px-1">
-                    <h3 className="font-bold text-gray-900 text-sm leading-tight line-clamp-2 hover:text-brand-orange transition-colors">{product.name}</h3>
+                <div className="space-y-1.5 px-1">
+                    <h3 className="font-bold text-gray-900 text-[13px] leading-tight line-clamp-2 group-hover:text-brand-purple transition-colors">{product.name}</h3>
+                    {/* Store Name & Colors */}
+                    <div className="flex items-center justify-between">
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{product.category || 'General'}</span>
+                        {/* Mock Colors */}
+                        <div className="flex -space-x-1">
+                            <div className="w-2.5 h-2.5 rounded-full bg-purple-400 border border-white"></div>
+                            <div className="w-2.5 h-2.5 rounded-full bg-orange-400 border border-white"></div>
+                        </div>
+                    </div>
                 </div>
             </Link>
-
-            <div className="flex items-center gap-1.5 pt-1">
-                <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-[8px] font-bold text-black">A</span>
-                </div>
-                <span className="text-xs text-gray-900 font-medium">{product.storeName || 'Seller Hub'}</span>
-
-                {/* Color Swatches (Mock) */}
-                <div className="flex -space-x-1 ml-auto">
-                    <div className="w-3 h-3 rounded-full bg-brand-cyan border border-white"></div>
-                    <div className="w-3 h-3 rounded-full bg-brand-orange border border-white"></div>
-                </div>
-            </div>
         </div>
     );
 }
@@ -107,8 +105,14 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug }: 
     const isCartOpen = useCartStore((state) => state.isOpen);
     const [mounted, setMounted] = useState(false);
 
+    // Header Scroll Effect
+    const [isScrolled, setIsScrolled] = useState(false);
+
     useEffect(() => {
         setMounted(true);
+        const handleScroll = () => setIsScrolled(window.scrollY > 10);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const filteredProducts = initialProducts
@@ -124,20 +128,36 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug }: 
         });
 
     return (
-        <>
+        <div className="min-h-screen bg-white pb-32">
             {/* Header / Top Bar */}
-            <div className="pt-6 pb-2 bg-white sticky top-0 z-30">
+            <div className={`sticky top-0 z-30 transition-all duration-300 ${isScrolled ? 'bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm pt-2 pb-2' : 'bg-white pt-6 pb-2'}`}>
                 <div className="px-5 mb-4 flex justify-between items-center">
-                    {/* Logo / Menu */}
-                    <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">All</div>
+                    {/* Logo / Brand */}
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center font-black text-xs shadow-lg shadow-gray-200">
+                            <Zap size={18} className="fill-white" />
+                        </div>
+                        <span className={`font-black text-lg tracking-tight text-gray-900 transition-opacity ${isScrolled ? 'opacity-100' : 'opacity-100'}`}>Store</span>
+                    </div>
 
-                    {/* Centered or Right Actions */}
-                    <div className="flex gap-2">
-                        {/* Cart */}
-                        <button title="Cart" className="relative w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition" onClick={toggleCart}>
-                            <ShoppingBag className="text-gray-900" size={18} />
+                    {/* Actions */}
+                    <div className="flex gap-3">
+                        <button
+                            aria-label="Sort products"
+                            onClick={() => {
+                                const next = sortMode === 'newest' ? 'price_asc' : sortMode === 'price_asc' ? 'price_desc' : 'newest';
+                                setSortMode(next);
+                            }}
+                            className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all ${sortMode !== 'newest' ? 'bg-gray-900 border-gray-900 text-white' : 'bg-gray-50 border-transparent hover:bg-gray-100 text-gray-600'
+                                }`}
+                        >
+                            <SlidersHorizontal size={18} />
+                        </button>
+
+                        <button aria-label="Cart" title="Cart" className="relative w-10 h-10 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center transition-all group" onClick={toggleCart}>
+                            <ShoppingBag className="text-gray-900 group-hover:scale-110 transition-transform" size={18} />
                             {mounted && cartItems.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold border-2 border-white animate-in zoom-in">
+                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white animate-in zoom-in shadow-sm">
                                     {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
                                 </span>
                             )}
@@ -145,48 +165,35 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug }: 
                     </div>
                 </div>
 
-                <div className="px-5 mb-4 flex gap-3 items-center">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <div className="px-5 mb-4">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors" size={18} />
                         <input
                             onChange={(e) => setSearchQuery(e.target.value)}
                             value={searchQuery}
                             type="text"
-                            placeholder="Search..."
-                            className="w-full bg-gray-50 rounded-full py-3 pl-12 pr-4 text-sm font-medium outline-none border border-transparent focus:border-gray-200 transition-all placeholder:text-gray-400"
+                            placeholder="Find your favorites..."
+                            className="w-full bg-gray-50/80 hover:bg-gray-50 focus:bg-white rounded-[20px] py-3.5 pl-11 pr-4 text-sm font-bold text-gray-900 outline-none border border-transparent focus:border-purple-100 focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-gray-400"
                         />
                     </div>
-                    <button
-                        onClick={() => {
-                            const next = sortMode === 'newest' ? 'price_asc' : sortMode === 'price_asc' ? 'price_desc' : 'newest';
-                            setSortMode(next);
-                        }}
-                        className={`w-11 h-11 flex items-center justify-center rounded-full border transition ${sortMode !== 'newest' ? 'bg-black border-black text-white' : 'bg-gray-50 border-transparent hover:border-gray-200 text-gray-600'
-                            }`}
-                        title={`Sort: ${sortMode === 'newest' ? 'Newest' : sortMode === 'price_asc' ? 'Price: Low to High' : 'Price: High to Low'}`}
-                    >
-                        <SlidersHorizontal size={18} />
-                    </button>
                 </div>
 
                 {/* Categories */}
                 <div className="relative group">
                     {/* Gradient Masks */}
-                    <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-                    <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+                    <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+                    <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
                     <div
                         ref={(el) => { if (el) window.categoryScrollContainer = el; }}
-                        className="pl-5 overflow-x-auto whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
+                        className="pl-5 overflow-x-auto whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth pb-2"
                     >
-                        <div className="flex gap-3 py-1 pr-12">
+                        <div className="flex gap-2.5 pr-10">
                             {["All", "Diapers", "Feeding", "Clothing", "Toys", "Health", "Bedding", "Bundles"].map((cat) => (
                                 <button
                                     key={cat}
-                                    title={cat}
                                     onClick={(e) => {
                                         setActiveCategory(cat);
-                                        // Auto-scroll to center
                                         const container = window.categoryScrollContainer;
                                         const target = e.currentTarget;
                                         if (container && target) {
@@ -197,9 +204,9 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug }: 
                                             container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
                                         }
                                     }}
-                                    className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 flex-shrink-0 ${activeCategory === cat
-                                        ? "bg-black text-white shadow-lg scale-105"
-                                        : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                    className={`px-5 py-2.5 rounded-2xl text-xs font-black transition-all duration-300 flex-shrink-0 border ${activeCategory === cat
+                                        ? "bg-gray-900 text-white border-gray-900 shadow-lg shadow-gray-200 scale-105"
+                                        : "bg-white text-gray-500 border-gray-100 hover:border-gray-200 hover:bg-gray-50"
                                         }`}
                                 >
                                     {cat}
@@ -211,71 +218,86 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug }: 
             </div>
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto px-5 pb-32">
-
+            <div className="px-5">
                 {/* Section Header */}
-                <div className="flex justify-between items-end mb-4 mt-2">
-                    <h2 className="text-xl font-bold text-gray-900">
-                        {activeCategory === "All" ? "Popular Products" : activeCategory}
+                <div className="flex justify-between items-center mb-6 mt-2">
+                    <h2 className="text-lg font-black text-gray-900 tracking-tight flex items-center gap-2">
+                        {activeCategory === "All" ? "Trending Now" : activeCategory}
+                        <span className="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{filteredProducts.length}</span>
                     </h2>
-                    <button title="See All" className="text-xs font-bold text-pink-500 hover:opacity-80 flex items-center gap-1">
-                        See All <ArrowRight size={12} />
-                    </button>
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-2 gap-y-8 gap-x-5 pb-10">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-8">
                     {filteredProducts.map(p => (
                         <ProductCard key={p.id} product={p} storeSlug={storeSlug} />
                     ))}
                     {filteredProducts.length === 0 && (
-                        <div className="col-span-2 text-center py-20 text-gray-400">
-                            <ShoppingBag className="mx-auto mb-2 opacity-20" size={48} />
-                            <p>No products found.</p>
+                        <div className="col-span-2 py-24 flex flex-col items-center justify-center text-center">
+                            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                                <ShoppingBag className="text-gray-300" size={32} />
+                            </div>
+                            <h3 className="font-black text-gray-900 text-lg mb-2">No products found</h3>
+                            <p className="text-gray-400 text-sm max-w-[200px]">Try adjusting your search or filters to find what you're looking for.</p>
+                            <button
+                                onClick={() => { setSearchQuery(""); setActiveCategory("All"); }}
+                                className="mt-6 px-6 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm shadow-xl shadow-gray-200 hover:scale-105 transition-transform"
+                            >
+                                Clear Filters
+                            </button>
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* Bottom Nav - Floating Style */}
-            <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl border border-gray-200/50 shadow-2xl rounded-full px-8 py-4 flex items-center gap-10 z-40">
-                <button
-                    title="Home"
-                    onClick={() => {
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                        setActiveCategory("All");
-                        setSearchQuery("");
-                    }}
-                    className="flex flex-col items-center gap-1 text-gray-900 transition hover:scale-110"
-                >
-                    <Home size={22} strokeWidth={2.5} />
-                    <div className={`w-1 h-1 bg-black rounded-full mt-1 transition-opacity ${activeCategory === 'All' ? 'opacity-100' : 'opacity-0'}`}></div>
-                </button>
+            {/* Bottom Nav - Floating Pill */}
+            <div className="fixed bottom-8 left-0 right-0 flex justify-center z-50 pointer-events-none">
+                <nav className="pointer-events-auto bg-gray-900/90 backdrop-blur-2xl border border-white/10 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] rounded-full px-2 py-2 flex items-center gap-1">
+                    <button
+                        title="Home"
+                        aria-label="Home"
+                        onClick={() => {
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                            setActiveCategory("All");
+                            setSearchQuery("");
+                        }}
+                        className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${activeCategory === 'All' && !searchQuery ? 'bg-white text-black shadow-lg scroll-smooth' : 'text-gray-400 hover:text-white hover:bg-white/10'
+                            }`}
+                    >
+                        <Home size={20} className={activeCategory === 'All' && !searchQuery ? "fill-current" : ""} />
+                    </button>
 
-                <button
-                    title="Cart"
-                    onClick={toggleCart}
-                    className="relative flex flex-col items-center gap-1 text-gray-400 hover:text-gray-900 transition hover:scale-110"
-                >
-                    <ShoppingBag size={22} />
-                    {mounted && cartItems.length > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold border-2 border-white animate-in zoom-in">
-                            {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                        </span>
-                    )}
-                </button>
+                    <button
+                        title="Cart"
+                        aria-label="Cart"
+                        onClick={toggleCart}
+                        className="relative w-12 h-12 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300"
+                    >
+                        <ShoppingBag size={20} />
+                        {mounted && cartItems.length > 0 && (
+                            <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#1a1a1a]" />
+                        )}
+                    </button>
 
-                <Link
-                    href={`/${storeSlug}/admin/inventory`}
-                    title="Admin Panel"
-                    className="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-900 transition hover:scale-110"
-                >
-                    <UserCircle2 size={24} />
-                </Link>
-            </nav>
+                    <button
+                        aria-label="Wishlist"
+                        onClick={() => router.push(`/${storeSlug}/wishlist`)} // Hypothetical wishlist route
+                        className="w-12 h-12 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300"
+                    >
+                        <Heart size={20} />
+                    </button>
+
+                    <Link
+                        href={`/${storeSlug}/admin`}
+                        className="w-12 h-12 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300"
+                    >
+                        <UserCircle2 size={20} />
+                    </Link>
+                </nav>
+            </div>
 
             {/* Global Cart Drawer */}
             <CartDrawer isOpen={isCartOpen} onClose={toggleCart} storeId={storeId} />
-        </>
+        </div>
     );
 }

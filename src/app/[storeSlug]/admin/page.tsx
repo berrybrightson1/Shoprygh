@@ -13,7 +13,8 @@ import {
     Wallet,
     Tag,
     Clock,
-    Package
+    Package,
+    ChevronRight
 } from "lucide-react";
 
 export default async function AdminDashboard({ params }: { params: Promise<{ storeSlug: string }> }) {
@@ -26,7 +27,6 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
     // --- Data Fetching ---
 
     // 1. Total Revenue (Sum of all completed orders)
-    // We could use WalletTransactions for accuracy, but sum of Orders is fine for now.
     const revenueResult = await prisma.order.aggregate({
         where: { storeId, status: "COMPLETED" },
         _sum: { total: true }
@@ -61,157 +61,212 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
         where: { storeId },
         orderBy: { createdAt: "desc" },
         take: 5,
-        include: { items: true } // to get item count if needed
+        include: { items: true }
     });
 
     // --- UI Components ---
 
-    const StatCard = ({ label, value, color, subtext }: { label: string; value: string | number; color: string; subtext?: string }) => {
-        const styles: Record<string, { bg: string; text: string; decoration: string }> = {
-            blue: { bg: "bg-blue-50", text: "text-blue-800", decoration: "bg-blue-200" },
-            green: { bg: "bg-green-50", text: "text-green-800", decoration: "bg-green-200" },
-            red: { bg: "bg-red-50", text: "text-red-800", decoration: "bg-red-200" },
-            purple: { bg: "bg-purple-50", text: "text-purple-800", decoration: "bg-purple-200" },
-            orange: { bg: "bg-orange-50", text: "text-orange-800", decoration: "bg-orange-200" },
-            gray: { bg: "bg-gray-50", text: "text-gray-800", decoration: "bg-gray-200" },
-        };
-
-        const style = styles[color] || styles.blue;
-
+    const StatCard = ({ label, value, gradient, icon: Icon, subtext }: { label: string; value: string | number; gradient: string; icon: any; subtext?: string }) => {
         return (
-            <div className={`${style.bg} rounded-[2rem] p-6 relative overflow-hidden group hover:-translate-y-1 transition duration-300 border border-white/60 shadow-sm`}>
-                {/* Decorative Bloom */}
-                <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full ${style.decoration} blur-3xl opacity-60 group-hover:scale-110 transition`} />
-                <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full ${style.decoration} opacity-20`} />
+            <div className={`relative overflow-hidden rounded-[24px] p-6 text-white shadow-xl shadow-gray-200/50 group transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl ${gradient}`}>
+                {/* Background Shapes */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
 
-                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 z-10 relative">{label}</p>
-                <div className="relative z-10">
-                    <span className={`text-4xl font-black ${style.text} tracking-tight block`}>
-                        {value}
-                    </span>
-                    {subtext && <p className="text-xs font-bold text-gray-500 mt-2 opacity-80">{subtext}</p>}
+                <div className="relative z-10 flex flex-col h-full justify-between">
+                    <div className="flex items-start justify-between mb-4">
+                        <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/20">
+                            <Icon size={20} className="text-white" />
+                        </div>
+                        {subtext && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider bg-black/20 px-2 py-1 rounded-full text-white/90 backdrop-blur-sm">
+                                {subtext}
+                            </span>
+                        )}
+                    </div>
+
+                    <div>
+                        <p className="text-sm font-bold text-white/80 uppercase tracking-widest mb-1">{label}</p>
+                        <span className="text-4xl font-black text-white tracking-tight leading-none block">
+                            {value}
+                        </span>
+                    </div>
                 </div>
             </div>
         );
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-6 space-y-8">
-            <header>
-                <h1 className="text-3xl font-black text-gray-900 flex items-center gap-3">
-                    <LayoutDashboard className="text-brand-purple" size={32} />
-                    Cockpit
-                </h1>
-                <p className="text-gray-600 font-bold mt-1">Overview of your store's performance today.</p>
+        <div className="max-w-[1600px] mx-auto space-y-8">
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center shadow-lg shadow-gray-900/20">
+                            <LayoutDashboard size={20} />
+                        </span>
+                        Store Cockpit
+                    </h1>
+                    <p className="text-gray-500 font-bold mt-2 ml-1">Here's what's happening in your store today.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold bg-green-100 text-green-700 px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-green-200">
+                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        Live Updates
+                    </span>
+                </div>
             </header>
 
-            {/* Stats Grid */}
+            {/* Gradient Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
-                    label="Total Revenue"
+                    label="Revenue"
                     value={`₵${totalRevenue.toLocaleString()}`}
-                    color="green"
-                    subtext="Lifetime Sales"
+                    gradient="bg-gradient-to-br from-green-400 to-emerald-600"
+                    icon={Wallet}
+                    subtext="Lifetime"
                 />
                 <StatCard
-                    label="Orders Today"
+                    label="Orders"
                     value={ordersToday}
-                    color="blue"
-                    subtext={new Date().toLocaleDateString()}
+                    gradient="bg-gradient-to-br from-blue-400 to-indigo-600"
+                    icon={ShoppingBag}
+                    subtext="Today"
                 />
                 <StatCard
                     label="Customers"
                     value={totalCustomers}
-                    color="purple"
-                    subtext="Unique Buyers"
+                    gradient="bg-gradient-to-br from-purple-400 to-fuchsia-600"
+                    icon={Users}
+                    subtext="Total"
                 />
-                <Link href={`/${storeSlug}/admin/inventory`}>
+                <Link href={`/${storeSlug}/admin/inventory`} className="block h-full">
                     <StatCard
                         label="Low Stock"
                         value={lowStockCount}
-                        color={lowStockCount > 0 ? "red" : "gray"}
-                        subtext="Items require attention"
+                        gradient={lowStockCount > 0 ? "bg-gradient-to-br from-orange-400 to-red-600" : "bg-gradient-to-br from-gray-400 to-gray-600"}
+                        icon={AlertCircle}
+                        subtext={lowStockCount > 0 ? "Action Needed" : "All Good"}
                     />
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 {/* Main Content: Activity Feed */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="xl:col-span-2 space-y-6">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                            <Clock size={20} className="text-gray-500" /> Recent Activity
+                            Recent Orders
                         </h2>
-                        <Link href={`/${storeSlug}/admin/orders`} className="text-sm font-black text-brand-purple hover:underline">
-                            View All Orders
+                        <Link href={`/${storeSlug}/admin/orders`} className="text-xs font-black text-brand-cyan hover:underline flex items-center gap-1">
+                            View All <ArrowRight size={14} />
                         </Link>
                     </div>
 
-                    <div className="bg-white rounded-3xl border border-gray-200 shadow-xl shadow-gray-200/50 overflow-hidden">
-                        <div className="divide-y divide-gray-100">
-                            {recentOrders.length === 0 ? (
-                                <div className="p-12 text-center text-gray-500">
-                                    <ShoppingBag size={48} className="mx-auto mb-4 opacity-30" />
-                                    <p className="font-bold">No orders yet.</p>
+                    <div className="bg-white rounded-[24px] border border-gray-100 shadow-xl shadow-gray-200/40 overflow-hidden">
+                        {recentOrders.length === 0 ? (
+                            <div className="p-16 text-center text-gray-400 flex flex-col items-center justify-center">
+                                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-4">
+                                    <ShoppingBag size={24} className="opacity-50" />
                                 </div>
-                            ) : (
-                                recentOrders.map(order => (
-                                    <div key={order.id} className="p-4 hover:bg-gray-50 transition flex items-center justify-between group">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-bold border border-blue-100">
+                                <p className="font-bold text-gray-900">No orders yet</p>
+                                <p className="text-sm mt-1">Your recent sales will appear here.</p>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-gray-50">
+                                {recentOrders.map(order => (
+                                    <Link key={order.id} href={`/${storeSlug}/admin/orders/${order.id}`} className="p-5 hover:bg-gray-50/80 transition flex items-center justify-between group cursor-pointer block">
+                                        <div className="flex items-center gap-5">
+                                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 text-gray-600 flex items-center justify-center font-black text-lg shadow-sm border border-white">
                                                 {order.customerName?.charAt(0) || "?"}
                                             </div>
                                             <div>
-                                                <p className="font-black text-gray-900 text-sm">{order.customerName || "Guest"}</p>
-                                                <p className="text-xs text-gray-500 font-bold">{order.items.length} items • {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                                <p className="font-black text-gray-900 text-base group-hover:text-brand-cyan transition-colors">{order.customerName || "Guest Customer"}</p>
+                                                <p className="text-xs text-gray-400 font-bold mt-0.5 flex items-center gap-2">
+                                                    <span>{order.items.length} items</span>
+                                                    <span className="w-1 h-1 rounded-full bg-gray-300" />
+                                                    <span>{new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                </p>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-black text-gray-900 text-sm">₵{Number(order.total).toFixed(2)}</p>
-                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
-                                                order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                                                    'bg-gray-100 text-gray-600'
-                                                }`}>
-                                                {order.status}
-                                            </span>
+                                            <p className="font-black text-gray-900 text-base">₵{Number(order.total).toFixed(2)}</p>
+                                            <div className="mt-1 flex justify-end">
+                                                <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${order.status === 'COMPLETED' ? 'bg-green-50 text-green-700 border-green-100' :
+                                                    order.status === 'PENDING' ? 'bg-orange-50 text-orange-700 border-orange-100' :
+                                                        'bg-gray-50 text-gray-600 border-gray-100'
+                                                    }`}>
+                                                    {order.status}
+                                                </span>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                        {recentOrders.length > 0 && (
+                            <div className="p-3 bg-gray-50 border-t border-gray-100 text-center">
+                                <Link href={`/${storeSlug}/admin/orders`} className="text-xs font-bold text-gray-500 hover:text-brand-cyan transition block py-2">
+                                    Show more history
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Sidebar: Quick Actions */}
                 <div className="space-y-6">
                     <h2 className="text-xl font-black text-gray-900">Quick Actions</h2>
-                    <div className="grid grid-cols-1 gap-4">
-                        <Link href={`/${storeSlug}/admin/inventory/new`} className="group bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-brand-cyan/50 transition flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-brand-cyan/10 text-brand-cyan flex items-center justify-center group-hover:scale-110 transition">
-                                <Plus size={20} />
+                    <div className="grid grid-cols-1 gap-3">
+                        <Link href={`/${storeSlug}/admin/inventory/new`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-cyan-100 hover:border-brand-cyan/30 transition flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-brand-cyan/10 text-brand-cyan flex items-center justify-center group-hover:scale-110 transition duration-300">
+                                    <Plus size={22} />
+                                </div>
+                                <div>
+                                    <span className="font-black text-gray-900 block group-hover:text-brand-cyan transition">Add Product</span>
+                                    <span className="text-xs text-gray-400 font-medium">Update inventory</span>
+                                </div>
                             </div>
-                            <span className="font-bold text-gray-700 group-hover:text-brand-cyan">Add Product</span>
+                            <ChevronRight size={18} className="text-gray-300 group-hover:text-brand-cyan group-hover:translate-x-1 transition" />
                         </Link>
 
-                        <Link href={`/${storeSlug}/admin/marketing`} className="group bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-brand-orange/50 transition flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center group-hover:scale-110 transition">
-                                <Tag size={20} />
+                        <Link href={`/${storeSlug}/admin/marketing`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-orange-100 hover:border-brand-orange/30 transition flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-brand-orange/10 text-brand-orange flex items-center justify-center group-hover:scale-110 transition duration-300">
+                                    <Tag size={22} />
+                                </div>
+                                <div>
+                                    <span className="font-black text-gray-900 block group-hover:text-brand-orange transition">Create Coupon</span>
+                                    <span className="text-xs text-gray-400 font-medium">Boost sales</span>
+                                </div>
                             </div>
-                            <span className="font-bold text-gray-700 group-hover:text-brand-orange">Create Coupon</span>
+                            <ChevronRight size={18} className="text-gray-300 group-hover:text-brand-orange group-hover:translate-x-1 transition" />
                         </Link>
 
-                        <Link href={`/${storeSlug}/admin/finance`} className="group bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-green-500/50 transition flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center group-hover:scale-110 transition">
-                                <Wallet size={20} />
+                        <Link href={`/${storeSlug}/admin/finance`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-green-100 hover:border-green-500/30 transition flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center group-hover:scale-110 transition duration-300">
+                                    <Wallet size={22} />
+                                </div>
+                                <div>
+                                    <span className="font-black text-gray-900 block group-hover:text-green-600 transition">Request Payout</span>
+                                    <span className="text-xs text-gray-400 font-medium">Withdraw funds</span>
+                                </div>
                             </div>
-                            <span className="font-bold text-gray-700 group-hover:text-green-600">Request Payout</span>
+                            <ChevronRight size={18} className="text-gray-300 group-hover:text-green-600 group-hover:translate-x-1 transition" />
                         </Link>
 
-                        <Link href={`/${storeSlug}/admin/inventory`} className="group bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-purple-500/50 transition flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition">
-                                <Package size={20} />
+                        <Link href={`/${storeSlug}/admin/inventory`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-purple-100 hover:border-purple-500/30 transition flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition duration-300">
+                                    <Package size={22} />
+                                </div>
+                                <div>
+                                    <span className="font-black text-gray-900 block group-hover:text-purple-600 transition">Manage Stock</span>
+                                    <span className="text-xs text-gray-400 font-medium">View all items</span>
+                                </div>
                             </div>
-                            <span className="font-bold text-gray-700 group-hover:text-purple-600">Manage Stock</span>
+                            <ChevronRight size={18} className="text-gray-300 group-hover:text-purple-600 group-hover:translate-x-1 transition" />
                         </Link>
                     </div>
                 </div>

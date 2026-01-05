@@ -1,4 +1,5 @@
 import AdminSidebar from "@/components/AdminSidebar";
+import AdminRightSidebar from "@/components/AdminRightSidebar";
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
@@ -25,40 +26,49 @@ export default async function AdminLayout({
 
     if (!store) return notFound();
 
-    // Security Check: Ensure the logged-in user belongs to this store
-    // We allow PLATFORM_ADMIN to access any store (optional, but good for support)
+    // Security Check
     if (session) {
-        // Handle Stale Sessions (Migrating from old auth pattern)
-        if (!session.storeSlug || !session.storeId) {
-            // Session exists but lacks store data -> Force Re-login
-            // We can't use the logout action directly here as it's a server component
-            // So we redirect to a route that handles logout or just login which will overwrite
-            redirect('/login');
-        }
-
-        // Check for matching store or Platform Admin privileges
-        // We use !session.isPlatformAdmin because the 'role' field might be 'OWNER' even for platform admins
+        if (!session.storeSlug || !session.storeId) redirect('/login');
         if (session.storeId !== store.id && !session.isPlatformAdmin) {
-            console.log(`[AdminLayout] Access Denied: User ${session.email} (Store: ${session.storeSlug}) tried to access ${storeSlug}`);
             redirect(`/${session.storeSlug}/admin/inventory`);
         }
     }
 
+    // Fetch Logs for the Right Sidebar - Store Wide
+    let recentLogs: any[] = [];
+    if (session?.id) {
+        recentLogs = await prisma.auditLog.findMany({
+            where: {
+                user: {
+                    storeId: store.id
+                }
+            },
+            take: 20,
+            orderBy: { createdAt: "desc" },
+            include: { user: { select: { name: true, image: true, email: true } } }
+        });
+    }
+
     return (
-        <div className="flex min-h-screen bg-gray-50 font-sans relative overflow-hidden text-gray-900 selection:bg-brand-cyan/30">
-            {/* Background Gradients */}
+        <div className="flex h-screen overflow-hidden bg-gray-50 font-sans text-gray-900 selection:bg-brand-cyan/30">
+            {/* Background Gradients (Fixed Global) */}
             <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-400/20 blur-[130px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-400/20 blur-[130px]" />
-                <div className="absolute top-[40%] left-[40%] w-[40%] h-[40%] rounded-full bg-cyan-400/10 blur-[100px]" />
+                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-400/10 blur-[130px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-400/10 blur-[130px]" />
             </div>
 
-            {/* Sidebar (Client Component) - Only show if logged in */}
+            {/* LEFT SIDEBAR - Navigation */}
             {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdate?.createdAt} />}
 
-            <main className={`flex-1 transition-all duration-300 relative z-10 ${session ? "ml-0 md:ml-72 pt-16 md:pt-0" : ""}`}>
-                {children}
-            </main>
+            <div className="flex-1 flex overflow-hidden relative z-10">
+                {/* CENTER CONTENT */}
+                <main className="flex-1 overflow-y-auto p-4 md:p-8 no-scrollbar relative">
+                    {children}
+                </main>
+
+                {/* RIGHT SIDEBAR - Profile & Activity */}
+                {session && <AdminRightSidebar user={session} logs={recentLogs} />}
+            </div>
         </div>
     );
 }

@@ -50,13 +50,13 @@ export async function login(formData: FormData) {
 
     (await cookies()).set("session", session, { expires, httpOnly: true });
 
-    // 4. Redirect based on Role
+    // 4. Return Redirect URL (Don't redirect here to avoid try/catch issues on client)
+    let redirectTo = '/login';
     if (user.isPlatformAdmin) {
-        redirect('/platform-admin');
+        redirectTo = '/platform-admin';
     } else if (user.store) {
-        redirect(`/${user.store.slug}/admin/inventory`);
-    } else {
-        // Fallback (shouldn't happen given check above)
-        redirect('/login');
+        redirectTo = `/${user.store.slug}/admin/inventory`;
     }
+
+    return { success: true, url: redirectTo };
 }

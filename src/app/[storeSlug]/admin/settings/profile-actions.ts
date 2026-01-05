@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { logActivity } from "@/lib/audit";
 
 export async function updateStoreProfile(formData: FormData) {
     const storeId = formData.get("storeId") as string;
@@ -27,6 +28,8 @@ export async function updateStoreProfile(formData: FormData) {
             logo: logo || null,
         },
     });
+
+    await logActivity("UPDATE_STORE_SETTINGS", `Updated store profile for ${name}`, "STORE", storeId);
 
     revalidatePath(`/${store.slug}/admin/settings`);
     redirect(`/${store.slug}/admin/settings?updated=true`);

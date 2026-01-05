@@ -27,7 +27,10 @@ export default async function InventoryPage({ params }: Props) {
     // Fetch products strictly for this store
     const start = performance.now();
     const data = await prisma.product.findMany({
-        where: { storeId: store.id },
+        where: {
+            storeId: store.id,
+            isArchived: false
+        },
         orderBy: { createdAt: "desc" }
     });
     // console.log("Fetch took:", performance.now() - start);
@@ -36,6 +39,7 @@ export default async function InventoryPage({ params }: Props) {
         ...p,
         priceRetail: p.priceRetail.toNumber(),
         priceWholesale: p.priceWholesale ? p.priceWholesale.toNumber() : null,
+        costPrice: p.costPrice ? p.costPrice.toNumber() : null,
     }));
 
     // Bind the storeId to the create action

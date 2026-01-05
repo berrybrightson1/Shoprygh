@@ -1,0 +1,39 @@
+"use server";
+
+import prisma from "@/lib/prisma";
+import { getSession } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
+
+export async function createDeliveryZone(formData: FormData) {
+    const session = await getSession();
+    if (!session) throw new Error("Unauthorized");
+
+    const name = formData.get("name") as string;
+    const fee = formData.get("fee") as string;
+    const description = formData.get("description") as string;
+
+    if (!name || !fee) throw new Error("Missing fields");
+
+    await prisma.deliveryZone.create({
+        data: {
+            storeId: session.storeId,
+            name,
+            fee: parseFloat(fee),
+            description
+        }
+    });
+
+    revalidatePath(`/${session.storeSlug}/admin/settings/delivery`);
+}
+
+export async function deleteDeliveryZone(formData: FormData) {
+    const session = await getSession();
+    if (!session) throw new Error("Unauthorized");
+
+    const id = formData.get("id") as string;
+    await prisma.deliveryZone.delete({
+        where: { id, storeId: session.storeId }
+    });
+
+    revalidatePath(`/${session.storeSlug}/admin/settings/delivery`);
+}

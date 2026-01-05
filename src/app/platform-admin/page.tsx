@@ -2,13 +2,11 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { Shield, AlertCircle, CheckCircle, Ban, Store, Sparkles, Wallet } from "lucide-react";
-import StoreActions from "./StoreActions";
+import { AlertCircle, CheckCircle, Ban, Store, Sparkles, Wallet } from "lucide-react";
 import StoreList from "./StoreList";
-import PlatformGrowthChart from "./PlatformGrowthChart";
-import GlobalActivityFeed from "./GlobalActivityFeed";
+import DashboardShell from "./DashboardShell";
 
-// Platform Admin Dashboard - Force rebuild
+// Platform Admin Dashboard
 export default async function PlatformAdminPage() {
     const session = await getSession();
     if (!session) redirect("/login");
@@ -35,7 +33,7 @@ export default async function PlatformAdminPage() {
     }
 
     // Fetch all stores
-    const stores = await prisma.store.findMany({
+    const rawStores = await prisma.store.findMany({
         include: {
             users: {
                 where: { role: "OWNER" },
@@ -48,30 +46,27 @@ export default async function PlatformAdminPage() {
         orderBy: { createdAt: "desc" },
     });
 
+    // Serialize Decimal types for Client Components
+    const stores = rawStores.map(store => ({
+        ...store,
+        walletBalance: store.walletBalance ? Number(store.walletBalance) : 0,
+    }));
+
     // --- AUTO UPDATE LOGIC ---
-    // 1. Get Current App Version from package.json
     let currentVersion = "1.0.0";
     try {
-        // We import it this way server-side to avoid bundling issues
-        // Use a relative path that works in both dev and prod if possible, 
-        // or strictly catching the error if it fails
         const packageJson = await import("../../../package.json");
         currentVersion = packageJson.version;
     } catch (error) {
         console.warn("[PlatformAdmin] Could not load package.json version:", error);
     }
-    // const currentVersion = packageJson.version; // e.g., "1.1.0"
 
-    // 2. Get Latest Update from DB
     const latestUpdate = await prisma.systemUpdate.findFirst({
         orderBy: { createdAt: "desc" },
         select: { version: true }
     });
 
-    // 3. Compare and Auto-Post if needed
     if (currentVersion && (!latestUpdate || latestUpdate.version !== currentVersion)) {
-        // Prevent re-posting if version is older or same (basic check implemented above)
-        // We need to double check if this version specifically exists to be safe
         const existingVersion = await prisma.systemUpdate.findFirst({
             where: { version: currentVersion }
         });
@@ -82,15 +77,12 @@ export default async function PlatformAdminPage() {
                 data: {
                     title: `System Update v${currentVersion}`,
                     version: currentVersion,
-                    content: "• UI Polishing: Improved layout spacing for Admin Store List.\n• Modernization: Replaced legacy alerts with modern toast notifications.\n• Security: Enhanced confirmation flows for critical actions.\n• Fixes: Resolved coupon validation and build issues.",
+                    content: "• UI Polishing: Improved layout spacing for Admin Store List.\\n• Modernization: Replaced legacy alerts with modern toast notifications.\\n• Security: Enhanced confirmation flows for critical actions.\\n• Fixes: Resolved coupon validation and build issues.",
                     type: "UPDATE"
                 }
             });
         }
     }
-    // -------------------------
-
-    // -------------------------
 
     // --- ANALYTICS ---
     const revenueAgg = await prisma.order.aggregate({
@@ -107,97 +99,89 @@ export default async function PlatformAdminPage() {
         wholesaler: stores.filter((s) => s.tier === "WHOLESALER").length,
     };
 
+    // Fetch audit logs
+    const logs = await prisma.auditLog.findMany({
+        take: 20,
+        orderBy: { createdAt: "desc" },
+        include: { user: { select: { name: true, email: true, image: true } } }
+    });
+
     return (
-        <div className="min-h-screen bg-gray-50 relative overflow-hidden font-sans text-gray-900 selection:bg-brand-cyan/30">
-            {/* Background Gradients */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-400/20 blur-[130px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-400/20 blur-[130px]" />
-                <div className="absolute top-[40%] left-[40%] w-[40%] h-[40%] rounded-full bg-cyan-400/10 blur-[100px]" />
-            </div>
-
-            <main className="relative z-10 p-6 max-w-[1600px] mx-auto">
+        <DashboardShell session={session} logs={logs as any}>
+            <div className="p-8 pl-20">
                 {/* Header */}
-                <header className="mb-12 mt-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="flex justify-between items-start mb-8">
                     <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/40 backdrop-blur-md border border-white/50 text-xs font-bold uppercase tracking-wider text-gray-600 mb-4 shadow-sm">
-                            <Shield className="fill-gray-600" size={12} />
-                            Platform Admin
-                        </div>
-                        <h1 className="text-5xl font-black tracking-tight text-gray-900 mb-2">
-                            Overview
-                        </h1>
-                        <p className="text-lg text-gray-500 font-medium">Hello, Super Admin. Here is what is happening today.</p>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Hello, Super Admin</h1>
+                        <p className="text-gray-500 mt-1 font-medium">Here is what is happening across the platform today.</p>
                     </div>
-
-                    <div className="flex gap-4">
-                        <Link href="/platform-admin/updates" className="inline-flex items-center gap-2 bg-white text-gray-900 border border-gray-200 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 transition shadow-sm">
-                            <Sparkles size={18} className="text-brand-cyan" /> Post Update
-                        </Link>
-                        <Link href="/platform-admin/finance" className="inline-flex items-center gap-2 bg-white text-gray-900 border border-gray-200 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 transition shadow-sm">
-                            <Wallet size={18} className="text-green-600" /> Payouts
-                        </Link>
-                        <Link href="/" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl font-bold hover:scale-105 transition shadow-xl shadow-black/10 active:scale-95">
-                            <Store size={18} /> Visit Storefront
+                    <div className="flex gap-3">
+                        <Link href="/platform-admin/updates" className="px-4 py-2 bg-black text-white rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition flex items-center gap-2">
+                            <Sparkles size={16} /> Post Update
                         </Link>
                     </div>
-                </header>
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-12">
-                    {/* Revenue Card - Spans 2 cols on huge screens */}
-                    <div className="md:col-span-2 xl:col-span-2 bg-emerald-50 rounded-[2rem] p-8 border border-emerald-100/50 shadow-sm relative overflow-hidden group hover:-translate-y-1 transition duration-300">
-                        <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-emerald-100 blur-3xl opacity-60 group-hover:scale-110 transition" />
-                        <div className="absolute top-0 right-0 w-32 h-32 rounded-bl-full bg-emerald-100/50 opacity-100" />
-
-                        <p className="text-[10px] font-black text-emerald-800/60 uppercase tracking-widest mb-4 z-10 relative">Total Platform Revenue</p>
-                        <div className="relative z-10">
-                            <span className="text-5xl font-black text-emerald-900 tracking-tight">
-                                ₵{totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </span>
-                        </div>
-                    </div>
-
-                    <StatCard label="Total Stores" value={stats.total} color="blue" />
-                    <StatCard label="Active" value={stats.active} color="green" />
-                    <StatCard label="Suspended" value={stats.suspended} color="red" />
-                    <StatCard label="Hustler" value={stats.hustler} color="gray" />
-                    <StatCard label="Pro" value={stats.pro} color="purple" />
-                    <StatCard label="Wholesaler" value={stats.wholesaler} color="orange" />
                 </div>
 
-                {/* Stores Section (Bento List) */}
-                <StoreList stores={stores as any} />
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+                    {/* Revenue Card */}
+                    <div className="xl:col-span-2 bg-gradient-to-br from-black to-gray-900 rounded-[24px] p-8 text-white relative overflow-hidden shadow-xl">
+                        <div className="relative z-10">
+                            <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-2">Total Platform Revenue</p>
+                            <h2 className="text-5xl font-black tracking-tight mb-4">
+                                ₵{totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </h2>
+                            <div className="flex gap-2">
+                                <span className="bg-white/10 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full text-xs font-bold text-white/90">
+                                    +12% vs last month
+                                </span>
+                            </div>
+                        </div>
+                        <div className="absolute right-[-20px] bottom-[-40px] opacity-10 rotate-12">
+                            <Wallet size={200} />
+                        </div>
+                    </div>
 
-            </main>
-        </div>
-    );
-}
+                    {/* Mini Stats Column */}
+                    <div className="space-y-4">
+                        <div className="bg-white p-5 rounded-[20px] shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition">
+                            <div>
+                                <p className="text-gray-400 text-xs font-bold uppercase">Total Stores</p>
+                                <p className="text-2xl font-black text-gray-900">{stats.total}</p>
+                            </div>
+                            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
+                                <Store size={20} />
+                            </div>
+                        </div>
+                        <div className="bg-white p-5 rounded-[20px] shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition">
+                            <div>
+                                <p className="text-gray-400 text-xs font-bold uppercase">Active Subs</p>
+                                <p className="text-2xl font-black text-gray-900">{stats.pro + stats.wholesaler}</p>
+                            </div>
+                            <div className="w-10 h-10 bg-green-50 text-green-600 rounded-full flex items-center justify-center">
+                                <CheckCircle size={20} />
+                            </div>
+                        </div>
+                        <div className="bg-white p-5 rounded-[20px] shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition">
+                            <div>
+                                <p className="text-gray-400 text-xs font-bold uppercase">Suspended</p>
+                                <p className="text-2xl font-black text-gray-900">{stats.suspended}</p>
+                            </div>
+                            <div className="w-10 h-10 bg-red-50 text-red-600 rounded-full flex items-center justify-center">
+                                <Ban size={20} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
-    const styles: Record<string, { bg: string; text: string; decoration: string }> = {
-        blue: { bg: "bg-blue-50", text: "text-blue-600", decoration: "bg-blue-100" },
-        green: { bg: "bg-green-50", text: "text-green-600", decoration: "bg-green-100" },
-        red: { bg: "bg-red-50", text: "text-red-600", decoration: "bg-red-100" },
-        gray: { bg: "bg-gray-100", text: "text-gray-600", decoration: "bg-gray-200" },
-        purple: { bg: "bg-purple-50", text: "text-purple-600", decoration: "bg-purple-100" },
-        orange: { bg: "bg-orange-50", text: "text-orange-600", decoration: "bg-orange-100" },
-    };
-
-    const style = styles[color] || styles.blue;
-
-    return (
-        <div className={`${style.bg} rounded-[2rem] p-6 relative overflow-hidden group hover:-translate-y-1 transition duration-300 border border-white/50 shadow-sm`}>
-            {/* Decorative Bloom */}
-            <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full ${style.decoration} blur-2xl opacity-60 group-hover:scale-110 transition`} />
-            <div className={`absolute top-0 right-0 w-20 h-20 rounded-bl-full ${style.decoration} opacity-40`} />
-
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 z-10 relative">{label}</p>
-            <div className="relative z-10">
-                <span className={`text-4xl font-black ${style.text} tracking-tight`}>
-                    {value}
-                </span>
+                {/* All Stores Table */}
+                <div className="bg-white rounded-[24px] border border-gray-200 shadow-sm overflow-hidden">
+                    <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                        <h3 className="font-bold text-gray-900 text-lg">All Stores</h3>
+                    </div>
+                    <StoreList stores={stores as any} />
+                </div>
             </div>
-        </div>
+        </DashboardShell>
     );
 }

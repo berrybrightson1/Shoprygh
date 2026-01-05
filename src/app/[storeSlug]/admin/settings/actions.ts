@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { StoreTier } from "@prisma/client";
+import { logActivity } from "@/lib/audit";
 
 export async function updateStoreTier(formData: FormData) {
     const storeId = formData.get("storeId") as string;
@@ -49,6 +50,7 @@ export async function updateStoreTier(formData: FormData) {
             where: { id: storeId },
             data: { tier: newTier },
         });
+        await logActivity("UPDATE_PLAN", `Updated plan to ${newTier}`, "STORE", storeId, { oldTier: currentTier, newTier });
         const store = await prisma.store.findUnique({ where: { id: storeId }, select: { slug: true } });
         redirect(`/${store?.slug}/admin/settings?success=true`);
     }

@@ -11,19 +11,35 @@ async function main() {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // 1. Ensure a System Store exists
+    const store = await prisma.store.upsert({
+        where: { slug: 'shopry-hq' },
+        update: {},
+        create: {
+            name: 'Shopry HQ',
+            slug: 'shopry-hq',
+            tier: 'WHOLESALER',
+            ownerPhone: '0000000000'
+        }
+    });
+
+    console.log(`Using System Store: ${store.name} (${store.id})`);
+
     const user = await prisma.user.upsert({
         where: { email },
         update: {
             password: hashedPassword,
             isPlatformAdmin: true,
-            role: 'PLATFORM_ADMIN' // Setting role too for clarity, though bool is what we check
+            role: 'OWNER',
+            storeId: store.id // Ensure link on update
         },
         create: {
             email,
             name: 'Shopry Dev',
             password: hashedPassword,
-            role: 'PLATFORM_ADMIN',
+            role: 'OWNER',
             isPlatformAdmin: true,
+            storeId: store.id
         },
     });
 
