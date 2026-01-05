@@ -39,7 +39,7 @@ export type ActivityAction =
     | "COUPON_CREATED"
     | "COUPON_UPDATED"
     | "COUPON_DELETED"
-    | "BROADCAST_SENT"
+    | "BROADCAST_SENT" | "BROADCAST"
     // Staff
     | "STAFF_INVITED"
     | "STAFF_REMOVED"

@@ -25,7 +25,7 @@ export async function updateUserProfile(formData: FormData) {
             }
         });
 
-        await logActivity("UPDATE_PROFILE", "Updated personal profile", "USER", session.id);
+        await logActivity("PROFILE_UPDATED", "Updated personal profile", "USER", session.id);
 
         revalidatePath("/");
     } catch (error) {
