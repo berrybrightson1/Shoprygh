@@ -24,6 +24,7 @@ export type ActivityAction =
     // Settings
     | "PROFILE_UPDATED"
     | "SETTINGS_UPDATED"
+    | "UPDATE_STORE_SETTINGS"
     | "DELIVERY_ZONE_CREATED"
     | "DELIVERY_ZONE_UPDATED"
     | "DELIVERY_ZONE_DELETED"
