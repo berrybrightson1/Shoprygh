@@ -44,7 +44,7 @@ async function main() {
         await prisma.order.deleteMany({ where: { storeId: store.id } })
         await prisma.customer.deleteMany({ where: { storeId: store.id } })
         await prisma.product.deleteMany({ where: { storeId: store.id } })
-        await prisma.category.deleteMany({ where: { storeId: store.id } })
+
         await prisma.deliveryZone.deleteMany({ where: { storeId: store.id } })
         await prisma.coupon.deleteMany({ where: { storeId: store.id } })
         await prisma.walletTransaction.deleteMany({ where: { storeId: store.id } })
