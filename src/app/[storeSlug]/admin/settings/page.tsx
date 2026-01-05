@@ -74,7 +74,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                 {/* Left Column: Store & Personal */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* Store Profile */}
-                    <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
+                    <section className="bg-white md:rounded-[32px] md:p-8 md:shadow-sm md:border md:border-gray-100">
                         <div className="mb-8">
                             <h2 className="text-2xl font-black text-gray-900">Store Profile</h2>
                             <p className="text-gray-400 font-medium">Public information visible to your customers.</p>
@@ -83,7 +83,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                     </section>
 
                     {/* Personal Profile */}
-                    <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
+                    <section className="bg-white md:rounded-[32px] md:p-8 md:shadow-sm md:border md:border-gray-100">
                         <div className="mb-8">
                             <h2 className="text-2xl font-black text-gray-900">Personal Profile</h2>
                             <p className="text-gray-400 font-medium">Your account details and login information.</p>
@@ -99,7 +99,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                 {/* Right Column: Subscription & Activity */}
                 <div className="space-y-8">
                     {/* Subscription Card */}
-                    <div className="bg-gray-900 text-white rounded-[32px] p-8 shadow-2xl shadow-gray-900/20 relative overflow-hidden">
+                    <div className="bg-gray-900 text-white md:rounded-[32px] md:p-8 p-6 md:shadow-2xl md:shadow-gray-900/20 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
 
                         <div className="flex items-center gap-3 mb-8 relative z-10">
@@ -159,7 +159,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                     </div>
 
                     {/* Activity Feed */}
-                    <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
+                    <div className="bg-white md:rounded-[32px] md:p-8 p-4 md:shadow-sm md:border md:border-gray-100">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="font-black text-gray-900">Recent Activity</h3>
                             <Link href="#" className="text-xs font-bold text-gray-400 hover:text-black">View All</Link>
