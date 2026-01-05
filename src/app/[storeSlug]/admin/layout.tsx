@@ -73,7 +73,7 @@ export default async function AdminLayout({
 
             <div className="flex-1 flex overflow-hidden relative z-10 text-gray-900">
                 {/* CENTER CONTENT */}
-                <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 pt-32 md:pt-8 no-scrollbar relative flex flex-col">
+                <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 no-scrollbar relative flex flex-col">
 
                     {children}
                 </main>
