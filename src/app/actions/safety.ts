@@ -34,13 +34,21 @@ export async function syncVerificationAction() {
 
 export async function checkVerificationStatus(phone: string) {
     try {
-        // Assuming a user can be identified by a phone number.
-        const user = await prisma.user.findFirst({
-            where: { phone },
-            select: { isVerified: true } // Only select the field we need
+        // 1. Check the dedicated verified numbers table (Guest Checkout)
+        const verifiedNumber = await prisma.verifiedNumber.findUnique({
+            where: { phone }
         });
 
-        if (user && user.isVerified) {
+        if (verifiedNumber) {
+            return { isVerified: true };
+        }
+
+        // 2. Fallback: Check registered Users (Staff/Admins)
+        const user = await prisma.user.findFirst({
+            where: { phone, isVerified: true }
+        });
+
+        if (user) {
             return { isVerified: true };
         }
 
@@ -64,15 +72,12 @@ export async function verifyOtpAction(identifier: string, code: string, signatur
         const phone = identifier;
         try {
             // Persist the verification status for future checkouts.
-            // This creates a "ghost" user if one doesn't exist.
-            // NOTE: This assumes your `User` model has a unique `phone` field and
-            // can be created with only a phone number and verification status.
-            await prisma.user.upsert({
+            // We use a dedicated table to avoid validation issues with the main User table.
+            await prisma.verifiedNumber.upsert({
                 where: { phone: phone },
-                update: { isVerified: true },
+                update: {}, // Already exists, do nothing
                 create: {
                     phone: phone,
-                    isVerified: true,
                 },
             });
         } catch (error) {

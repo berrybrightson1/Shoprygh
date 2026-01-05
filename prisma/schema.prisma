@@ -176,7 +176,7 @@ model User {
   createdAt DateTime @default(now())
 
   // Trust & Safety
-  phone           String?  @unique // Optional for existing, unique for new
+  phone           String?  // Removed @unique to fix build error and allow non-unique phone numbers
   isVerified      Boolean  @default(false)
   otpCode         String?
   otpExpiresAt    DateTime?
@@ -194,6 +194,11 @@ model AuditLog {
   
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerifiedNumber {
+  phone     String   @id
+  createdAt DateTime @default(now())
 }
 
 model Product {
