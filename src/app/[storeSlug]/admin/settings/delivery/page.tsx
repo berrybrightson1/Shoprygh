@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { MapPin, Plus, Trash2, Truck } from "lucide-react";
 import { createDeliveryZone, deleteDeliveryZone } from "./actions";
 
-export default async function DeliverySettings({ params }: { params: { storeSlug: string } }) {
+export default async function DeliverySettings({ params }: { params: Promise<{ storeSlug: string }> }) {
+    const { storeSlug } = await params;
     const session = await getSession();
     if (!session) redirect("/login");
 
