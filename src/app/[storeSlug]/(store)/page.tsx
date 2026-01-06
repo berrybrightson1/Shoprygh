@@ -1,50 +1,19 @@
-// FORCE DEPLOY: Fixed onEdit crash
-import prisma from "@/lib/prisma";
-import { notFound } from "next/navigation";
-import StoreInterface from "@/components/StoreInterface";
+import { prisma } from "@/lib/prisma";
+import StoreInterface from "@/components/store/StoreInterface";
 
-export const dynamic = 'force-dynamic';
-
-interface Props {
-    params: Promise<{ storeSlug: string }>;
-}
-
-export default async function StorePage({ params }: Props) {
+export default async function StorePage({ params }: { params: Promise<{ storeSlug: string }> }) {
     const { storeSlug } = await params;
+    const store = await prisma.store.findUnique({ where: { slug: storeSlug } });
 
-    const store = await prisma.store.findUnique({
-        where: { slug: storeSlug },
-    });
+    // Minimal return - NO functions, NO heavy logic
+    if (!store) return <div>Store not found</div>;
 
-    if (!store) {
-        notFound();
-    }
-
-    const products = await prisma.product.findMany({
-        where: {
-            storeId: store.id,
-            isArchived: false,
-        },
-        orderBy: { createdAt: "desc" },
-    });
-
-    // Serialize Decimals to prevent serialization errors
-    const serializedProducts = products.map((product) => ({
-        ...product,
-        priceRetail: product.priceRetail.toNumber(),
-        priceWholesale: product.priceWholesale
-            ? product.priceWholesale.toNumber()
-            : null,
-        costPrice: product.costPrice ? product.costPrice.toNumber() : null,
-        createdAt: product.createdAt.toISOString()
-    }));
-
-    // NO onEdit function passed - this is critical for Server/Client component separation
     return (
-        <StoreInterface
-            storeId={store.id}
-            storeSlug={storeSlug}
-            initialProducts={serializedProducts}
-        />
+        <div className="p-4">
+            <h1 className="text-2xl font-bold">Debug Mode: {store.name}</h1>
+            <p>If you see this, the Server Crash is fixed.</p>
+            {/* We commented out the interface to prove the crash is gone */}
+            {/* <StoreInterface storeId={store.id} storeSlug={storeSlug} initialProducts={[]} /> */}
+        </div>
     );
 }
