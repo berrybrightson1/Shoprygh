@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createStore } from "./actions";
-import { Loader2, Store, User, Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react";
+import { Loader2, Store, User, Mail, Lock, ArrowRight, ArrowLeft, MapPin } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -16,11 +16,12 @@ export default function SignupPage() {
     // Form Data
     const [storeName, setStoreName] = useState("");
     const [slug, setSlug] = useState("");
-    const [selectedPlan, setSelectedPlan] = useState<"HUSTLER" | "PRO">("HUSTLER");
+    const [selectedPlan, setSelectedPlan] = useState<"HUSTLER" | "PRO" | "WHOLESALER">("HUSTLER");
     const [selectedAvatar, setSelectedAvatar] = useState<string>("https://api.dicebear.com/9.x/micah/svg?seed=Felix&backgroundColor=b6e3f4,c0aede,d1d4f9");
     const [ownerName, setOwnerName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [storeAddress, setStoreAddress] = useState("");
 
     // Auto-generate slug from store name
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +57,9 @@ export default function SignupPage() {
         formData.set("storeSlug", slug);
         formData.set("ownerName", ownerName);
         formData.set("password", password);
+        formData.set("password", password);
         formData.set("avatar", selectedAvatar);
+        formData.set("storeAddress", storeAddress);
 
         try {
             const res = await createStore(formData);
@@ -135,6 +138,22 @@ export default function SignupPage() {
                                         <span className="text-gray-700 text-sm font-bold mt-0.5 block">Unlocks staff & advanced analytics.</span>
                                     </div>
                                 </div>
+
+                                <div
+                                    onClick={() => setSelectedPlan("WHOLESALER")}
+                                    className={`relative flex items-center p-4 rounded-2xl cursor-pointer transition-all duration-200 ${selectedPlan === "WHOLESALER" ? "border-2 border-brand-purple bg-purple-50 shadow-lg" : "border border-gray-200 bg-white hover:border-purple-200 hover:shadow-md"}`}
+                                >
+                                    <div className={`w-6 h-6 rounded-full border mr-4 flex items-center justify-center transition-all ${selectedPlan === "WHOLESALER" ? "border-brand-purple bg-brand-purple text-white" : "border-gray-300 bg-transparent"}`}>
+                                        <div className={`w-2.5 h-2.5 bg-white rounded-full transition-opacity ${selectedPlan === "WHOLESALER" ? "opacity-100" : "opacity-0"}`} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-black text-brand-purple text-lg">Wholesaler</span>
+                                            <span className="bg-brand-purple text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">₵200/mo</span>
+                                        </div>
+                                        <span className="text-gray-700 text-sm font-bold mt-0.5 block">For high-volume sellers & distros.</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -174,6 +193,24 @@ export default function SignupPage() {
                                         value={slug}
                                         onChange={(e) => setSlug(e.target.value)}
                                         className="flex-1 min-w-0 block w-full px-4 py-4 outline-none bg-white font-bold text-gray-900 placeholder:text-gray-400 text-lg"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="storeAddress" className="text-xs font-black text-gray-900 uppercase tracking-wider ml-1">Business Address</label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <MapPin className="h-5 w-5 text-gray-900" />
+                                    </div>
+                                    <input
+                                        id="storeAddress"
+                                        name="storeAddress"
+                                        type="text"
+                                        required
+                                        value={storeAddress}
+                                        onChange={(e) => setStoreAddress(e.target.value)}
+                                        className="w-full border border-gray-200 rounded-2xl pl-12 pr-4 py-4 outline-none focus:ring-1 focus:ring-brand-cyan focus:border-brand-cyan bg-white transition-all font-bold text-gray-900 placeholder:text-gray-400 text-lg"
+                                        placeholder="Accra, Ghana"
                                     />
                                 </div>
                             </div>

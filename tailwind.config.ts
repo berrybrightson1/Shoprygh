@@ -13,7 +13,7 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-      fontFamily: { sans: ['var(--font-manrope)', 'sans-serif'] },
+      fontFamily: { sans: ['var(--font-geist-sans)', 'sans-serif'] },
       colors: {
         brand: {
           cyan: '#06B6D4',

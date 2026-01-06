@@ -130,3 +130,27 @@ export async function updateStoreTierManually(formData: FormData) {
     revalidatePath("/platform-admin");
 }
 
+export async function verifyStore(formData: FormData) {
+    const storeId = formData.get("storeId") as string;
+    await prisma.store.update({
+        where: { id: storeId },
+        data: {
+            isVerified: true,
+            verificationStatus: "APPROVED"
+        }
+    });
+    revalidatePath("/platform-admin");
+}
+
+export async function rejectStore(formData: FormData) {
+    const storeId = formData.get("storeId") as string;
+    await prisma.store.update({
+        where: { id: storeId },
+        data: {
+            isVerified: false,
+            verificationStatus: "REJECTED"
+        }
+    });
+    revalidatePath("/platform-admin");
+}
+

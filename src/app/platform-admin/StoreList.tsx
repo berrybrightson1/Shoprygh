@@ -10,6 +10,8 @@ type Store = {
     slug: string;
     logo: string | null;
     status: "ACTIVE" | "SUSPENDED" | "DELETED";
+    isVerified: boolean;
+    verificationStatus: string;
     tier: string;
     users: { name: string | null; email: string | null }[];
     _count: { products: number; orders: number; users: number };
@@ -31,9 +33,9 @@ export default function StoreList({ stores }: { stores: Store[] }) {
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
-                <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
                     All Stores
-                    <span className="text-sm font-bold text-gray-600 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
+                    <span className="text-sm font-medium text-gray-600 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
                         {stores.length} registered
                     </span>
                 </h2>
@@ -47,13 +49,13 @@ export default function StoreList({ stores }: { stores: Store[] }) {
                         placeholder="Search stores, owners, emails..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none font-bold text-gray-800 shadow-sm transition placeholder:font-medium placeholder:text-gray-400"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none font-medium text-gray-800 shadow-sm transition placeholder:font-normal placeholder:text-gray-400"
                     />
                 </div>
             </div>
 
             {/* Column Headers (Hidden on Mobile) */}
-            <div className="hidden md:grid grid-cols-12 gap-4 px-6 mb-2 text-xs font-black text-gray-500 uppercase tracking-wider">
+            <div className="hidden md:grid grid-cols-12 gap-4 px-6 mb-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
                 <div className="col-span-4 pl-2">Store</div>
                 <div className="col-span-2">Owner</div>
                 <div className="col-span-2">Status</div>
@@ -64,7 +66,7 @@ export default function StoreList({ stores }: { stores: Store[] }) {
             <div className="space-y-3">
                 {filteredStores.length === 0 ? (
                     <div className="text-center py-12 bg-white/50 rounded-3xl border border-dashed border-gray-300">
-                        <p className="text-gray-400 font-bold">No stores found matching "{searchQuery}"</p>
+                        <p className="text-gray-400 font-medium">No stores found matching "{searchQuery}"</p>
                     </div>
                 ) : (
                     filteredStores.map((store) => (
@@ -74,7 +76,7 @@ export default function StoreList({ stores }: { stores: Store[] }) {
                         >
                             {/* Store Info */}
                             <div className="md:col-span-4 flex items-center gap-5">
-                                <div className="w-16 h-16 rounded-2xl bg-gray-100 flex-shrink-0 flex items-center justify-center text-2xl font-black text-gray-600 group-hover:bg-brand-cyan group-hover:text-white transition duration-300 overflow-hidden relative border border-gray-100">
+                                <div className="w-16 h-16 rounded-2xl bg-gray-100 flex-shrink-0 flex items-center justify-center text-2xl font-bold text-gray-600 group-hover:bg-brand-cyan group-hover:text-white transition duration-300 overflow-hidden relative border border-gray-100">
                                     {store.logo ? (
                                         // eslint-disable-next-line @next/next/no-img-element
                                         <img src={store.logo} alt={store.name} className="w-full h-full object-cover" />
@@ -86,7 +88,7 @@ export default function StoreList({ stores }: { stores: Store[] }) {
                                     <p className="font-bold text-gray-900 text-lg leading-tight group-hover:text-brand-cyan transition">
                                         {store.name}
                                     </p>
-                                    <p className="text-xs font-bold text-gray-500 font-mono mt-1 px-1.5 py-0.5 rounded-lg bg-gray-100 inline-block">
+                                    <p className="text-xs font-medium text-gray-500 font-mono mt-1 px-1.5 py-0.5 rounded-lg bg-gray-100 inline-block">
                                         /{store.slug}
                                     </p>
                                 </div>
@@ -95,13 +97,13 @@ export default function StoreList({ stores }: { stores: Store[] }) {
                             {/* Owner Info */}
                             <div className="md:col-span-2">
                                 <p className="font-bold text-gray-900 text-sm">{store.users[0]?.name || "N/A"}</p>
-                                <p className="text-xs text-gray-600 font-medium truncate">{store.users[0]?.email || "N/A"}</p>
+                                <p className="text-xs text-gray-600 font-normal truncate">{store.users[0]?.email || "N/A"}</p>
                             </div>
 
                             {/* Status & Tier */}
                             <div className="md:col-span-2 flex flex-col items-start gap-2">
                                 <span
-                                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wide border ${store.status === "ACTIVE"
+                                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border ${store.status === "ACTIVE"
                                         ? "bg-green-50 text-green-800 border-green-200"
                                         : store.status === "SUSPENDED"
                                             ? "bg-red-50 text-red-800 border-red-200"
@@ -114,8 +116,19 @@ export default function StoreList({ stores }: { stores: Store[] }) {
                                     {store.status === "ACTIVE" ? <CheckCircle size={10} className="fill-current" /> : <Ban size={10} />}
                                     {store.status}
                                 </span>
+                                {store.verificationStatus !== "UNVERIFIED" && (
+                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${store.verificationStatus === "PENDING"
+                                        ? "bg-yellow-50 text-yellow-700 border-yellow-200 animate-pulse"
+                                        : store.verificationStatus === "APPROVED"
+                                            ? "bg-blue-50 text-blue-700 border-blue-200"
+                                            : "bg-red-50 text-red-700 border-red-200"
+                                        }`}>
+                                        {store.verificationStatus === "APPROVED" && <CheckCircle size={10} className="fill-current" />}
+                                        {store.verificationStatus}
+                                    </span>
+                                )}
                                 <span
-                                    className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide opacity-80 ${store.tier === "WHOLESALER"
+                                    className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide opacity-80 ${store.tier === "WHOLESALER"
                                         ? "bg-orange-50 text-orange-800"
                                         : store.tier === "PRO"
                                             ? "bg-purple-50 text-purple-800"
@@ -129,19 +142,26 @@ export default function StoreList({ stores }: { stores: Store[] }) {
                             {/* Stats */}
                             <div className="md:col-span-3 flex gap-4">
                                 <div>
-                                    <span className="block font-black text-gray-900 text-lg">{store._count.products}</span>
-                                    <span className="text-[9px] uppercase text-gray-500 font-black tracking-wider">Items</span>
+                                    <span className="block font-bold text-gray-900 text-lg">{store._count.products}</span>
+                                    <span className="text-[9px] uppercase text-gray-500 font-bold tracking-wider">Items</span>
                                 </div>
                                 <div className="w-px h-8 bg-gray-200" />
                                 <div>
-                                    <span className="block font-black text-gray-900 text-lg">{store._count.orders}</span>
-                                    <span className="text-[9px] uppercase text-gray-500 font-black tracking-wider">Orders</span>
+                                    <span className="block font-bold text-gray-900 text-lg">{store._count.orders}</span>
+                                    <span className="text-[9px] uppercase text-gray-500 font-bold tracking-wider">Orders</span>
                                 </div>
                             </div>
 
                             {/* Actions */}
                             <div className="md:col-span-1 flex justify-end">
-                                <StoreActions store={{ ...store, tier: store.tier }} />
+                                <StoreActions
+                                    store={{
+                                        ...store,
+                                        tier: store.tier,
+                                        verificationStatus: store.verificationStatus,
+                                        isVerified: store.isVerified
+                                    }}
+                                />
                             </div>
                         </div>
                     ))

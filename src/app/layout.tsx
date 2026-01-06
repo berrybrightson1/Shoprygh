@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { Sora } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
+const sora = Sora({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-sora",
 });
 
 export const metadata: Metadata = {
@@ -20,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
+        className={`${sora.variable} antialiased font-sans`}
         suppressHydrationWarning
       >
         {children}

@@ -125,10 +125,11 @@ export default function CreatorStudio({
 }) {
     // --- State ---
     const borderClass = "border-gray-200 focus:border-brand-purple hover:border-gray-300";
-    const inputClass = "w-full bg-gray-50/50 hover:bg-white focus:bg-white border border-gray-200 focus:border-purple-500 rounded-2xl px-4 py-3.5 font-bold text-gray-900 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-4 focus:ring-purple-500/10";
+    const inputClass = "w-full bg-gray-50/50 hover:bg-white focus:bg-white border border-gray-200 focus:border-purple-500 rounded-2xl px-4 py-3.5 font-medium text-gray-900 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-4 focus:ring-purple-500/10";
 
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
+    const [priceWholesale, setPriceWholesale] = useState("");
     const [category, setCategory] = useState("Diapers");
     const [description, setDescription] = useState("");
 
@@ -230,11 +231,36 @@ export default function CreatorStudio({
         setIsGeneratingAI(true);
         try {
             const { generateProductDescription } = await import("@/app/actions/ai");
-            const result = await generateProductDescription(name, tags);
+
+            let imageBase64: string | null = null;
+
+            // Priority 1: New file selected
+            if (mainFileRef.current) {
+                const reader = new FileReader();
+                imageBase64 = await new Promise((resolve) => {
+                    reader.onload = () => resolve(reader.result as string);
+                    reader.readAsDataURL(mainFileRef.current!);
+                });
+            } else if (mainImage && mainImage.startsWith('blob:')) {
+                // Priority 2: Fetched blob (shouldn't happen often if ref is kept in sync, but for safety)
+                try {
+                    const response = await fetch(mainImage);
+                    const blob = await response.blob();
+                    const reader = new FileReader();
+                    imageBase64 = await new Promise((resolve) => {
+                        reader.onload = () => resolve(reader.result as string);
+                        reader.readAsDataURL(blob);
+                    });
+                } catch (e) {
+                    console.warn("Could not convert blob URL to base64", e);
+                }
+            }
+
+            const result = await generateProductDescription(name, tags, category, imageBase64);
 
             if (result.success && result.description) {
                 setDescription(result.description);
-                toast.success("AI description generated!");
+                toast.success("AI description generated with Gemini!");
             } else {
                 toast.error(result.error || "Failed to generate description");
             }
@@ -263,16 +289,16 @@ export default function CreatorStudio({
 
                         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                             <div>
-                                <h2 className="text-2xl md:text-3xl font-black text-gray-900 flex items-center gap-3 tracking-tight">
+                                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-3 tracking-tight">
                                     <span className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 shadow-sm shrink-0">
                                         <Sparkles size={20} className="fill-purple-200" />
                                     </span>
                                     Creator Studio
                                 </h2>
-                                <p className="text-gray-500 font-bold ml-1 mt-1 text-sm md:text-base">Craft your next bestseller.</p>
+                                <p className="text-gray-500 font-medium ml-1 mt-1 text-sm md:text-base">Craft your next bestseller.</p>
                             </div>
                             <div className="flex gap-2 self-start md:self-auto">
-                                <span className="px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
+                                <span className="px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
                                     New Draft
                                 </span>
                             </div>
@@ -286,6 +312,7 @@ export default function CreatorStudio({
                                 setIsSubmitting(true);
                                 try {
                                     if (mainFileRef.current) formData.set("image", mainFileRef.current);
+                                    if (priceWholesale) formData.set("priceWholesale", priceWholesale);
                                     galleryFilesRef.current.forEach(f => formData.append("gallery", f));
                                     formData.set("tags", JSON.stringify(tags));
                                     formData.set("variants", JSON.stringify(variants));
@@ -307,6 +334,7 @@ export default function CreatorStudio({
                                         galleryFilesRef.current = [];
                                         setName("");
                                         setPrice("");
+                                        setPriceWholesale("");
                                         setDescription("");
                                         setSuccessParams(false);
                                         setIsSubmitting(false);
@@ -374,23 +402,27 @@ export default function CreatorStudio({
                                 </div>
 
                                 {/* COL 2: Details (8/12) */}
-                                <div className="lg:col-span-8 space-y-5">
-                                    <div className="space-y-4">
+                                <div className="lg:col-span-8 space-y-6">
+                                    <div className="space-y-6">
                                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Details</label>
 
                                         {/* Product Name */}
-                                        <input
-                                            name="name"
-                                            title="Product Name"
-                                            value={name}
-                                            onChange={e => setName(e.target.value)}
-                                            placeholder="Product Name (e.g. Huggies Gold)"
-                                            className={`${inputClass} text-lg`}
-                                            required
-                                        />
+                                        <div className="space-y-1.5">
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase ml-1">Product Name</label>
+                                            <input
+                                                name="name"
+                                                title="Product Name"
+                                                value={name}
+                                                onChange={e => setName(e.target.value)}
+                                                placeholder="e.g. Huggies Gold"
+                                                className={`${inputClass} text-base`}
+                                                required
+                                            />
+                                        </div>
 
-                                        {/* Price / Cost / Stock Grid */}
-                                        <div className="grid grid-cols-3 gap-4">
+                                        {/* Price / Cost / Stock Grid - 2 Column Layout for Better Spacing */}
+                                        <div className="grid grid-cols-2 gap-5">
+                                            {/* Price */}
                                             <div>
                                                 <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Price</label>
                                                 <div className="relative">
@@ -408,22 +440,65 @@ export default function CreatorStudio({
                                                     />
                                                 </div>
                                             </div>
-                                            <div>
-                                                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Cost <span className="bg-gray-100 px-1 rounded text-gray-500">PROFIT</span></label>
-                                                <div className="relative">
-                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">₵</span>
-                                                    <input
-                                                        name="costPrice"
-                                                        title="Cost Price"
-                                                        type="number"
-                                                        step="0.01"
-                                                        placeholder="0.00"
-                                                        className={`${inputClass} pl-7 bg-gray-50/30`}
-                                                    />
+
+                                            {/* Wholesale (Conditional) */}
+                                            {storeTier === 'WHOLESALER' ? (
+                                                <div>
+                                                    <label className="block text-[10px] font-bold text-brand-purple uppercase mb-1.5 ml-1 flex items-center gap-1">
+                                                        Wholesale
+                                                        <span className="bg-brand-purple/10 text-brand-purple px-1.5 py-0.5 rounded text-[9px]">PRO</span>
+                                                    </label>
+                                                    <div className="relative">
+                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-400 font-bold text-xs">₵</span>
+                                                        <input
+                                                            value={priceWholesale}
+                                                            title="Wholesale Price"
+                                                            onChange={e => setPriceWholesale(e.target.value)}
+                                                            type="number"
+                                                            step="0.01"
+                                                            placeholder="0.00"
+                                                            className={`${inputClass} pl-7 border-purple-100 bg-purple-50/20 focus:border-brand-purple focus:ring-brand-purple/10`}
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            ) : (
+                                                /* If not wholesaler, show Cost here to balance grid or leave empty? Better to show Cost */
+                                                <div>
+                                                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Cost <span className="text-gray-300 font-normal ml-0.5">(Optional)</span></label>
+                                                    <div className="relative">
+                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">₵</span>
+                                                        <input
+                                                            name="costPrice"
+                                                            title="Cost Price"
+                                                            type="number"
+                                                            step="0.01"
+                                                            placeholder="0.00"
+                                                            className={`${inputClass} pl-7 bg-gray-50/30`}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Row 2: Cost (if Wholesaler was present, else Stock) & Stock */}
+                                            {storeTier === 'WHOLESALER' && (
+                                                <div>
+                                                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Cost <span className="bg-gray-100 px-1 rounded text-gray-500 text-[9px]">PROFIT</span></label>
+                                                    <div className="relative">
+                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">₵</span>
+                                                        <input
+                                                            name="costPrice"
+                                                            title="Cost Price"
+                                                            type="number"
+                                                            step="0.01"
+                                                            placeholder="0.00"
+                                                            className={`${inputClass} pl-7 bg-gray-50/30`}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             <div>
-                                                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Stock</label>
+                                                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Stock Quantity</label>
                                                 <input
                                                     name="stockQty"
                                                     title="Stock Quantity"
@@ -435,7 +510,7 @@ export default function CreatorStudio({
                                         </div>
 
                                         {/* Category & Tags Grid */}
-                                        <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-2 gap-5">
                                             <div className="relative">
                                                 <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Category</label>
                                                 <select
@@ -488,7 +563,7 @@ export default function CreatorStudio({
                                                 type="button"
                                                 onClick={generateDescription}
                                                 disabled={isGeneratingAI}
-                                                className="text-[10px] font-black text-white bg-black hover:bg-gray-800 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-md shadow-gray-200 hover:-translate-y-0.5 disabled:opacity-50"
+                                                className="text-[10px] font-bold text-white bg-black hover:bg-gray-800 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-md shadow-gray-200 hover:-translate-y-0.5 disabled:opacity-50"
                                             >
                                                 {isGeneratingAI ? <span className="animate-spin w-3 h-3 border-2 border-white/30 border-t-white rounded-full" /> : <Wand2 size={12} />}
                                                 AI Generate
@@ -499,11 +574,12 @@ export default function CreatorStudio({
                                             value={description}
                                             onChange={e => setDescription(e.target.value)}
                                             placeholder="Product description..."
-                                            className="w-full bg-gray-50/50 hover:bg-white focus:bg-white border border-gray-200 focus:border-purple-500 rounded-2xl px-5 py-4 min-h-[120px] resize-none font-medium text-gray-600 text-sm outline-none leading-relaxed focus:ring-4 focus:ring-purple-500/10 transition-all"
+                                            className="w-full bg-gray-50/50 hover:bg-white focus:bg-white border border-gray-200 focus:border-purple-500 rounded-2xl px-5 py-4 min-h-[120px] resize-none font-medium text-gray-600 text-sm outline-none leading-relaxed focus:ring-4 focus:ring-purple-500/10 transition-all font-normal"
                                         />
                                     </div>
                                 </div>
                             </div>
+
 
                             <div className="border-t border-gray-100" />
 
@@ -515,9 +591,9 @@ export default function CreatorStudio({
                                             <div className="p-2 bg-white rounded-xl shadow-sm border border-gray-100 text-gray-700">
                                                 <Layers size={16} />
                                             </div>
-                                            <span className="font-black text-gray-800 uppercase tracking-widest text-xs">Variants</span>
+                                            <span className="font-bold text-gray-800 uppercase tracking-widest text-xs">Variants</span>
                                         </div>
-                                        <button type="button" onClick={addVariant} className="text-[10px] font-black text-white bg-gray-900 hover:bg-black px-4 py-2 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-md">
+                                        <button type="button" onClick={addVariant} className="text-[10px] font-bold text-white bg-gray-900 hover:bg-black px-4 py-2 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-md">
                                             + Add Variant
                                         </button>
                                     </div>
@@ -586,7 +662,7 @@ export default function CreatorStudio({
                                 <button
                                     type="submit"
                                     disabled={isSubmitting || !!successParams}
-                                    className={`w-full font-black text-lg py-4 rounded-2xl shadow-xl shadow-gray-200 transition-all flex items-center justify-center gap-3 tracking-wide ${successParams
+                                    className={`w-full font-bold text-lg py-4 rounded-2xl shadow-xl shadow-gray-200 transition-all flex items-center justify-center gap-3 tracking-wide ${successParams
                                         ? "bg-green-500 text-white hover:scale-100 cursor-default"
                                         : isSubmitting
                                             ? "bg-gray-800 text-gray-400 cursor-wait"
@@ -621,32 +697,25 @@ export default function CreatorStudio({
                     <div className="sticky top-8 flex flex-col items-center">
                         <div className="flex items-center gap-2 mb-8">
                             <Smartphone size={16} className="text-gray-400" />
-                            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Live Preview</span>
+                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Live Preview</span>
                         </div>
 
-                        {/* iPhone 17 Mockup */}
-                        <div className="relative w-[380px] h-[780px] bg-gray-900 rounded-[55px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border-[8px] border-gray-900 ring-1 ring-gray-800 overflow-hidden select-none pointer-events-none">
-                            {/* Dynamic Island */}
-                            <div className="absolute top-[18px] left-1/2 -translate-x-1/2 w-[120px] h-[35px] bg-black rounded-full z-30 flex items-center justify-center">
+                        {/* iPhone 17 Mockup (Desktop Only Frame) */}
+                        <div className="relative w-full h-[80vh] xl:w-[380px] xl:h-[780px] bg-transparent xl:bg-gray-900 xl:rounded-[55px] xl:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] xl:border-[8px] xl:border-gray-900 xl:ring-1 xl:ring-gray-800 overflow-hidden select-none transition-all duration-300">
+                            {/* Dynamic Island - Desktop Only */}
+                            <div className="hidden xl:flex absolute top-[18px] left-1/2 -translate-x-1/2 w-[120px] h-[35px] bg-black rounded-full z-30 items-center justify-center">
                                 <div className="w-2 h-2 rounded-full bg-[#1a1a1a] ml-auto mr-3" />
                                 <div className="w-1.5 h-1.5 rounded-full bg-[#0f0f0f] opacity-50 mr-1" />
                             </div>
 
-                            {/* Status Bar */}
-                            <div className="absolute top-[22px] left-[32px] right-[32px] h-[20px] z-20 flex justify-between items-center px-1 pointer-events-none">
+                            {/* Status Bar - Desktop Only */}
+                            <div className="hidden xl:flex absolute top-[22px] left-[32px] right-[32px] h-[20px] z-20 justify-between items-center px-1 pointer-events-none">
                                 {/* Time - Left aligned properly for Dynamic Island */}
-                                <span className="text-[15px] text-black font-semibold tracking-tight ml-2" style={{ fontVariantNumeric: 'tabular-nums' }}>9:41</span>
+                                <span className="text-[15px] text-black font-semibold tracking-tight ml-4 font-sans" style={{ fontVariantNumeric: 'tabular-nums' }}>9:41</span>
 
-                                <div className="flex gap-1.5 items-center mr-2">
-                                    {/* Signal - 4 bars, varying height */}
-                                    <div className="flex gap-[1px] items-end h-[10px] mr-1">
-                                        <div className="w-[3px] h-[4px] bg-black rounded-[0.5px]" />
-                                        <div className="w-[3px] h-[6px] bg-black rounded-[0.5px]" />
-                                        <div className="w-[3px] h-[8px] bg-black rounded-[0.5px]" />
-                                        <div className="w-[3px] h-[10px] bg-black rounded-[0.5px]" />
-                                    </div>
-                                    {/* WiFi - Modern Curve */}
-                                    <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-0.5">
+                                <div className="flex gap-2 items-center mr-4">
+                                    {/* WiFi - Modern Curve (Simplified) */}
+                                    <svg width="18" height="13" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-0.5 scale-90">
                                         <path fillRule="evenodd" clipRule="evenodd" d="M8.00016 8.35715C7.45624 8.35715 6.94082 8.5534 6.53936 8.87611L7.79249 10.4424C7.89803 10.5738 8.10229 10.5738 8.20783 10.4424L9.46016 8.87652C9.0587 8.5534 8.5435 8.35715 8.00016 8.35715ZM2.83447 5.81188C4.22301 4.64834 6.03016 4.00001 8.00016 4.00001C9.97016 4.00001 11.7773 4.64834 13.1659 5.81188L11.5714 7.80521C10.6301 6.9898 9.37891 6.50501 8.00016 6.50501C6.62141 6.50501 5.37082 6.99021 4.42891 7.80563L2.83447 5.81188ZM7.99979 1.74084C5.15562 1.74084 2.56417 2.72876 1.38083 4.31834C1.26854 4.46917 1.32583 4.68209 1.4975 4.76167C1.49937 4.76251 1.50125 4.76355 1.50312 4.76438L3.33021 7.04834C3.43542 7.1798 3.64021 7.1798 3.74542 7.04834L5.48291 4.87667C6.19937 4.32709 7.06854 4.00001 7.99937 4.00001C8.92979 4.00001 9.79917 4.32709 10.5154 4.87667L12.2533 7.04834C12.3585 7.1798 12.5633 7.1798 12.6685 7.04834L14.4958 4.76438C14.4977 4.76355 14.4996 4.76251 14.5015 4.76167C14.673 4.68209 14.7303 4.46917 14.6181 4.31834C13.4348 2.72876 10.8431 1.74084 7.99979 1.74084Z" fill="black" />
                                     </svg>
                                     {/* Battery with Percentage */}
@@ -660,11 +729,12 @@ export default function CreatorStudio({
                             </div>
 
                             {/* Screen Content */}
-                            <div className="w-full h-full bg-white relative flex flex-col overflow-hidden rounded-[38px]">
+                            <div className="w-full h-full bg-white relative flex flex-col overflow-hidden rounded-3xl xl:rounded-[38px] border border-gray-200 xl:border-none shadow-sm xl:shadow-none">
                                 {/* App Bar */}
                                 <div className="h-24 pt-8 px-6 bg-white/80 backdrop-blur-xl flex items-center justify-between z-10 sticky top-0 border-b border-gray-100/50">
                                     <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center"><Box size={16} className="text-gray-900" /></div>
-                                    <span className="text-sm font-black text-gray-900">Product Details</span>
+                                    <span className="text-sm font-bold text-gray-900">Product Details</span>
+
                                     <div className="w-8 h-8"></div>
                                 </div>
 
@@ -694,11 +764,11 @@ export default function CreatorStudio({
                                         {/* Header */}
                                         <div>
                                             <div className="flex justify-between items-start mb-3 gap-4">
-                                                <h3 className="text-2xl font-black text-gray-900 leading-tight">
+                                                <h3 className="text-2xl font-bold text-gray-900 leading-tight">
                                                     {name || "Product Name"}
                                                 </h3>
                                             </div>
-                                            <p className="text-2xl font-black text-brand-orange">
+                                            <p className="text-2xl font-bold text-brand-orange">
                                                 ₵{price || "0.00"}
                                             </p>
                                         </div>
@@ -715,7 +785,7 @@ export default function CreatorStudio({
                                         {/* Variants */}
                                         {variants.length > 0 && (
                                             <div>
-                                                <p className="text-[10px] font-black text-gray-400 mb-3 uppercase tracking-widest">Select Option</p>
+                                                <p className="text-[10px] font-bold text-gray-400 mb-3 uppercase tracking-widest">Select Option</p>
                                                 <div className="flex flex-wrap gap-2">
                                                     {variants.map((v, i) => (
                                                         <span key={v.id} className={`px-4 py-3 border-2 rounded-2xl text-xs font-bold ${i === 0 ? 'border-gray-900 bg-gray-900 text-white' : 'border-gray-100 text-gray-600'}`}>
@@ -728,9 +798,9 @@ export default function CreatorStudio({
 
                                         {/* Description */}
                                         <div>
-                                            <p className="text-[10px] font-black text-gray-400 mb-3 uppercase tracking-widest">Description</p>
+                                            <p className="text-[10px] font-bold text-gray-400 mb-3 uppercase tracking-widest">Description</p>
                                             <div className="prose prose-sm prose-gray">
-                                                <p className="text-sm text-gray-500 leading-relaxed font-medium">
+                                                <p className="text-sm text-gray-500 leading-relaxed font-normal">
                                                     {description || "Product description will appear here..."}
                                                 </p>
                                             </div>

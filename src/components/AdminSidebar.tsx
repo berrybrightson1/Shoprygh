@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield, Sparkles, Wallet, Tag, Truck, PanelLeftClose, ChevronRight, LayoutDashboard } from "lucide-react";
+import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield, Sparkles, Wallet, Tag, Truck, PanelLeftClose, ChevronRight, LayoutDashboard, BadgeCheck, Lock, Settings } from "lucide-react";
 import { useState, useEffect } from "react";
 import { logout } from "@/app/[storeSlug]/admin/login/actions";
 
@@ -16,7 +16,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
     const [isDesktopHidden, setIsDesktopHidden] = useState(true); // Hidden by default on desktop
 
     // Dynamic storeSlug extraction
-    const storeSlug = pathname?.split('/')[1] || 'sh';
+    const storeSlug = user?.storeSlug || pathname?.split('/')[1] || 'sh';
 
     // Fallback if no user
     const currentUser = user || { name: "", role: "", email: "", id: "" };
@@ -35,18 +35,25 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         <Menu size={24} />
                     </button>
                     <div className="flex flex-col">
-                        <span className="font-black text-base leading-none tracking-tight">Shopry</span>
-                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Seller Hub</span>
+                        <span className="font-bold text-base leading-none tracking-tight">Shopry</span>
+                        <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Seller Hub</span>
                     </div>
                 </div>
 
-                <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
-                    <img
-                        src={currentUser.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(currentUser.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
-                        alt={currentUser.name}
-                        className="w-full h-full object-cover"
-                    />
-                </div>
+                <MobileSystemLogsDrawer
+                    logs={logs}
+                    storeSlug={storeSlug}
+                    user={currentUser}
+                    trigger={
+                        <button className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200 active:scale-95 transition-transform">
+                            <img
+                                src={currentUser.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(currentUser.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                                alt={currentUser.name}
+                                className="w-full h-full object-cover"
+                            />
+                        </button>
+                    }
+                />
             </div>
 
             {/* Backdrop */}
@@ -80,14 +87,14 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         />
                     </div>
                     <div>
-                        <span className="font-black text-xl text-gray-900 block leading-none tracking-tight">Shopry</span>
-                        <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1 block">Seller Hub</span>
+                        <span className="font-bold text-xl text-gray-900 block leading-none tracking-tight">Shopry</span>
+                        <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mt-1 block">Seller Hub</span>
                     </div>
                 </div>
 
                 {/* Navigation */}
                 <nav className="flex-1 px-4 space-y-1 mt-2 overflow-y-auto custom-scrollbar">
-                    <div className="px-4 text-xs font-black text-gray-300 uppercase tracking-widest mb-3 mt-2">Menu</div>
+                    <div className="px-4 text-xs font-bold text-gray-300 uppercase tracking-widest mb-3 mt-2">Menu</div>
 
                     <NavLink
                         href={`/${storeSlug}`}
@@ -106,6 +113,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname === `/${storeSlug}/admin` || pathname === `/${storeSlug}/admin/`}
                     />
 
+
                     <NavLink
                         href={`/${storeSlug}/admin/inventory`}
                         icon={<Package size={20} />}
@@ -122,7 +130,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
 
                     {/* Mobile Only: System Activity in Menu */}
                     <div className="md:hidden">
-                        <MobileSystemLogsDrawer logs={logs} storeSlug={storeSlug} />
+                        <MobileSystemLogsDrawer logs={logs} storeSlug={storeSlug} user={currentUser} />
                     </div>
 
                     <NavLink
@@ -175,6 +183,20 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname?.startsWith(`/${storeSlug}/admin/settings/delivery`)}
                     />
 
+                    {/* Verification Link */}
+                    <Link
+                        href={`/${storeSlug}/admin/verification`}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative mb-1 ${pathname?.startsWith(`/${storeSlug}/admin/verification`)
+                            ? 'bg-blue-50 text-blue-700 font-bold'
+                            : 'text-gray-500 hover:bg-blue-50/50 hover:text-blue-600 font-medium'
+                            }`}
+                    >
+                        <BadgeCheck size={20} className={pathname?.startsWith(`/${storeSlug}/admin/verification`) ? 'text-blue-600' : 'text-blue-400 group-hover:text-blue-600 transition-colors'} />
+                        <span className="relative z-10 text-sm tracking-tight flex-1">Get Verified</span>
+                        {/* Assuming we don't have isVerified on user object yet, showing lock by default if not strictly known, or nothing */}
+                        <Lock size={12} className="ml-auto text-gray-300" />
+                    </Link>
+
 
                     {/* Platform Admin Link - Only for Super Admins */}
                     {currentUser.isPlatformAdmin && (
@@ -210,8 +232,8 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                             />
                         </div>
                         <div className="text-left flex-1 min-w-0">
-                            <p className="text-sm font-black text-gray-900 leading-tight truncate">{currentUser.name || "User"}</p>
-                            <p className="text-xs text-gray-400 font-bold truncate mt-0.5">{currentUser.role || "Admin"}</p>
+                            <p className="text-sm font-bold text-gray-900 leading-tight truncate">{currentUser.name || "User"}</p>
+                            <p className="text-xs text-gray-400 font-medium truncate mt-0.5">{currentUser.role || "Admin"}</p>
                         </div>
                         <ChevronUp size={16} className={`text-gray-400 transition-transform duration-300 ${isSwitcherOpen ? "rotate-0" : "rotate-180"}`} />
                     </button>
@@ -245,7 +267,7 @@ function NavLink({ href, icon, label, active = false, isExternal = false }: { hr
             <span className={`relative z-10 transition-colors ${active ? "text-brand-orange" : "text-gray-400 group-hover:text-gray-900"}`}>
                 {icon}
             </span>
-            <span className={`relative z-10 text-sm tracking-tight ${active ? "font-black" : ""}`}>{label}</span>
+            <span className={`relative z-10 text-sm tracking-tight ${active ? "font-bold" : ""}`}>{label}</span>
 
             {active && (
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-brand-orange rounded-l-full" />

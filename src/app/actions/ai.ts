@@ -1,87 +1,104 @@
 "use server";
 
 import { logActivity } from "@/lib/audit";
+import Groq from "groq-sdk";
 
-// --- TEMPLATE LOGIC ---
-
-const TEMPLATES = [
-    "Experience the exceptional quality of {name}. Designed with {keywords} in mind, this product offers the perfect blend of style and functionality for your daily needs.",
-    "Elevate your lifestyle with {name}. A premium choice that stands out for its {keywords} design and reliable performance.",
-    "Discover {name}, the ultimate solution for those who value excellence. Whether you're looking for {keywords} or simply the best, this is for you.",
-    "Introduce {name} to your collection today. Crafted for durability and style, it features {keywords} to ensure you get the standard you deserve.",
-    "Meet {name}. A sophisticated addition to your life that promises quality. Perfect for anyone seeking {keywords} in one package.",
-    "Upgrade to {name} and feel the difference. With its focus on {keywords}, it redefines what you expect from a premium product.",
-    "Unleash the potential of {name}. Expertly designed to deliver results, combining {keywords} with unmatched reliability."
-];
-
-const FALLBACK_TEMPLATES = [
-    "Experience the exceptional quality of {name}. Designed with precision in mind, this product offers the perfect blend of style and functionality for your daily needs.",
-    "Elevate your lifestyle with {name}. A premium choice that stands out for its superior design and reliable performance.",
-    "Discover {name}, the ultimate solution for those who value excellence. Crafted for durability and style to ensure you get the standard you deserve.",
-    "Meet {name}. A sophisticated addition to your life that promises quality. Perfect for anyone seeking reliability in one package."
-];
-
-function getTemplate(hasKeywords: boolean): string {
-    const list = hasKeywords ? TEMPLATES : FALLBACK_TEMPLATES;
-    // Simple random selection
-    const randomIndex = Math.floor(Math.random() * list.length);
-    return list[randomIndex];
-}
-
-function formatList(items: string[]): string {
-    if (items.length === 0) return "quality";
-    if (items.length === 1) return items[0];
-    if (items.length === 2) return `${items[0]} and ${items[1]}`;
-    // Limit to top 3 for flow
-    const topItems = items.slice(0, 3);
-    return `${topItems.slice(0, -1).join(", ")} and ${topItems[topItems.length - 1]}`;
-}
-
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy" });
 
 /**
- * Generate a product description using "Smart Logic" (Templates)
- * Replaces the AI model with a deterministic, fast, and free approach.
+ * Generate a product description using Groq (Llama 3.2 Vision).
+ * Inputs: Product Name, Keywords, Category, and optional Image
  */
 export async function generateProductDescription(
     productName: string,
     keywords: string[] = [],
+    category: string = "General",
+    imageBase64: string | null = null,
     userId: string = "anonymous"
-): Promise<{ success: boolean; description?: string; error?: string }> {
-
-    // Simulate a short delay to make it feel like "work" is being done (UX)
-    // and to prevent spam clicks feeling broken
-    await new Promise(resolve => setTimeout(resolve, 800));
+): Promise<{ success: boolean; description?: string; error?: string; source?: 'AI' }> {
 
     try {
-        console.log(`[SmartGen] Generating for: "${productName}" with tags: [${keywords.join(', ')}]`);
-
-        const hasKeywords = keywords.length > 0;
-        const template = getTemplate(hasKeywords);
-
-        let description = template.replace("{name}", productName);
-
-        if (hasKeywords) {
-            description = description.replace("{keywords}", formatList(keywords));
+        if (!process.env.GROQ_API_KEY) {
+            throw new Error("Missing GROQ_API_KEY. Please configure your .env file.");
         }
+
+        console.log(`[Groq] Generating for: "${productName}"`);
+
+        let userPrompt = `
+**Role:**
+You are an expert E-Commerce Copywriter. Your goal is to convert raw product details into a clean, minimal, and scannable list.
+
+**Task:**
+Generate a concise product breakdown for:
+- **Product Name:** "${productName}"
+- **Category:** "${category}"
+${keywords.length > 0 ? `- **Key Features/Keywords:** ${keywords.join(', ')}` : ''}
+
+**Strict Formatting Rules:**
+1. **NO Headers:** Do not write "Section 1", "Features", or "Specs". Just output the lines.
+2. **NO Asterisks (*):** Do not use asterisks for bullet points.
+3. **Features (First 2-3 lines):** Start directly with the text. Use the format: \`[Feature Name]: [Short benefit]\`.
+4. **Specs (Remaining lines):** Use a dot bullet (•) for technical details. Use the format: \`• [Label]: [Value]\`.
+5. **Concise:** Keep descriptions short. Avoid extra adjectives.
+
+**Target Output Style:**
+Easy Lighting: Conveniently sized for effortless lighting.
+Safe Handling: Designed to reduce risk of accidental fires.
+• Material: Wood
+• Length: 10cm
+• Quantity: 50 sticks per pack
+• Colors: Natural Wood
+`;
+
+        let messages: any[] = [];
+
+        // Vision models are currently decommissioned/unavailable on Groq.
+        // Falling back to text-only generation for stability.
+        if (imageBase64) {
+            console.warn("[Groq] Vision models unavailable. Proceeding with text-only generation.");
+            // Append a note that we are ignoring the image
+            userPrompt += " (Note: Product image was provided but vision analysis is temporarily unavailable. Describe based on name and keywords.)";
+        }
+
+        messages = [
+            {
+                role: "user",
+                content: userPrompt,
+            },
+        ];
+
+        const completion = await groq.chat.completions.create({
+            messages: messages,
+            model: "llama-3.3-70b-versatile",
+            temperature: 0.7,
+            max_tokens: 500,
+            top_p: 1,
+            stream: false,
+            stop: null,
+        });
+
+        const description = completion.choices[0]?.message?.content || "";
 
         // Log for monitoring
         await logActivity(
             "AI_DESCRIPTION_GENERATED",
-            `Auto-generated description for ${productName}`,
+            `Groq Llama 3.2 generated description for ${productName}`,
             "PRODUCT",
             undefined,
-            { productName, keywords, mode: "TEMPLATE" }
+            { productName, keywords, mode: imageBase64 ? "LLAMA_3.2_VISION" : "LLAMA_3_70B" }
         );
 
         return {
             success: true,
-            description
+            description: description.trim(),
+            source: 'AI'
         };
+
     } catch (error: any) {
-        console.error("[SmartGen] Generation failed:", error);
+        console.error("[Groq] Generation failed:", error);
         return {
             success: false,
-            error: `Generation Failed: ${error.message || "Unknown error"}`
+            error: `AI Generation Failed: ${error.message || "Unknown error"}`
         };
     }
 }

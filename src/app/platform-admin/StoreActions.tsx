@@ -3,7 +3,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useState } from "react";
 import DeleteConfirmation from "@/components/modals/DeleteConfirmation";
-import { suspendStore, unsuspendStore, impersonateStoreOwner, updateStoreTierManually } from "./actions";
+import { suspendStore, unsuspendStore, impersonateStoreOwner, updateStoreTierManually, verifyStore, rejectStore } from "./actions";
 import { deleteStore as deleteStoreAction } from "../actions/platform";
 
 interface StoreActionsProps {
@@ -13,6 +13,8 @@ interface StoreActionsProps {
         name: string;
         status: "ACTIVE" | "SUSPENDED" | "DELETED";
         tier: string;
+        isVerified: boolean;
+        verificationStatus: string;
     };
 }
 
@@ -79,6 +81,39 @@ export default function StoreActions({ store }: StoreActionsProps) {
                     <User size={18} />
                 </button>
             </form>
+
+            {/* Verification Actions */}
+            {store.verificationStatus === "PENDING" && (
+                <>
+                    <form action={async (formData) => {
+                        await verifyStore(formData);
+                        toast.success("Store verified successfully");
+                    }}>
+                        <input type="hidden" name="storeId" value={store.id} />
+                        <button
+                            type="submit"
+                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition"
+                            title="Approve Verification"
+                        >
+                            <CheckCircle size={18} className="fill-green-100" />
+                        </button>
+                    </form>
+
+                    <form action={async (formData) => {
+                        await rejectStore(formData);
+                        toast.error("Store verification rejected");
+                    }}>
+                        <input type="hidden" name="storeId" value={store.id} />
+                        <button
+                            type="submit"
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                            title="Reject Verification"
+                        >
+                            <Ban size={18} />
+                        </button>
+                    </form>
+                </>
+            )}
 
             {store.status === "ACTIVE" ? (
                 <form action={suspendStore}>

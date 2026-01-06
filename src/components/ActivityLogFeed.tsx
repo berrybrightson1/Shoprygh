@@ -94,19 +94,19 @@ export default function ActivityLogFeed({ logs }: { logs: any[] }) {
 
                         <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between mb-1">
-                                <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">
+                                <span className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
                                     {log.action.replace(/_/g, " ")}
                                 </span>
-                                <span className="text-[10px] font-bold text-gray-400">
+                                <span className="text-[10px] font-light text-gray-400">
                                     {timeAgo(new Date(log.createdAt))}
                                 </span>
                             </div>
 
                             <LogMessage description={log.description || "Performed an action"} />
 
-                            <div className="mt-1 flex items-center gap-1 text-xs text-gray-500 font-medium">
+                            <div className="mt-1 flex items-center gap-1 text-[10px] text-gray-400 font-light">
                                 <span>by</span>
-                                <span className="text-gray-900 font-bold hover:underline cursor-pointer">{log.user.name}</span>
+                                <span className="text-gray-900 font-medium hover:underline cursor-pointer">{log.user.name}</span>
                             </div>
                         </div>
                     </div>
@@ -158,7 +158,7 @@ function LogMessage({ description }: { description: string }) {
     return (
         <div className="relative">
             <p
-                className={`text-sm font-bold text-gray-900 leading-snug cursor-pointer transition-all ${isExpanded ? "" : "truncate"}`}
+                className={`text-xs font-normal text-gray-700 leading-snug cursor-pointer transition-all ${isExpanded ? "" : "truncate"}`}
                 onClick={() => setIsExpanded(!isExpanded)}
             >
                 {description}
@@ -166,7 +166,7 @@ function LogMessage({ description }: { description: string }) {
             {isLong && !isExpanded && (
                 <button
                     onClick={(e) => { e.stopPropagation(); setIsExpanded(true); }}
-                    className="text-[10px] font-black text-brand-cyan hover:underline mt-0.5"
+                    className="text-[10px] font-medium text-brand-cyan hover:underline mt-0.5"
                 >
                     View Details
                 </button>

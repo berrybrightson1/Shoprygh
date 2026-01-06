@@ -20,7 +20,7 @@ model Store {
   // Profile Information
   logo        String?   // URL to logo image
   description String?   // Store bio/description
-  address     String?   // Physical business address
+  address     String   // Physical business address
   
   // Account Status
   status           StoreStatus @default(ACTIVE)
@@ -31,7 +31,7 @@ model Store {
   // Verification (Ghana Pro)
   isVerified       Boolean            @default(false)
   kycDocumentUrl   String?
-  verificationStatus VerificationStatus @default(PENDING)
+  verificationStatus VerificationStatus @default(UNVERIFIED)
   deliveryZones    DeliveryZone[]
   
   users       User[]
@@ -55,6 +55,10 @@ model Store {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// ... (skipping unchanged parts)
+
+
 
 // --- CRM Models ---
 
@@ -337,7 +341,9 @@ enum StoreTier {
   WHOLESALER
 }
 
+
 enum VerificationStatus {
+  UNVERIFIED
   PENDING
   APPROVED
   REJECTED

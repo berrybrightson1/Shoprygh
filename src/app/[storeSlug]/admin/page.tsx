@@ -234,7 +234,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
             <div className="space-y-6">
                 <h2 className="text-xl font-black text-gray-900">Quick Actions</h2>
                 <div className="grid grid-cols-1 gap-3">
-                    <Link href={`/${storeSlug}/admin/inventory/new`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-cyan-100 hover:border-brand-cyan/30 transition flex items-center justify-between">
+                    <Link href={`/${storeSlug}/admin/inventory`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-cyan-100 hover:border-brand-cyan/30 transition flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-brand-cyan/10 text-brand-cyan flex items-center justify-center group-hover:scale-110 transition duration-300">
                                 <Plus size={22} />

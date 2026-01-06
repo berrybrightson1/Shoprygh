@@ -47,10 +47,11 @@ export default async function ReportsPage({ params }: { params: Promise<{ storeS
                     </h1>
                     <p className="text-lg text-gray-500 font-medium mt-2">Real-time performance metrics for <strong className="text-gray-900">{store.name}</strong></p>
                 </div>
-                <div className="flex items-center bg-gray-100 rounded-xl p-1">
-                    <button className="px-4 py-2 bg-white rounded-lg shadow-sm text-xs font-bold text-gray-900">Today</button>
-                    <button className="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-900">Week</button>
-                    <button className="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-900">Month</button>
+                <div className="flex items-center bg-gray-100 p-1 rounded-lg">
+                    <button className="px-6 py-2 bg-white rounded-md shadow-sm text-[10px] font-black uppercase tracking-widest text-gray-900 border border-gray-100/50">Today</button>
+                    <button className="px-6 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-gray-900 hover:bg-gray-200/50 rounded-md transition-all">Week</button>
+                    <button className="px-6 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-gray-900 hover:bg-gray-200/50 rounded-md transition-all">Month</button>
+                    <button className="px-6 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-gray-900 hover:bg-gray-200/50 rounded-md transition-all">Year</button>
                 </div>
             </header>
 

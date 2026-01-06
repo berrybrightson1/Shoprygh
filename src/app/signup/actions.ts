@@ -15,13 +15,14 @@ export async function createStore(formData: FormData) {
         // 1. Extract Data
         const storeName = formData.get("storeName") as string;
         const storeSlug = (formData.get("storeSlug") as string).trim();
+        const storeAddress = (formData.get("storeAddress") as string).trim();
         const ownerName = formData.get("ownerName") as string;
         const email = (formData.get("email") as string).trim().toLowerCase();
         const password = formData.get("password") as string;
         const tier = (formData.get("tier") as any) || "HUSTLER";
         const avatar = formData.get("avatar") as string;
 
-        if (!storeName || !storeSlug || !email || !password || !ownerName) {
+        if (!storeName || !storeSlug || !email || !password || !ownerName || !storeAddress) {
             return { error: "Missing required fields" };
         }
 
@@ -103,6 +104,7 @@ export async function createStore(formData: FormData) {
                         name: storeName,
                         slug: storeSlug,
                         tier: tier,
+                        address: storeAddress,
                         isVerified: false, // Default to false, but allow operation
                         status: "ACTIVE"
                     }

@@ -42,6 +42,7 @@ export default async function PlatformAdminPage() {
             _count: {
                 select: { products: true, orders: true, users: true },
             },
+            verificationStatus: true,
         },
         orderBy: { createdAt: "desc" },
     });
