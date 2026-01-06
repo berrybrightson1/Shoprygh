@@ -1,9 +1,9 @@
-// FORCE DEPLOY: Fixed onEdit crash
+// app/[storeSlug]/admin/inventory/page.tsx
 import CreatorStudio from "@/components/CreatorStudio";
 import InventoryTable from "@/components/InventoryTable";
 import ProductCardList from "@/components/ProductCardList";
 import prisma from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { createProduct } from "./actions";
 import SeedButton from "./SeedButton";
 
@@ -27,7 +27,6 @@ export default async function InventoryPage({ params }: Props) {
     }
 
     // Fetch products strictly for this store
-    const start = performance.now();
     const data = await prisma.product.findMany({
         where: {
             storeId: store.id,
@@ -35,15 +34,17 @@ export default async function InventoryPage({ params }: Props) {
         },
         orderBy: { createdAt: "desc" }
     });
-    // console.log("Fetch took:", performance.now() - start);
 
+    // --- FIX FOR VERCEL DIGEST ERROR ---
     const products = data.map(p => ({
         ...p,
         priceRetail: p.priceRetail.toNumber(),
         priceWholesale: p.priceWholesale ? p.priceWholesale.toNumber() : null,
         costPrice: p.costPrice ? p.costPrice.toNumber() : null,
+        // Convert Date to String for Client Components
         createdAt: p.createdAt.toISOString()
     }));
+    // -----------------------------------
 
     // Bind the storeId to the create action
     const createProductWithStore = createProduct.bind(null, store.id);
@@ -76,11 +77,9 @@ export default async function InventoryPage({ params }: Props) {
             </div>
 
             {/* Mobile Card List */}
+            {/* FIX: Removed 'onEdit' function prop to prevent Server Component crash */}
             <ProductCardList
                 products={products.map(p => ({ ...p, category: p.category, image: p.image || null }))}
-                onEdit={(product) => {
-                    console.log('Edit product (mobile view-only):', product.name);
-                }}
             />
         </div>
     );

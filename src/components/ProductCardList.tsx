@@ -14,7 +14,7 @@ interface Product {
 
 interface ProductCardListProps {
     products: Product[];
-    onEdit: (product: Product) => void;
+    onEdit?: (product: Product) => void;
 }
 
 export default function ProductCardList({ products, onEdit }: ProductCardListProps) {
@@ -58,8 +58,8 @@ export default function ProductCardList({ products, onEdit }: ProductCardListPro
                         <div className="flex items-center gap-2">
                             <span className="font-black text-brand-orange text-sm">₵{product.priceRetail.toFixed(2)}</span>
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${product.stockQty > 0
-                                    ? "bg-green-50 text-green-700 border border-green-100"
-                                    : "bg-red-50 text-red-700 border border-red-100"
+                                ? "bg-green-50 text-green-700 border border-green-100"
+                                : "bg-red-50 text-red-700 border border-red-100"
                                 }`}>
                                 {product.stockQty > 0 ? `${product.stockQty} in stock` : "Out of Stock"}
                             </span>
@@ -67,13 +67,16 @@ export default function ProductCardList({ products, onEdit }: ProductCardListPro
                     </div>
 
                     {/* Action */}
-                    <button
-                        onClick={() => onEdit(product)}
-                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
-                        aria-label="Edit product"
-                    >
-                        <Edit size={18} />
-                    </button>
+                    {/* Action */}
+                    {onEdit && (
+                        <button
+                            onClick={() => onEdit(product)}
+                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                            aria-label="Edit product"
+                        >
+                            <Edit size={18} />
+                        </button>
+                    )}
                 </div>
             ))}
         </div>
