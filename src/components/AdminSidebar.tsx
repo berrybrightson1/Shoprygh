@@ -6,7 +6,7 @@ import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, 
 import { useState, useEffect } from "react";
 import { logout } from "@/app/[storeSlug]/admin/login/actions";
 
-export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate }: { user: any, storeTier?: string, latestUpdateDate?: Date }) {
+export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate }: { user: any, storeTier?: string, latestUpdateDate?: string }) {
     const pathname = usePathname();
     const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -245,7 +245,7 @@ function NavLink({ href, icon, label, active = false, isExternal = false }: { hr
     );
 }
 
-function UpdatesNavLink({ href, latestUpdateDate, active }: { href: string, latestUpdateDate?: Date, active?: boolean }) {
+function UpdatesNavLink({ href, latestUpdateDate, active }: { href: string, latestUpdateDate?: string, active?: boolean }) {
     const [isMounted, setIsMounted] = useState(false);
     const [lastRead, setLastRead] = useState<number>(0);
 

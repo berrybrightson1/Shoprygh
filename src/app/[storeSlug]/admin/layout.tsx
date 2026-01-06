@@ -36,10 +36,13 @@ export default async function AdminLayout({
         }
     }
 
+    // Serialize Date for Client Component
+    const latestUpdateDate = latestUpdate?.createdAt ? latestUpdate.createdAt.toISOString() : undefined;
+
     // Fetch Logs for the Right Sidebar - Store Wide
     let recentLogs: any[] = [];
     if (session?.id) {
-        recentLogs = await prisma.auditLog.findMany({
+        const rawLogs = await prisma.auditLog.findMany({
             where: {
                 user: {
                     storeId: store.id
@@ -49,6 +52,12 @@ export default async function AdminLayout({
             orderBy: { createdAt: "desc" },
             include: { user: { select: { name: true, image: true, email: true } } }
         });
+
+        // Serialize Logs
+        recentLogs = rawLogs.map(log => ({
+            ...log,
+            createdAt: log.createdAt.toISOString()
+        }));
     }
 
     return (
@@ -61,7 +70,7 @@ export default async function AdminLayout({
 
             {/* LEFT SIDEBAR - Navigation (Desktop Only) */}
             <div className="hidden md:flex h-full">
-                {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdate?.createdAt} />}
+                {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdateDate} />}
             </div>
 
             {/* MOBILE NAVIGATION */}

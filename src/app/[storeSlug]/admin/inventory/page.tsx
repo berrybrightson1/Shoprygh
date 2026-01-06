@@ -42,6 +42,7 @@ export default async function InventoryPage({ params }: Props) {
         priceRetail: p.priceRetail.toNumber(),
         priceWholesale: p.priceWholesale ? p.priceWholesale.toNumber() : null,
         costPrice: p.costPrice ? p.costPrice.toNumber() : null,
+        createdAt: p.createdAt.toISOString()
     }));
 
     // Bind the storeId to the create action
