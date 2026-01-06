@@ -1,3 +1,4 @@
+// FORCE DEPLOY: Fixed onEdit crash
 import CreatorStudio from "@/components/CreatorStudio";
 import InventoryTable from "@/components/InventoryTable";
 import ProductCardList from "@/components/ProductCardList";
