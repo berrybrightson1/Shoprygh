@@ -1,7 +1,6 @@
 import AdminSidebar from "@/components/AdminSidebar";
 import AdminRightSidebar from "@/components/AdminRightSidebar";
-import MobileBottomNav from "@/components/MobileBottomNav";
-import MobileTabs from "@/components/MobileTabs";
+import MobileNavigation from "@/components/MobileNavigation";
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
@@ -65,11 +64,8 @@ export default async function AdminLayout({
                 {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdate?.createdAt} />}
             </div>
 
-            {/* MOBILE BOTTOM NAV */}
-            <MobileBottomNav storeSlug={storeSlug} />
-
-            {/* MOBILE HORIZONTAL TABS */}
-            <MobileTabs storeSlug={storeSlug} />
+            {/* MOBILE NAVIGATION */}
+            <MobileNavigation storeSlug={storeSlug} />
 
             <div className="flex-1 flex overflow-hidden relative z-10 text-gray-900">
                 {/* CENTER CONTENT */}
