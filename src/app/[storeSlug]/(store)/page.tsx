@@ -1,20 +1,18 @@
 import prisma from "@/lib/prisma";
-import StoreInterface from "@/components/StoreInterface";
 import { notFound } from "next/navigation";
+import StoreInterface from "@/components/StoreInterface";
 
 export const dynamic = 'force-dynamic';
 
 interface Props {
-    params: Promise<{
-        storeSlug: string;
-    }>
+    params: Promise<{ storeSlug: string }>;
 }
 
 export default async function StorePage({ params }: Props) {
     const { storeSlug } = await params;
 
     const store = await prisma.store.findUnique({
-        where: { slug: storeSlug }
+        where: { slug: storeSlug },
     });
 
     if (!store) {
@@ -24,19 +22,28 @@ export default async function StorePage({ params }: Props) {
     const products = await prisma.product.findMany({
         where: {
             storeId: store.id,
-            isArchived: false
+            isArchived: false,
         },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: "desc" },
     });
 
-    // 👇 THIS IS THE FIX
-    const serializedProducts = products.map(product => ({
+    // Serialize Decimals to prevent serialization errors
+    const serializedProducts = products.map((product) => ({
         ...product,
         priceRetail: product.priceRetail.toNumber(),
-        priceWholesale: product.priceWholesale ? product.priceWholesale.toNumber() : null,
+        priceWholesale: product.priceWholesale
+            ? product.priceWholesale.toNumber()
+            : null,
         costPrice: product.costPrice ? product.costPrice.toNumber() : null,
         createdAt: product.createdAt.toISOString()
     }));
 
-    return <StoreInterface initialProducts={serializedProducts} storeId={store.id} storeSlug={storeSlug} />;
+    // NO onEdit function passed - this is critical for Server/Client component separation
+    return (
+        <StoreInterface
+            storeId={store.id}
+            storeSlug={storeSlug}
+            initialProducts={serializedProducts}
+        />
+    );
 }
