@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, X, Image as ImageIcon, Sparkles, Smartphone, Box, Trash2, Upload, Tag, ChevronDown, Wand2, Package, Layers, CheckCircle } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { compressImage } from "@/utils/imageCompression";
 import { toast } from "sonner";
 
@@ -17,6 +17,104 @@ const CATEGORIES = [
     "Diapers", "Feeding", "Clothing", "Toys", "Health", "Bedding",
     "Electronics", "Beauty", "Home", "Fashion", "Bundles", "General"
 ];
+
+// --- Draggable Pill Component ---
+function DraggablePill({ viewMode, setViewMode }: { viewMode: 'edit' | 'preview', setViewMode: (m: 'edit' | 'preview') => void }) {
+    const [position, setPosition] = useState<{ x: number, y: number } | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const dragStart = useRef<{ x: number, y: number } | null>(null);
+    const initialPos = useRef<{ x: number, y: number } | null>(null);
+    const hasMoved = useRef(false);
+
+    // Set initial position to bottom center on mount (Client Only)
+    useEffect(() => {
+        setPosition({ x: window.innerWidth / 2 - 100, y: window.innerHeight - 100 });
+    }, []);
+
+    const handlePointerDown = (e: React.PointerEvent) => {
+        // Only left click or touch
+        if (e.button !== 0) return;
+
+        e.currentTarget.setPointerCapture(e.pointerId);
+        setIsDragging(true);
+        hasMoved.current = false;
+
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        dragStart.current = { x: e.clientX, y: e.clientY };
+        initialPos.current = { x: rect.left, y: rect.top };
+    };
+
+    const handlePointerMove = (e: React.PointerEvent) => {
+        if (!isDragging || !dragStart.current || !initialPos.current) return;
+
+        const dx = e.clientX - dragStart.current.x;
+        const dy = e.clientY - dragStart.current.y;
+
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasMoved.current = true;
+
+        setPosition({
+            x: initialPos.current.x + dx,
+            y: initialPos.current.y + dy
+        });
+    };
+
+    const handlePointerUp = (e: React.PointerEvent) => {
+        setIsDragging(false);
+        e.currentTarget.releasePointerCapture(e.pointerId);
+
+        // Manual Click Detection (since we capture pointer events)
+        if (!hasMoved.current) {
+            // Check what element is under the pointer
+            const target = document.elementFromPoint(e.clientX, e.clientY);
+            const btn = target?.closest('button');
+            if (btn) {
+                const mode = btn.getAttribute('data-mode') as 'edit' | 'preview' | null;
+                if (mode) setViewMode(mode);
+            }
+        }
+    };
+
+    // If no position yet (SSR), return null or default
+    if (!position) return null;
+
+    return (
+        <div
+            className="xl:hidden fixed z-[100] touch-none cursor-move animate-in zoom-in duration-300"
+            style={{ left: position.x, top: position.y }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+        >
+            <div className="flex items-center gap-1 p-1.5 bg-gray-900/90 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/10 rounded-full active:scale-95 transition-transform">
+                <button
+                    type="button"
+                    data-mode="edit"
+                    className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 select-none ${viewMode === 'edit'
+                        ? 'bg-white text-gray-900 shadow-md'
+                        : 'text-gray-400'
+                        }`}
+                >
+                    <Wand2 size={14} />
+                    Editor
+                </button>
+                <div className="w-px h-4 bg-white/20" />
+                <button
+                    type="button"
+                    data-mode="preview"
+                    className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 select-none ${viewMode === 'preview'
+                        ? 'bg-white text-gray-900 shadow-md'
+                        : 'text-gray-400'
+                        }`}
+                >
+                    <Smartphone size={14} />
+                    Preview
+                </button>
+            </div>
+            {/* Handle/Grip hint */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-1 bg-gray-300/50 rounded-full opacity-0 hover:opacity-100 transition-opacity" />
+        </div>
+    );
+}
 
 export default function CreatorStudio({
     createAction,
@@ -154,49 +252,27 @@ export default function CreatorStudio({
     return (
         <>
             {/* Mobile Toggle (Edit vs Preview) */}
-            <div className="xl:hidden sticky top-16 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 -mx-4 px-4 py-3 mb-6">
-                <div className="flex gap-2 max-w-xs mx-auto">
-                    <button
-                        type="button"
-                        onClick={() => setViewMode('edit')}
-                        className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-sm transition-all ${viewMode === 'edit'
-                            ? 'bg-gray-900 text-white shadow-lg'
-                            : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
-                            }`}
-                    >
-                        ✏️ Edit
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setViewMode('preview')}
-                        className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-sm transition-all ${viewMode === 'preview'
-                            ? 'bg-gray-900 text-white shadow-lg'
-                            : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
-                            }`}
-                    >
-                        👁️ Preview
-                    </button>
-                </div>
-            </div>
+            {/* Floating Mobile Toggle (Assistive Touch) */}
+            <DraggablePill viewMode={viewMode} setViewMode={setViewMode} />
 
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 mb-20 animate-in fade-in duration-500">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 mb-20 pb-24 animate-in fade-in duration-500">
                 {/* LEFT: Editor Form (7/12 cols) */}
                 <div className={`xl:col-span-7 space-y-6 ${viewMode === 'preview' ? 'hidden xl:block' : ''}`}>
                     <div className="bg-white p-6 lg:p-8 rounded-[32px] shadow-2xl shadow-gray-200/50 border border-white/60 relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400" />
 
-                        <div className="flex items-center justify-between mb-8">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                             <div>
-                                <h2 className="text-3xl font-black text-gray-900 flex items-center gap-3 tracking-tight">
-                                    <span className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 shadow-sm">
+                                <h2 className="text-2xl md:text-3xl font-black text-gray-900 flex items-center gap-3 tracking-tight">
+                                    <span className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 shadow-sm shrink-0">
                                         <Sparkles size={20} className="fill-purple-200" />
                                     </span>
                                     Creator Studio
                                 </h2>
-                                <p className="text-gray-500 font-bold ml-1 mt-1">Craft your next bestseller.</p>
+                                <p className="text-gray-500 font-bold ml-1 mt-1 text-sm md:text-base">Craft your next bestseller.</p>
                             </div>
-                            <div className="flex gap-2">
-                                <span className="px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 text-[10px] font-black uppercase tracking-widest">
+                            <div className="flex gap-2 self-start md:self-auto">
+                                <span className="px-4 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
                                     New Draft
                                 </span>
                             </div>

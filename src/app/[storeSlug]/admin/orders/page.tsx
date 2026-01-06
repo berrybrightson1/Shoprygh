@@ -41,7 +41,8 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                 </div>
             </header>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden overflow-x-auto">
+            {/* Desktop Table */}
+            <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden overflow-x-auto">
                 {orders.length === 0 ? (
                     <div className="p-20 text-center text-gray-500 font-bold">
                         <ShoppingBag size={48} className="mx-auto mb-4 opacity-20" />
@@ -167,6 +168,55 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                             ))}
                         </tbody>
                     </table>
+                )}
+            </div>
+
+            {/* Mobile Card List (Professional & Dense) */}
+            <div className="md:hidden space-y-4">
+                {orders.length === 0 ? (
+                    <div className="p-10 text-center text-gray-400 bg-white rounded-3xl border border-gray-100">
+                        <ShoppingBag size={32} className="mx-auto mb-2 opacity-20" />
+                        <p className="text-sm font-bold">No orders found</p>
+                    </div>
+                ) : (
+                    orders.map(order => (
+                        <div key={order.id} className="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm relative overflow-hidden">
+                            {/* Header: ID and Status */}
+                            <div className="flex justify-between items-start mb-4">
+                                <div>
+                                    <span className="font-mono text-[10px] text-gray-400 font-bold uppercase tracking-wider">Order #{order.id.slice(-6).toUpperCase()}</span>
+                                    <div className="font-bold text-gray-900 text-sm mt-0.5">{new Date(order.createdAt).toLocaleDateString()}</div>
+                                </div>
+                                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide border ${order.status === 'COMPLETED' ? 'bg-green-50 text-green-700 border-green-100' :
+                                    order.status === 'CANCELLED' ? 'bg-red-50 text-red-700 border-red-100' :
+                                        'bg-orange-50 text-orange-700 border-orange-100'
+                                    }`}>
+                                    {order.status}
+                                </span>
+                            </div>
+
+                            {/* Items List */}
+                            <div className="bg-gray-50/50 rounded-xl p-3 mb-4 space-y-2">
+                                {order.items.map(item => (
+                                    <div key={item.id} className="flex justify-between text-xs">
+                                        <span className="text-gray-600"><span className="font-bold text-gray-900">{item.quantity}x</span> {item.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Footer: Customer & Total */}
+                            <div className="flex justify-between items-end border-t border-gray-100 pt-4">
+                                <div>
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Customer</div>
+                                    <div className="text-sm font-bold text-gray-900">{order.customerPhone || "Guest"}</div>
+                                </div>
+                                <div className="text-right">
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Total</div>
+                                    <div className="text-xl font-black text-brand-orange">₵{Number(order.total).toFixed(2)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    ))
                 )}
             </div>
         </div>

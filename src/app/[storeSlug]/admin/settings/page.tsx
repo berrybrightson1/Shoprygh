@@ -71,19 +71,12 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Column: Store & Personal */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* Store Profile */}
-                    <section className="bg-white md:rounded-[32px] md:p-8 md:shadow-sm md:border md:border-gray-100">
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-black text-gray-900">Store Profile</h2>
-                            <p className="text-gray-400 font-medium">Public information visible to your customers.</p>
-                        </div>
-                        <ProfileEditor store={store} />
-                    </section>
+                    <ProfileEditor store={store} />
 
                     {/* Personal Profile */}
-                    <section className="bg-white md:rounded-[32px] md:p-8 md:shadow-sm md:border md:border-gray-100">
+                    <section className="bg-white rounded-[24px] p-4 md:rounded-[32px] md:p-8 shadow-sm border border-gray-100">
                         <div className="mb-8">
                             <h2 className="text-2xl font-black text-gray-900">Personal Profile</h2>
                             <p className="text-gray-400 font-medium">Your account details and login information.</p>

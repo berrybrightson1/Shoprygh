@@ -27,11 +27,11 @@ export default function CartHeaderButton() {
         <button
             onClick={toggleCart}
             title="Shopping cart"
-            className="relative w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"
+            className="group relative w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20"
         >
-            <ShoppingBag size={18} />
+            <ShoppingBag size={20} className="stroke-[2.5px]" />
             {mounted && itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-brand-orange text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold border-2 border-white animate-in zoom-in">
+                <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-black border-2 border-white shadow-sm animate-in zoom-in spring-duration-300">
                     {itemCount}
                 </span>
             )}

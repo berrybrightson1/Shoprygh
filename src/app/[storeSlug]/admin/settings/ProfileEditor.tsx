@@ -41,7 +41,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
     };
 
     return (
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 mb-8">
+        <div className="bg-white p-4 md:p-6 rounded-[24px] md:rounded-[32px] border border-gray-100 shadow-sm mb-8">
             {/* Header with Save Button */}
             <div className="flex items-center justify-between mb-8">
                 <div>
@@ -55,10 +55,10 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                     type="submit"
                     form="profile-form"
                     disabled={isSubmitting}
-                    className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-gray-200 hover:shadow-xl hover:bg-gray-800 transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 bg-black text-white px-3 py-2 rounded-lg md:px-6 md:py-3 md:rounded-xl text-xs md:text-sm font-bold shadow-sm hover:bg-gray-800 transition-all disabled:opacity-50 whitespace-nowrap"
                 >
-                    <Save size={18} />
-                    {isSubmitting ? "Saving..." : "Save Changes"}
+                    <Save size={14} className="md:w-[18px] md:h-[18px]" />
+                    {isSubmitting ? "Saving..." : <><span className="md:hidden">Save</span><span className="hidden md:inline">Save Changes</span></>}
                 </button>
             </div>
 
@@ -76,7 +76,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                         {/* Logo Upload */}
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-3">Store Logo</label>
-                            <div className="relative w-40 h-40 rounded-2xl overflow-hidden border-4 border-dashed border-gray-300 hover:border-brand-cyan transition-colors group cursor-pointer bg-gray-50">
+                            <div className="relative w-40 h-40 rounded-xl md:rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-brand-cyan transition-colors group cursor-pointer bg-gray-50">
                                 {logoPreview ? (
                                     <img src={logoPreview} alt="Store logo" className="w-full h-full object-cover" />
                                 ) : (
@@ -114,7 +114,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                     name="name"
                                     defaultValue={store.name}
                                     required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-cyan focus:border-brand-cyan text-gray-900 font-semibold transition-all"
+                                    className="w-full px-4 py-2.5 md:py-3 border border-gray-200 md:border-2 rounded-lg md:rounded-xl focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan text-gray-900 font-semibold transition-all placeholder:text-gray-400"
                                     placeholder="My Awesome Store"
                                 />
                             </div>
@@ -129,7 +129,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                     name="description"
                                     rows={4}
                                     defaultValue={store.description || ""}
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-cyan focus:border-brand-cyan text-gray-900 resize-none transition-all"
+                                    className="w-full px-4 py-2.5 md:py-3 border border-gray-200 md:border-2 rounded-lg md:rounded-xl focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan text-gray-900 resize-none transition-all placeholder:text-gray-400"
                                     placeholder="Tell customers about your store..."
                                 />
                             </div>
@@ -156,7 +156,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                 id="phone"
                                 name="phone"
                                 defaultValue={store.ownerPhone || ""}
-                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-orange focus:border-brand-orange text-gray-900 transition-all"
+                                className="w-full px-4 py-2.5 md:py-3 border border-gray-200 md:border-2 rounded-lg md:rounded-xl focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange text-gray-900 transition-all placeholder:text-gray-400"
                                 placeholder="+233 24 123 4567"
                             />
                         </div>
@@ -172,7 +172,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                 id="address"
                                 name="address"
                                 defaultValue={store.address || ""}
-                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-orange focus:border-brand-orange text-gray-900 transition-all"
+                                className="w-full px-4 py-2.5 md:py-3 border border-gray-200 md:border-2 rounded-lg md:rounded-xl focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange text-gray-900 transition-all placeholder:text-gray-400"
                                 placeholder="123 Main Street, Accra"
                             />
                         </div>

@@ -51,14 +51,14 @@ export default function ActivityLogFeed({ logs }: { logs: any[] }) {
     return (
         <div className="space-y-4">
             {/* Time Period Filter */}
-            <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-2xl w-fit">
+            <div className="grid grid-cols-4 gap-1 p-1 bg-gray-100 rounded-lg w-full md:w-fit">
                 {TIME_PERIODS.map(({ key, label }) => (
                     <button
                         key={key}
                         onClick={() => setPeriod(key)}
-                        className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wide transition-all ${period === key
+                        className={`flex items-center justify-center py-2 rounded-md text-[10px] md:text-xs font-black uppercase tracking-wide transition-all ${period === key
                             ? 'bg-white text-gray-900 shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
+                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
                             }`}
                     >
                         {label}

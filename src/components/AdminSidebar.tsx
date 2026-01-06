@@ -6,7 +6,10 @@ import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, 
 import { useState, useEffect } from "react";
 import { logout } from "@/app/[storeSlug]/admin/login/actions";
 
-export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate }: { user: any, storeTier?: string, latestUpdateDate?: string }) {
+// Import MobileSystemLogsDrawer at top
+import MobileSystemLogsDrawer from "@/components/admin/MobileSystemLogsDrawer";
+
+export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate, logs = [] }: { user: any, storeTier?: string, latestUpdateDate?: string, logs?: any[] }) {
     const pathname = usePathname();
     const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -116,6 +119,12 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         label="Orders"
                         active={pathname?.startsWith(`/${storeSlug}/admin/orders`)}
                     />
+
+                    {/* Mobile Only: System Activity in Menu */}
+                    <div className="md:hidden">
+                        <MobileSystemLogsDrawer logs={logs} storeSlug={storeSlug} />
+                    </div>
+
                     <NavLink
                         href={`/${storeSlug}/admin/staff`}
                         icon={<Users size={20} />}

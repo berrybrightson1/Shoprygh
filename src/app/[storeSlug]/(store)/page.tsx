@@ -44,6 +44,7 @@ export default async function StorePage({ params }: Props) {
         <StoreInterface
             storeId={store.id}
             storeSlug={storeSlug}
+            storeName={store.name}
             initialProducts={serializedProducts}
         />
     );

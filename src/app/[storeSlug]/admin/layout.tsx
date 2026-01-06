@@ -68,17 +68,18 @@ export default async function AdminLayout({
                 <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-400/10 blur-[130px]" />
             </div>
 
-            {/* LEFT SIDEBAR - Navigation (Desktop Only) */}
-            <div className="hidden md:flex h-full">
-                {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdateDate} />}
+            {/* LEFT SIDEBAR - Navigation (Desktop & Mobile Drawer) */}
+            <div className="h-full">
+                {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdateDate} logs={recentLogs} />}
             </div>
 
-            {/* MOBILE NAVIGATION */}
-            <MobileNavigation storeSlug={storeSlug} />
+            {/* MOBILE NAVIGATION - Disabled to match user preference for Sidebar Drawer */
+            /* <MobileNavigation storeSlug={storeSlug} /> */}
 
             <div className="flex-1 flex overflow-hidden relative z-10 text-gray-900">
                 {/* CENTER CONTENT */}
-                <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 no-scrollbar relative flex flex-col">
+                {/* CENTER CONTENT */}
+                <main className="flex-1 overflow-y-auto p-4 pt-20 md:p-8 md:pt-8 pb-24 md:pb-8 no-scrollbar relative flex flex-col">
 
                     {children}
                 </main>

@@ -54,14 +54,20 @@ export default function ProductCardList({ products, onEdit }: ProductCardListPro
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-gray-900 truncate text-sm mb-0.5">{product.name}</h3>
-                        <div className="flex items-center gap-2">
-                            <span className="font-black text-brand-orange text-sm">₵{product.priceRetail.toFixed(2)}</span>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${product.stockQty > 0
+                        <div className="flex justify-between items-start mb-1">
+                            <h3 className="font-bold text-gray-900 truncate text-sm leading-tight pr-2">{product.name}</h3>
+                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 shrink-0 bg-gray-100 px-1.5 py-0.5 rounded-md border border-gray-200">{product.category}</span>
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-2">
+                            <span className="font-black text-brand-orange text-base tracking-tight">₵{product.priceRetail.toFixed(2)}</span>
+                            <div className="h-4 w-px bg-gray-200" />
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 ${product.stockQty > 0
                                 ? "bg-green-50 text-green-700 border border-green-100"
                                 : "bg-red-50 text-red-700 border border-red-100"
                                 }`}>
-                                {product.stockQty > 0 ? `${product.stockQty} in stock` : "Out of Stock"}
+                                <span className={`w-1.5 h-1.5 rounded-full ${product.stockQty > 0 ? "bg-green-500" : "bg-red-500"}`} />
+                                {product.stockQty > 0 ? `${product.stockQty} Units` : "Out of Stock"}
                             </span>
                         </div>
                     </div>

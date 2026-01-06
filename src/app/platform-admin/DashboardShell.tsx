@@ -7,6 +7,8 @@ import { logout } from "@/app/actions/auth";
 import BroadcastModal from "@/components/modals/BroadcastModal";
 import ActivityLogFeed from "@/components/ActivityLogFeed";
 
+import MobileSystemActivityDrawer from "@/components/platform-admin/MobileSystemActivityDrawer";
+
 interface DashboardShellProps {
     children: React.ReactNode;
     session: { email: string };
@@ -21,7 +23,7 @@ export default function DashboardShell({ children, session, user, logs }: Dashbo
     return (
         <div className="flex h-screen bg-gray-50">
             {/* LEFT SIDEBAR - Navigation */}
-            <aside className={`${leftSidebarOpen ? 'w-64' : 'w-0'} bg-white border-r border-gray-200 flex flex-col transition-all duration-300 overflow-hidden`}>
+            <aside className={`${leftSidebarOpen ? 'w-64' : 'w-0'} bg-white border-r border-gray-200 flex flex-col transition-all duration-300 overflow-hidden absolute md:relative z-40 h-full`}>
                 <div className="p-6 border-b border-gray-100">
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-bold text-sm">
@@ -51,7 +53,7 @@ export default function DashboardShell({ children, session, user, logs }: Dashbo
                 </nav>
             </aside>
 
-            {/* LEFT SIDEBAR TOGGLE - More Obvious */}
+            {/* LEFT SIDEBAR TOGGLE */}
             <button
                 onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
                 className={`fixed top-4 z-50 bg-gray-900 text-white rounded-full p-3 shadow-lg hover:bg-gray-800 hover:scale-105 transition-all duration-200 flex items-center justify-center ${leftSidebarOpen ? 'left-[272px]' : 'left-4'}`}
@@ -65,17 +67,20 @@ export default function DashboardShell({ children, session, user, logs }: Dashbo
                 {children}
             </div>
 
-            {/* RIGHT SIDEBAR TOGGLE - More Obvious */}
+            {/* MOBILE SYSTEM ACTIVITY DRAWER */}
+            <MobileSystemActivityDrawer session={session} user={user} logs={logs} />
+
+            {/* RIGHT SIDEBAR TOGGLE - DESKTOP ONLY */}
             <button
                 onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
-                className={`fixed top-20 z-50 bg-gray-900 text-white rounded-full p-3 shadow-lg hover:bg-gray-800 hover:scale-105 transition-all duration-200 flex items-center justify-center ${rightSidebarOpen ? 'right-[400px]' : 'right-4'}`}
+                className={`hidden md:flex fixed top-20 z-50 bg-gray-900 text-white rounded-full p-3 shadow-lg hover:bg-gray-800 hover:scale-105 transition-all duration-200 items-center justify-center ${rightSidebarOpen ? 'right-[400px]' : 'right-4'}`}
                 title={rightSidebarOpen ? "Close Activity Panel" : "Open Activity Panel"}
             >
                 {rightSidebarOpen ? <PanelRightClose size={20} /> : <ChevronLeft size={20} />}
             </button>
 
-            {/* RIGHT SIDEBAR - Profile & Activity */}
-            <aside className={`${rightSidebarOpen ? 'w-96' : 'w-0'} bg-white border-l border-gray-200 flex flex-col overflow-hidden transition-all duration-300`}>
+            {/* RIGHT SIDEBAR - DESKTOP ONLY */}
+            <aside className={`hidden md:flex ${rightSidebarOpen ? 'w-96' : 'w-0'} bg-white border-l border-gray-200 flex-col overflow-hidden transition-all duration-300`}>
                 {/* Profile Card */}
                 <div className="p-8 pb-6">
                     <div className="bg-gray-50 rounded-[24px] p-6 flex flex-col items-center text-center border border-gray-100">

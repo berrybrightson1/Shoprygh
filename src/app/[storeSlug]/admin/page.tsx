@@ -14,8 +14,12 @@ import {
     Tag,
     Clock,
     Package,
-    ChevronRight
+    ChevronRight,
+    Activity
 } from "lucide-react";
+
+import MobileActivityDrawer from "@/components/admin/MobileActivityDrawer";
+import MobileSystemLogsDrawer from "@/components/admin/MobileSystemLogsDrawer";
 
 export default async function AdminDashboard({ params }: { params: Promise<{ storeSlug: string }> }) {
     const session = await getSession();
@@ -64,11 +68,24 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
         include: { items: true }
     });
 
+    // 6. System Activity Logs (Store Level)
+    const auditLogs = await prisma.auditLog.findMany({
+        where: {
+            OR: [
+                { entityId: storeId, entityType: "STORE" }, // Actions ON the store
+                { user: { storeId: storeId } }             // Actions BY store staff
+            ]
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: { user: { select: { name: true, image: true, email: true } } }
+    });
+
     // --- UI Components ---
 
     const StatCard = ({ label, value, gradient, icon: Icon, subtext }: { label: string; value: string | number; gradient: string; icon: any; subtext?: string }) => {
         return (
-            <div className={`relative overflow-hidden rounded-[24px] p-6 text-white shadow-xl shadow-gray-200/50 group transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl ${gradient}`}>
+            <div className={`relative overflow-hidden rounded-[24px] p-4 sm:p-6 text-white shadow-xl shadow-gray-200/50 group transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl ${gradient}`}>
                 {/* Background Shapes */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
@@ -115,7 +132,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
             </header>
 
             {/* Gradient Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 <StatCard
                     label="Revenue"
                     value={`₵${totalRevenue.toLocaleString()}`}
@@ -149,8 +166,8 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                {/* Main Content: Activity Feed */}
-                <div className="xl:col-span-2 space-y-6">
+                {/* Main Content: Activity Feed (Hidden on Mobile, shown via Drawer) */}
+                <div className="hidden md:block xl:col-span-2 space-y-6">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
                             Recent Orders
@@ -211,62 +228,63 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
                     </div>
                 </div>
 
-                {/* Sidebar: Quick Actions */}
-                <div className="space-y-6">
-                    <h2 className="text-xl font-black text-gray-900">Quick Actions</h2>
-                    <div className="grid grid-cols-1 gap-3">
-                        <Link href={`/${storeSlug}/admin/inventory/new`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-cyan-100 hover:border-brand-cyan/30 transition flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-brand-cyan/10 text-brand-cyan flex items-center justify-center group-hover:scale-110 transition duration-300">
-                                    <Plus size={22} />
-                                </div>
-                                <div>
-                                    <span className="font-black text-gray-900 block group-hover:text-brand-cyan transition">Add Product</span>
-                                    <span className="text-xs text-gray-400 font-medium">Update inventory</span>
-                                </div>
-                            </div>
-                            <ChevronRight size={18} className="text-gray-300 group-hover:text-brand-cyan group-hover:translate-x-1 transition" />
-                        </Link>
+            </div>
 
-                        <Link href={`/${storeSlug}/admin/marketing`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-orange-100 hover:border-brand-orange/30 transition flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-brand-orange/10 text-brand-orange flex items-center justify-center group-hover:scale-110 transition duration-300">
-                                    <Tag size={22} />
-                                </div>
-                                <div>
-                                    <span className="font-black text-gray-900 block group-hover:text-brand-orange transition">Create Coupon</span>
-                                    <span className="text-xs text-gray-400 font-medium">Boost sales</span>
-                                </div>
+            {/* Sidebar: Quick Actions */}
+            <div className="space-y-6">
+                <h2 className="text-xl font-black text-gray-900">Quick Actions</h2>
+                <div className="grid grid-cols-1 gap-3">
+                    <Link href={`/${storeSlug}/admin/inventory/new`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-cyan-100 hover:border-brand-cyan/30 transition flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-brand-cyan/10 text-brand-cyan flex items-center justify-center group-hover:scale-110 transition duration-300">
+                                <Plus size={22} />
                             </div>
-                            <ChevronRight size={18} className="text-gray-300 group-hover:text-brand-orange group-hover:translate-x-1 transition" />
-                        </Link>
+                            <div>
+                                <span className="font-black text-gray-900 block group-hover:text-brand-cyan transition">Add Product</span>
+                                <span className="text-xs text-gray-400 font-medium">Update inventory</span>
+                            </div>
+                        </div>
+                        <ChevronRight size={18} className="text-gray-300 group-hover:text-brand-cyan group-hover:translate-x-1 transition" />
+                    </Link>
 
-                        <Link href={`/${storeSlug}/admin/finance`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-green-100 hover:border-green-500/30 transition flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center group-hover:scale-110 transition duration-300">
-                                    <Wallet size={22} />
-                                </div>
-                                <div>
-                                    <span className="font-black text-gray-900 block group-hover:text-green-600 transition">Request Payout</span>
-                                    <span className="text-xs text-gray-400 font-medium">Withdraw funds</span>
-                                </div>
+                    <Link href={`/${storeSlug}/admin/marketing`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-orange-100 hover:border-brand-orange/30 transition flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-brand-orange/10 text-brand-orange flex items-center justify-center group-hover:scale-110 transition duration-300">
+                                <Tag size={22} />
                             </div>
-                            <ChevronRight size={18} className="text-gray-300 group-hover:text-green-600 group-hover:translate-x-1 transition" />
-                        </Link>
+                            <div>
+                                <span className="font-black text-gray-900 block group-hover:text-brand-orange transition">Create Coupon</span>
+                                <span className="text-xs text-gray-400 font-medium">Boost sales</span>
+                            </div>
+                        </div>
+                        <ChevronRight size={18} className="text-gray-300 group-hover:text-brand-orange group-hover:translate-x-1 transition" />
+                    </Link>
 
-                        <Link href={`/${storeSlug}/admin/inventory`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-purple-100 hover:border-purple-500/30 transition flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition duration-300">
-                                    <Package size={22} />
-                                </div>
-                                <div>
-                                    <span className="font-black text-gray-900 block group-hover:text-purple-600 transition">Manage Stock</span>
-                                    <span className="text-xs text-gray-400 font-medium">View all items</span>
-                                </div>
+                    <Link href={`/${storeSlug}/admin/finance`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-green-100 hover:border-green-500/30 transition flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center group-hover:scale-110 transition duration-300">
+                                <Wallet size={22} />
                             </div>
-                            <ChevronRight size={18} className="text-gray-300 group-hover:text-purple-600 group-hover:translate-x-1 transition" />
-                        </Link>
-                    </div>
+                            <div>
+                                <span className="font-black text-gray-900 block group-hover:text-green-600 transition">Request Payout</span>
+                                <span className="text-xs text-gray-400 font-medium">Withdraw funds</span>
+                            </div>
+                        </div>
+                        <ChevronRight size={18} className="text-gray-300 group-hover:text-green-600 group-hover:translate-x-1 transition" />
+                    </Link>
+
+                    <Link href={`/${storeSlug}/admin/inventory`} className="group bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-purple-100 hover:border-purple-500/30 transition flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition duration-300">
+                                <Package size={22} />
+                            </div>
+                            <div>
+                                <span className="font-black text-gray-900 block group-hover:text-purple-600 transition">Manage Stock</span>
+                                <span className="text-xs text-gray-400 font-medium">View all items</span>
+                            </div>
+                        </div>
+                        <ChevronRight size={18} className="text-gray-300 group-hover:text-purple-600 group-hover:translate-x-1 transition" />
+                    </Link>
                 </div>
             </div>
         </div>

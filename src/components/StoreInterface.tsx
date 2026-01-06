@@ -95,7 +95,7 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
     );
 }
 
-export default function StoreInterface({ initialProducts, storeId, storeSlug }: { initialProducts: any[], storeId: string, storeSlug: string }) {
+export default function StoreInterface({ initialProducts, storeId, storeSlug, storeName }: { initialProducts: any[], storeId: string, storeSlug: string, storeName: string }) {
     const router = useRouter();
     const [activeCategory, setActiveCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
@@ -137,7 +137,9 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug }: 
                         <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center font-black text-xs shadow-lg shadow-gray-200">
                             <Zap size={18} className="fill-white" />
                         </div>
-                        <span className={`font-black text-lg tracking-tight text-gray-900 transition-opacity ${isScrolled ? 'opacity-100' : 'opacity-100'}`}>Store</span>
+                        <span className={`font-black text-lg tracking-tight text-gray-900 transition-opacity ${isScrolled ? 'opacity-100' : 'opacity-100'}`}>
+                            {storeName}
+                        </span>
                     </div>
 
                     {/* Actions */}
@@ -297,7 +299,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug }: 
             </div>
 
             {/* Global Cart Drawer */}
-            <CartDrawer isOpen={isCartOpen} onClose={toggleCart} storeId={storeId} />
+            <CartDrawer isOpen={isCartOpen} onClose={toggleCart} storeId={storeId} storeName={storeName} />
         </div>
     );
 }

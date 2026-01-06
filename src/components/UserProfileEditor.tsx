@@ -35,7 +35,7 @@ export default function UserProfileEditor({ user }: UserProfileEditorProps) {
     };
 
     return (
-        <form action={handleSubmit} className="p-6 space-y-6">
+        <form action={handleSubmit} className="space-y-6">
             {/* Avatar Selection */}
             <div>
                 <div className="flex items-center justify-between mb-4">
