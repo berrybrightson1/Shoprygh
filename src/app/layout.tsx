@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
-import InstallPrompt from "@/components/InstallPrompt";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -22,10 +21,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${manrope.variable} font-sans antialiased`}
       >
         {children}
-        <InstallPrompt />
       </body>
     </html>
   );
