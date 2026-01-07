@@ -104,7 +104,8 @@ async function main() {
                         slug: STORE_SLUG,
                         tier: "PRO", // Give them PRO for testing
                         isVerified: true,
-                        status: "ACTIVE"
+                        status: "ACTIVE",
+                        address: "Test Address, Accra"
                     }
                 });
                 console.log("Store created.");

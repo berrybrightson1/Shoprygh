@@ -17,6 +17,7 @@ async function main() {
                 name: 'Anaya Admin',
                 slug: 'admin',
                 tier: 'WHOLESALER',
+                address: 'Headquarters',
             }
         });
 
@@ -49,7 +50,8 @@ async function main() {
             name: 'Shopry HQ',
             slug: 'shopry-hq',
             tier: 'WHOLESALER',
-            ownerPhone: '0000000000'
+            ownerPhone: '0000000000',
+            address: 'Accra, Ghana'
         }
     });
 

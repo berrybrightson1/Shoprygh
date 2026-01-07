@@ -28,6 +28,7 @@ async function main() {
                     slug: 'anaya',
                     tier: 'HUSTLER',
                     status: 'ACTIVE',
+                    address: 'Accra, Ghana',
                 }
             })
             console.log('✓ Created default store: Anaya Baby Care')

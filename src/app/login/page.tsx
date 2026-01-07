@@ -118,7 +118,7 @@ export default function LoginPage() {
                     </div>
 
                     {/* Magic Admin Login (Developer Only) */}
-                    <div className="mt-4 text-center">
+                    <div className="mt-8 flex justify-center">
                         <form action={async () => {
                             setIsLoading(true);
                             const res = await magicAdminLogin();
@@ -132,8 +132,9 @@ export default function LoginPage() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="text-xs text-gray-300 font-mono hover:text-gray-900 transition underline decoration-dotted"
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 rounded-lg text-xs font-mono font-bold transition-all border border-gray-200 hover:border-gray-300 shadow-sm disabled:opacity-50"
                             >
+                                <Lock size={12} className="opacity-70" />
                                 [DEV] Magic Admin Access
                             </button>
                         </form>

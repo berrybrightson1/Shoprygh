@@ -23,7 +23,7 @@ export async function updateStoreProfile(formData: FormData) {
         data: {
             name,
             ownerPhone: phone || null,
-            address: address || null,
+            address: address || "",
             description: description || null,
             logo: logo || null,
         },
