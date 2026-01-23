@@ -584,7 +584,7 @@ export default function CreatorStudio({
                                             </div>
                                             <span className="font-medium text-gray-900 uppercase tracking-widest text-xs">SKU Variations</span>
                                         </div>
-                                        <button type="button" onClick={addVariant} className="text-[10px] font-medium text-brand-cyan bg-white hover:bg-brand-cyan hover:text-white border border-cyan-100/50 px-4 py-2.5 md:px-6 md:py-3 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest">
+                                        <button type="button" onClick={addVariant} className="text-[9px] md:text-[10px] font-medium text-brand-cyan bg-white hover:bg-brand-cyan hover:text-white border border-cyan-100/50 px-3 py-1.5 md:px-6 md:py-3 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest">
                                             + Add Model
                                         </button>
                                     </div>
@@ -653,7 +653,7 @@ export default function CreatorStudio({
                                 <button
                                     type="submit"
                                     disabled={isSubmitting || !!successParams}
-                                    className={`w-full font-medium text-lg py-6 rounded-[32px] shadow-2xl transition-all flex items-center justify-center gap-4 tracking-[0.1em] uppercase ${successParams
+                                    className={`w-full font-medium text-xs md:text-lg py-3 md:py-6 rounded-2xl md:rounded-[32px] shadow-2xl transition-all flex items-center justify-center gap-2 md:gap-4 tracking-[0.1em] uppercase ${successParams
                                         ? "bg-emerald-500 text-white shadow-emerald-200"
                                         : isSubmitting
                                             ? "bg-gray-100 text-gray-400 cursor-wait shadow-none"
@@ -662,22 +662,25 @@ export default function CreatorStudio({
                                 >
                                     {isSubmitting ? (
                                         <>
-                                            <span className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin" />
-                                            Synchronizing Assets...
+                                            <span className="w-4 h-4 md:w-6 md:h-6 border-2 md:border-4 border-white/20 border-t-white rounded-full animate-spin" />
+                                            <span className="hidden md:inline">Synchronizing Assets...</span>
+                                            <span className="md:hidden">Syncing...</span>
                                         </>
                                     ) : successParams ? (
                                         <>
-                                            <CheckCircle size={28} strokeWidth={3} className="animate-in zoom-in spin-in-90 duration-500" />
-                                            Catalog Updated
+                                            <CheckCircle size={20} className="md:w-7 md:h-7 animate-in zoom-in spin-in-90 duration-500" />
+                                            <span className="hidden md:inline">Catalog Updated</span>
+                                            <span className="md:hidden">Updated</span>
                                         </>
                                     ) : (
                                         <>
-                                            <Upload size={24} strokeWidth={3} />
-                                            Publish to Live Store
+                                            <Upload size={16} className="md:w-6 md:h-6" strokeWidth={3} />
+                                            <span className="hidden md:inline">Publish to Live Store</span>
+                                            <span className="md:hidden">Publish Store</span>
                                         </>
                                     )}
                                 </button>
-                                <p className="text-[10px] text-gray-400 font-medium text-center mt-6 uppercase tracking-widest opacity-50">Instant deployment to connected storefronts</p>
+                                <p className="text-[9px] md:text-[10px] text-gray-400 font-medium text-center mt-3 md:mt-6 uppercase tracking-widest opacity-50">Instant deployment</p>
                             </div>
                         </form>
                     </div>

@@ -72,9 +72,9 @@ export default async function InventoryPage({ params }: Props) {
                             <SeedButton storeId={store.id} />
                         </div>
                     )}
-                    <div className="bg-white px-6 py-3 rounded-2xl border border-gray-100 shadow-sm">
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">Total Assets</span>
-                        <span className="text-xl font-black text-gray-900 tabular-nums">{products.length} Items</span>
+                    <div className="bg-white px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl border border-gray-100 shadow-sm">
+                        <span className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">Total Assets</span>
+                        <span className="text-sm md:text-xl font-black text-gray-900 tabular-nums">{products.length} Items</span>
                     </div>
                 </div>
             </header>
