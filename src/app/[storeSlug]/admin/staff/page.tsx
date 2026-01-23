@@ -2,6 +2,7 @@ import { Users, Trash2, Plus, ShieldCheck, Mail, Shield } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { createUser, deleteUser } from "./actions";
 import OnboardMemberForm from "@/components/admin/OnboardMemberForm";
+import DeleteUserButton from "./DeleteUserButton";
 
 export default async function StaffPage({ params }: { params: Promise<{ storeSlug: string }> }) {
 
@@ -99,15 +100,7 @@ export default async function StaffPage({ params }: { params: Promise<{ storeSlu
                                                     <span className="text-[11px] font-medium text-gray-900 uppercase tracking-widest">Active</span>
                                                 </div>
                                             </div>
-                                            <form action={deleteUserWithStore}>
-                                                <input type="hidden" name="id" value={user.id} />
-                                                <button
-                                                    title="Revoke Access"
-                                                    className="p-4 bg-gray-50 text-gray-300 hover:bg-red-50 hover:text-red-600 hover:border-red-100 border border-gray-100 rounded-2xl transition-all active:scale-95"
-                                                >
-                                                    <Trash2 size={20} strokeWidth={2.5} />
-                                                </button>
-                                            </form>
+                                            <DeleteUserButton userId={user.id} onDelete={deleteUserWithStore} />
                                         </div>
                                     </div>
                                 ))
@@ -116,7 +109,7 @@ export default async function StaffPage({ params }: { params: Promise<{ storeSlu
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 
