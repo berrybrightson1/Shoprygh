@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "The easiest way to start selling online in Ghana.",
 };
 
+import { Toaster } from "sonner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,6 +26,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );
