@@ -103,46 +103,46 @@ export default function SignupPage() {
                 </p>
             </div>
 
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px] relative z-10">
-                <div className="bg-white py-10 px-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] rounded-[32px] sm:px-10 border border-gray-200">
+            <div className="mt-6 md:mt-10 sm:mx-auto sm:w-full sm:max-w-[480px] relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
+                <div className="bg-white py-6 px-4 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] rounded-[32px] sm:px-10 border border-gray-200">
                     <Link href="/" className="absolute top-6 left-6 text-gray-900 hover:text-black transition p-2 hover:bg-gray-100 rounded-full border border-transparent hover:border-gray-200">
                         <ArrowLeft size={20} className="stroke-[3px]" />
                     </Link>
 
-                    <form className="space-y-8" onSubmit={handleSubmit}>
+                    <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit}>
                         {/* Plan Selection */}
-                        <div className="space-y-4">
-                            <h3 className="text-xs font-black text-black uppercase tracking-widest text-center">Select Your Plan</h3>
-                            <div className="grid grid-cols-1 gap-4">
+                        <div className="space-y-3 md:space-y-4">
+                            <h3 className="text-[10px] md:text-xs font-black text-black uppercase tracking-widest text-center">Select Your Plan</h3>
+                            <div className="grid grid-cols-1 gap-3 md:gap-4">
                                 <div
                                     onClick={() => setSelectedPlan("HUSTLER")}
-                                    className={`relative flex items-center p-4 rounded-2xl cursor-pointer transition-all duration-200 ${selectedPlan === "HUSTLER" ? "border-2 border-black bg-gray-50 shadow-lg" : "border border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"}`}
+                                    className={`relative flex items-center p-3 md:p-4 rounded-2xl cursor-pointer transition-all duration-200 ${selectedPlan === "HUSTLER" ? "border-2 border-black bg-gray-50 shadow-lg" : "border border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"}`}
                                 >
-                                    <div className={`w-6 h-6 rounded-full border mr-4 flex items-center justify-center transition-all ${selectedPlan === "HUSTLER" ? "border-black bg-black text-white" : "border-gray-300 bg-transparent"}`}>
-                                        <div className={`w-2.5 h-2.5 bg-white rounded-full transition-opacity ${selectedPlan === "HUSTLER" ? "opacity-100" : "opacity-0"}`} />
+                                    <div className={`w-5 h-5 md:w-6 md:h-6 rounded-full border mr-3 md:mr-4 flex items-center justify-center transition-all ${selectedPlan === "HUSTLER" ? "border-black bg-black text-white" : "border-gray-300 bg-transparent"}`}>
+                                        <div className={`w-2 md:w-2.5 h-2 md:h-2.5 bg-white rounded-full transition-opacity ${selectedPlan === "HUSTLER" ? "opacity-100" : "opacity-0"}`} />
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex justify-between items-center">
-                                            <span className="font-black text-gray-900 text-lg">Hustler</span>
+                                            <span className="font-black text-gray-900 text-base md:text-lg">Hustler</span>
                                             <span className="bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">Free</span>
                                         </div>
-                                        <span className="text-gray-700 text-sm font-bold mt-0.5 block">Basic inventory, standard support.</span>
+                                        <span className="text-gray-700 text-xs md:text-sm font-bold mt-0.5 block">Basic inventory, standard support.</span>
                                     </div>
                                 </div>
 
                                 <div
                                     onClick={() => setSelectedPlan("PRO")}
-                                    className={`relative flex items-center p-4 rounded-2xl cursor-pointer transition-all duration-200 ${selectedPlan === "PRO" ? "border-2 border-black bg-gray-50 shadow-lg" : "border border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"}`}
+                                    className={`relative flex items-center p-3 md:p-4 rounded-2xl cursor-pointer transition-all duration-200 ${selectedPlan === "PRO" ? "border-2 border-black bg-gray-50 shadow-lg" : "border border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"}`}
                                 >
-                                    <div className={`w-6 h-6 rounded-full border mr-4 flex items-center justify-center transition-all ${selectedPlan === "PRO" ? "border-black bg-black text-white" : "border-gray-300 bg-transparent"}`}>
-                                        <div className={`w-2.5 h-2.5 bg-white rounded-full transition-opacity ${selectedPlan === "PRO" ? "opacity-100" : "opacity-0"}`} />
+                                    <div className={`w-5 h-5 md:w-6 md:h-6 rounded-full border mr-3 md:mr-4 flex items-center justify-center transition-all ${selectedPlan === "PRO" ? "border-black bg-black text-white" : "border-gray-300 bg-transparent"}`}>
+                                        <div className={`w-2 md:w-2.5 h-2 md:h-2.5 bg-white rounded-full transition-opacity ${selectedPlan === "PRO" ? "opacity-100" : "opacity-0"}`} />
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex justify-between items-center">
-                                            <span className="font-black text-gray-900 text-lg">Pro</span>
+                                            <span className="font-black text-gray-900 text-base md:text-lg">Pro</span>
                                             <span className="bg-orange-600 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">₵50/mo</span>
                                         </div>
-                                        <span className="text-gray-700 text-sm font-bold mt-0.5 block">Unlocks staff & advanced analytics.</span>
+                                        <span className="text-gray-700 text-xs md:text-sm font-bold mt-0.5 block">Unlocks staff & advanced analytics.</span>
                                     </div>
                                 </div>
 
@@ -168,10 +168,10 @@ export default function SignupPage() {
                             <h3 className="text-xs font-black text-black uppercase tracking-widest text-center bg-gray-50 py-2 rounded-lg">Store Details</h3>
 
                             <div className="space-y-2">
-                                <label htmlFor="storeName" className="text-xs font-black text-gray-900 uppercase tracking-wider ml-1">Store Name</label>
+                                <label htmlFor="storeName" className="text-[10px] md:text-xs font-black text-gray-900 uppercase tracking-wider ml-1">Store Name</label>
                                 <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Store className="h-5 w-5 text-gray-900" />
+                                    <div className="absolute inset-y-0 left-0 pl-3 md:pl-4 flex items-center pointer-events-none">
+                                        <Store className="h-4 w-4 md:h-5 md:w-5 text-gray-900" />
                                     </div>
                                     <input
                                         id="storeName"
@@ -180,16 +180,16 @@ export default function SignupPage() {
                                         required
                                         value={storeName}
                                         onChange={handleNameChange}
-                                        className="w-full border border-gray-200 rounded-2xl pl-12 pr-4 py-4 outline-none focus:ring-1 focus:ring-brand-cyan focus:border-brand-cyan bg-white transition-all font-bold text-gray-900 placeholder:text-gray-400 text-lg"
+                                        className="w-full border border-gray-200 rounded-2xl pl-10 md:pl-12 pr-4 py-3 md:py-4 outline-none focus:ring-1 focus:ring-brand-cyan focus:border-brand-cyan bg-white transition-all font-bold text-gray-900 placeholder:text-gray-400 text-base md:text-lg"
                                         placeholder="My Awesome Store"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label htmlFor="storeSlug" className="text-xs font-black text-gray-900 uppercase tracking-wider ml-1">Store URL</label>
+                                <label htmlFor="storeSlug" className="text-[10px] md:text-xs font-black text-gray-900 uppercase tracking-wider ml-1">Store URL</label>
                                 <div className="flex rounded-2xl shadow-sm border border-gray-200 overflow-hidden focus-within:ring-1 focus-within:ring-brand-cyan focus-within:border-brand-cyan transition-all bg-white">
-                                    <span className="inline-flex items-center px-4 bg-gray-50 text-gray-600 text-sm font-black border-r border-gray-200 tracking-tight">
+                                    <span className="inline-flex items-center px-3 md:px-4 bg-gray-50 text-gray-600 text-xs md:text-sm font-black border-r border-gray-200 tracking-tight">
                                         anaya.app/
                                     </span>
                                     <input
@@ -199,15 +199,15 @@ export default function SignupPage() {
                                         required
                                         value={slug}
                                         onChange={(e) => setSlug(e.target.value)}
-                                        className="flex-1 min-w-0 block w-full px-4 py-4 outline-none bg-white font-bold text-gray-900 placeholder:text-gray-400 text-lg"
+                                        className="flex-1 min-w-0 block w-full px-3 md:px-4 py-3 md:py-4 outline-none bg-white font-bold text-gray-900 placeholder:text-gray-400 text-base md:text-lg"
                                     />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="storeAddress" className="text-xs font-black text-gray-900 uppercase tracking-wider ml-1">Business Address</label>
+                                <label htmlFor="storeAddress" className="text-[10px] md:text-xs font-black text-gray-900 uppercase tracking-wider ml-1">Business Address</label>
                                 <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <MapPin className="h-5 w-5 text-gray-900" />
+                                    <div className="absolute inset-y-0 left-0 pl-3 md:pl-4 flex items-center pointer-events-none">
+                                        <MapPin className="h-4 w-4 md:h-5 md:w-5 text-gray-900" />
                                     </div>
                                     <input
                                         id="storeAddress"
@@ -216,7 +216,7 @@ export default function SignupPage() {
                                         required
                                         value={storeAddress}
                                         onChange={(e) => setStoreAddress(e.target.value)}
-                                        className="w-full border border-gray-200 rounded-2xl pl-12 pr-4 py-4 outline-none focus:ring-1 focus:ring-brand-cyan focus:border-brand-cyan bg-white transition-all font-bold text-gray-900 placeholder:text-gray-400 text-lg"
+                                        className="w-full border border-gray-200 rounded-2xl pl-10 md:pl-12 pr-4 py-3 md:py-4 outline-none focus:ring-1 focus:ring-brand-cyan focus:border-brand-cyan bg-white transition-all font-bold text-gray-900 placeholder:text-gray-400 text-base md:text-lg"
                                         placeholder="Accra, Ghana"
                                     />
                                 </div>

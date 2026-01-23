@@ -44,25 +44,25 @@ export default function LoginPage() {
             <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-brand-orange/20 blur-[100px] pointer-events-none" />
 
             <div className="w-full max-w-md bg-white/80 backdrop-blur-xl rounded-[32px] shadow-2xl shadow-gray-200/50 border border-white/50 overflow-hidden relative z-10 transition-all hover:scale-[1.01] duration-500">
-                <div className="p-10 text-center relative">
+                <div className="p-6 md:p-10 text-center relative">
                     <Link href="/" className="absolute top-6 left-6 text-gray-400 hover:text-gray-900 transition p-2 hover:bg-gray-100 rounded-full">
                         <ArrowLeft size={20} />
                     </Link>
-                    <div className="mx-auto w-16 h-16 bg-gradient-to-tr from-brand-cyan to-blue-500 rounded-3xl flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/30 rotate-3 ring-4 ring-white">
-                        <Lock className="text-white" size={28} />
+                    <div className="mx-auto w-14 h-14 md:w-16 md:h-16 bg-gradient-to-tr from-brand-cyan to-blue-500 rounded-3xl flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/30 rotate-3 ring-4 ring-white">
+                        <Lock className="text-white" size={24} />
                     </div>
-                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">Welcome Back</h1>
-                    <p className="text-gray-500 font-medium mt-2">Enter your credentials to access your store.</p>
+                    <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">Welcome Back</h1>
+                    <p className="text-sm md:text-base text-gray-500 font-medium mt-2">Enter your credentials to access your store.</p>
                 </div>
 
-                <div className="p-10 pt-0">
+                <div className="p-6 md:p-10 pt-0">
                     {error && (
                         <div className="mb-6 p-4 bg-red-50/50 backdrop-blur border border-red-100 text-red-600 rounded-2xl text-sm font-bold flex items-center gap-3">
                             <AlertCircle size={18} className="shrink-0" /> {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Email Address</label>
                             <input
@@ -71,7 +71,7 @@ export default function LoginPage() {
                                 required
                                 defaultValue=""
                                 placeholder="yourname@gmail.com"
-                                className="w-full border border-gray-200 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400"
+                                className="w-full border border-gray-200 rounded-2xl px-4 py-3 md:px-5 md:py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400 text-sm md:text-base"
                             />
                         </div>
 
@@ -83,7 +83,7 @@ export default function LoginPage() {
                                     type={showPassword ? "text" : "password"}
                                     required
                                     placeholder="••••••••"
-                                    className="w-full border border-gray-200 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400 pr-12"
+                                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 md:px-5 md:py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400 pr-12 text-sm md:text-base"
                                 />
                                 <button
                                     type="button"
@@ -98,7 +98,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl shadow-gray-200 hover:shadow-2xl hover:-translate-y-0.5 mt-2 active:scale-95 duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            className="w-full bg-gray-900 text-white py-3.5 md:py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl shadow-gray-200 hover:shadow-2xl hover:-translate-y-0.5 mt-2 active:scale-95 duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base"
                         >
                             {isLoading ? (
                                 <>
