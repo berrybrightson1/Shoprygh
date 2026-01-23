@@ -9,12 +9,12 @@ import { getSession } from "@/lib/auth";
  */
 export async function backfillAuditLogs() {
     const session = await getSession();
-    if (!session || !session.storeId || !session.userId) {
+    if (!session || !session.storeId || !session.id) {
         return { success: false, error: "Unauthorized" };
     }
 
     const storeId = session.storeId;
-    const userId = session.userId;
+    const userId = session.id;
     let totalCreated = 0;
 
     try {
