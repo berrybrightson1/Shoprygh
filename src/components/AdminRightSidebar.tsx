@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles, Settings, Bell, LogOut } from "lucide-react";
+import { Sparkles, Settings, Bell, LogOut, ChevronUp } from "lucide-react";
 import ActivityLogFeed from "./ActivityLogFeed";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
@@ -12,116 +12,130 @@ export default function AdminRightSidebar({ user, logs }: { user: any, logs: any
     const [activeView, setActiveView] = useState<'activity' | 'notifications'>('activity');
 
     return (
-        <aside className="w-96 bg-white border-l border-gray-200 flex flex-col z-20 hidden 2xl:flex overflow-hidden">
-            {/* Profile Card */}
-            <div className="p-8 pb-0">
-                <div className="bg-gray-50 rounded-[24px] p-6 flex flex-col items-center text-center border border-gray-100">
-                    <div className="relative mb-3">
+        <aside className="w-[420px] bg-gray-50/50 border-l border-gray-100 flex flex-col z-20 hidden 2xl:flex overflow-hidden">
+            {/* Profile & Hub Card */}
+            <div className="p-8 pb-4">
+                <div className="bg-white rounded-[40px] p-8 flex flex-col items-center text-center shadow-2xl shadow-gray-200/50 border border-gray-100 ring-4 ring-white/50 relative overflow-hidden">
+                    {/* Integrated Decor */}
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-cyan via-brand-orange to-brand-cyan opacity-50" />
+
+                    <div className="relative mb-6">
                         {/* Avatar */}
-                        <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-lg shadow-gray-200 overflow-hidden bg-gray-50 border-4 border-white">
-                            <img
-                                src={user.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(user.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
-                                alt={user.name}
-                                className="w-full h-full object-cover"
-                            />
+                        <div className="w-24 h-24 rounded-[32px] flex items-center justify-center shadow-xl shadow-gray-200 overflow-hidden bg-white border-4 border-white ring-1 ring-gray-100 p-1">
+                            <div className="w-full h-full rounded-[24px] overflow-hidden">
+                                <img
+                                    src={user.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(user.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                                    alt={user.name}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
                         </div>
-                        {/* Generic Online Status (always green for self) */}
-                        <div className="absolute bottom-0 right-0 w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                            <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                        {/* High-End Status */}
+                        <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-2xl shadow-lg border border-gray-50 flex items-center justify-center">
+                            <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-white ring-4 ring-green-500/10 animate-pulse"></div>
                         </div>
                     </div>
 
-                    <h3 className="font-bold text-lg text-gray-900">{user.name}</h3>
-                    <p className="text-xs text-gray-500 font-medium mb-4">{user.email}</p>
+                    <h3 className="font-medium text-xl text-gray-900 tracking-tight">{user.name}</h3>
+                    <p className="text-[11px] text-gray-400 font-medium uppercase tracking-[0.2em] mb-8">{user.role || 'Admin'} • Online</p>
 
-                    <div className="flex gap-2 w-full justify-center">
+                    <div className="grid grid-cols-3 gap-3 w-full">
                         <button
-                            onClick={() => setActiveView(activeView === 'notifications' ? 'activity' : 'notifications')}
-                            aria-label="Notifications"
-                            className={`w-10 h-10 rounded-full border flex items-center justify-center transition ${activeView === 'notifications' ? 'bg-orange-50 border-orange-200 text-orange-500 shadow-sm' : 'bg-white border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-black hover:shadow-sm'}`}
+                            onClick={() => setActiveView('notifications')}
+                            className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all ${activeView === 'notifications'
+                                ? 'bg-black text-white shadow-xl shadow-black/20'
+                                : 'bg-gray-50 text-gray-400 hover:bg-white hover:text-gray-900 hover:shadow-lg border border-transparent hover:border-gray-100'}`}
                         >
-                            <Bell size={16} className={activeView === 'notifications' ? 'fill-orange-500' : ''} />
+                            <Bell size={20} className={activeView === 'notifications' ? 'animate-bounce' : ''} />
+                            <span className="text-[9px] font-medium uppercase tracking-widest">Inbox</span>
                         </button>
+
                         <Link
                             href={user.storeSlug ? `/${user.storeSlug}/admin/settings` : '/platform-admin/settings'}
-                            aria-label="Settings"
-                            className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:shadow-sm transition text-gray-400 hover:text-black"
+                            className="p-4 rounded-2xl bg-gray-50 text-gray-400 flex flex-col items-center justify-center gap-2 hover:bg-white hover:text-gray-900 hover:shadow-lg transition-all border border-transparent hover:border-gray-100"
                         >
-                            <Settings size={16} />
+                            <Settings size={20} />
+                            <span className="text-[9px] font-medium uppercase tracking-widest">Config</span>
                         </Link>
-                        <form action={logout}>
+
+                        <form action={logout} className="w-full">
                             <button
                                 type="submit"
-                                aria-label="Sign Out"
-                                className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-red-50 hover:border-red-100 hover:text-red-500 hover:shadow-sm transition text-gray-400"
+                                className="w-full p-4 rounded-2xl bg-gray-50 text-gray-400 flex flex-col items-center justify-center gap-2 hover:bg-red-50 hover:text-red-500 hover:shadow-lg transition-all border border-transparent hover:border-red-100"
                             >
-                                <LogOut size={16} />
+                                <LogOut size={20} />
+                                <span className="text-[9px] font-medium uppercase tracking-widest">Exit</span>
                             </button>
                         </form>
                     </div>
                 </div>
             </div>
 
-            {/* Audit Logs or Notifications Feed */}
-            {activeView === 'notifications' ? (
-                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-gray-900">Notifications</h3>
-                        <span className="text-[10px] font-bold bg-orange-100 text-orange-600 px-2 py-1 rounded-full border border-orange-200">3 NEW</span>
+            {/* Content Feed */}
+            <div className={`flex-1 overflow-y-auto px-8 py-6 custom-scrollbar animate-in fade-in duration-700`}>
+                <div className="flex justify-between items-center mb-8 px-2">
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-brand-cyan animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
+                        <h3 className="font-medium text-gray-900 tracking-tight uppercase text-xs tracking-[0.2em]">
+                            {activeView === 'notifications' ? 'Critical Alerts' : 'Live Activity'}
+                        </h3>
                     </div>
+                    {activeView === 'notifications' && (
+                        <span className="text-[9px] font-medium bg-gray-900 text-white px-3 py-1.5 rounded-full tracking-widest">3 UNREAD</span>
+                    )}
+                </div>
 
+                {activeView === 'notifications' ? (
                     <div className="space-y-4">
-                        {/* Mock Notifications */}
-                        <div className="p-4 rounded-2xl bg-orange-50/50 border border-orange-100 hover:bg-white hover:shadow-sm transition cursor-pointer">
-                            <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">
-                                    <Sparkles size={14} />
-                                </div>
-                                <div>
-                                    <p className="text-xs font-black text-gray-900 mb-1">Welcome to Seller Hub</p>
-                                    <p className="text-xs text-gray-500 font-medium leading-relaxed">Your store is now live! Start by adding your first product.</p>
-                                    <p className="text-[10px] text-gray-400 font-bold mt-2">Just now</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="p-4 rounded-2xl bg-white border border-gray-100 hover:shadow-md transition cursor-pointer">
-                            <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
-                                    <Settings size={14} />
-                                </div>
-                                <div>
-                                    <p className="text-xs font-black text-gray-900 mb-1">Profile Complete</p>
-                                    <p className="text-xs text-gray-500 font-medium leading-relaxed">You have successfully updated your store profile.</p>
-                                    <p className="text-[10px] text-gray-400 font-bold mt-2">10m ago</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="p-4 rounded-2xl bg-white border border-gray-100 hover:shadow-md transition cursor-pointer opacity-60">
-                            <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 shrink-0">
-                                    <Bell size={14} />
-                                </div>
-                                <div>
-                                    <p className="text-xs font-bold text-gray-900 mb-1">System Update</p>
-                                    <p className="text-xs text-gray-500 font-medium leading-relaxed">Platform maintenance scheduled for tonight.</p>
-                                    <p className="text-[10px] text-gray-400 font-bold mt-2">2h ago</p>
-                                </div>
-                            </div>
-                        </div>
+                        <NotificationCard
+                            title="Welcome to Hub"
+                            message="Your store architecture has been upgraded to Premium."
+                            time="Just now"
+                            type="success"
+                        />
+                        <NotificationCard
+                            title="Security Audit"
+                            message="We've optimized your admin session encryption."
+                            time="2h ago"
+                            type="info"
+                        />
+                        <NotificationCard
+                            title="System Update"
+                            message="New floating navigation components are now live."
+                            time="Yesterday"
+                            type="system"
+                            muted
+                        />
                     </div>
-                </div>
-            ) : (
-                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-gray-900">System Activity</h3>
-                        <span className="text-[10px] font-bold bg-brand-cyan/10 text-brand-cyan px-2 py-1 rounded-full border border-brand-cyan/20">REALTIME</span>
+                ) : (
+                    <div className="animate-in slide-in-from-bottom-2 duration-500">
+                        <ActivityLogFeed logs={logs} />
                     </div>
-
-                    <ActivityLogFeed logs={logs} />
-                </div>
-            )}
+                )}
+            </div>
         </aside>
+    );
+}
+
+function NotificationCard({ title, message, time, type, muted = false }: { title: string, message: string, time: string, type: string, muted?: boolean }) {
+    return (
+        <div className={`p-6 rounded-[32px] transition-all border border-gray-100 hover:shadow-xl hover:shadow-gray-200/40 cursor-pointer group ${muted ? 'opacity-50 bg-gray-50/30' : 'bg-white shadow-sm'}`}>
+            <div className="flex items-start gap-4">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border border-gray-50 shadow-sm group-hover:scale-110 transition-transform ${type === 'success' ? 'bg-green-50 text-green-600' :
+                    type === 'info' ? 'bg-blue-50 text-blue-600' :
+                        'bg-gray-50 text-gray-600'
+                    }`}>
+                    {type === 'success' ? <Sparkles size={18} /> : <Bell size={18} />}
+                </div>
+                <div className="flex-1 min-w-0 text-left">
+                    <p className="text-sm font-medium text-gray-900 mb-1 tracking-tight">{title}</p>
+                    <p className="text-[11px] text-gray-500 font-medium leading-relaxed">{message}</p>
+                    <div className="flex items-center gap-2 mt-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-gray-200" />
+                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">{time}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }

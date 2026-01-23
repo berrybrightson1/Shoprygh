@@ -16,93 +16,122 @@ export default async function CustomersPage({ params }: { params: Promise<{ stor
     });
 
     return (
-        <div className="max-w-6xl mx-auto p-6 space-y-8">
-            <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="p-8 lg:p-12 animate-in fade-in duration-700">
+            {/* Header Section */}
+            <header className="mb-12 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 flex items-center gap-3">
-                        <Users className="text-brand-purple" size={32} />
-                        Customers
-                    </h1>
-                    <p className="text-gray-500 font-medium">Manage your customer relationships and history.</p>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-12 h-12 rounded-2xl bg-purple-50 text-brand-purple flex items-center justify-center border border-purple-100 shadow-sm">
+                            <Users size={24} strokeWidth={2.5} />
+                        </div>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">
+                            Client Relations
+                        </h1>
+                    </div>
+                    <p className="text-sm text-gray-400 font-bold ml-1 uppercase tracking-widest">Customer history & trust scores</p>
                 </div>
 
                 <form action={syncCustomersFromOrders}>
-                    <button type="submit" className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold hover:bg-gray-50 hover:border-gray-300 transition shadow-sm">
-                        <RefreshCw size={16} /> Sync from Orders
+                    <button
+                        type="submit"
+                        className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-black/10 hover:shadow-black/20 hover:-translate-y-0.5 transition-all flex items-center gap-3 active:scale-95"
+                    >
+                        <RefreshCw size={18} strokeWidth={3} className="group-active:animate-spin" />
+                        Sync Pipeline
                     </button>
                 </form>
             </header>
 
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden">
-                <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex gap-4">
-                    <div className="relative flex-1 max-w-md">
-                        <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+            {/* Main CRM Container */}
+            <div className="bg-white rounded-[40px] shadow-2xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+                <div className="p-8 lg:p-10 border-b border-gray-50 bg-white flex flex-col sm:flex-row items-center gap-6">
+                    <div className="relative w-full sm:w-[400px]">
+                        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
-                            placeholder="Search customers..."
-                            className="w-full bg-white border border-gray-200 rounded-xl py-2 pl-9 pr-4 text-sm font-bold focus:ring-2 focus:ring-brand-purple/20 outline-none"
+                            placeholder="Search identities, phone, tags..."
+                            className="bg-gray-50/50 border border-gray-100 pl-11 pr-4 py-4 rounded-2xl text-[13px] font-black text-gray-900 outline-none focus:border-brand-purple focus:bg-white transition-all w-full placeholder:text-gray-400 shadow-sm"
                         />
                     </div>
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Customer</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Contact</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Spent</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Orders</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-600 uppercase tracking-wider">Last Order</th>
+                    <table className="w-full text-left min-w-[900px]">
+                        <thead>
+                            <tr className="bg-gray-50/30 border-b border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                                <th className="p-6 pl-10 w-[30%]">Client Identity</th>
+                                <th className="p-6">Contact Channels</th>
+                                <th className="p-6">Cumulative Value</th>
+                                <th className="p-6">Logistics Count</th>
+                                <th className="p-6 pr-10 text-right">Recency</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100/50">
+                        <tbody className="divide-y divide-gray-50">
                             {customers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <Users size={32} className="opacity-50" />
+                                    <td colSpan={5} className="p-32 text-center text-gray-500">
+                                        <div className="w-24 h-24 bg-gray-50 rounded-[40px] flex items-center justify-center mx-auto mb-6">
+                                            <Users size={40} className="text-gray-200" />
                                         </div>
-                                        <p className="font-bold">No customers found.</p>
-                                        <p className="text-sm mt-1">Try clicking "Sync from Orders" if you have sales.</p>
+                                        <p className="font-black text-gray-900 text-xl">Identity list is empty</p>
+                                        <p className="text-gray-400 font-bold mt-2">Sync with orders to populate your database.</p>
                                     </td>
                                 </tr>
                             ) : (
                                 customers.map((customer) => (
-                                    <tr key={customer.id} className="group hover:bg-blue-50/30 transition duration-200 cursor-pointer">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 text-purple-700 flex items-center justify-center font-black text-sm border border-purple-100">
-                                                    {customer.name?.charAt(0) || "?"}
+                                    <tr key={customer.id} className="group hover:bg-white hover:shadow-[0_0_80px_rgba(0,0,0,0.02)] transition-all cursor-default">
+                                        <td className="p-6 pl-10">
+                                            <div className="flex items-center gap-5">
+                                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 text-brand-purple flex items-center justify-center font-black text-lg border border-purple-100 shadow-sm transition-transform group-hover:scale-110">
+                                                    {customer.name?.charAt(0) || <Smartphone size={18} />}
                                                 </div>
-                                                <span className="font-bold text-gray-900">{customer.name || "Unknown"}</span>
+                                                <div>
+                                                    <div className="font-black text-[15px] text-gray-900 group-hover:text-brand-purple transition-colors mb-0.5">{customer.name || "UNIDENTIFIED"}</div>
+                                                    <div className="text-[10px] text-gray-400 font-black uppercase tracking-widest flex items-center gap-2">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                        Active Pipeline
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col gap-1">
+
+                                        <td className="p-6">
+                                            <div className="flex flex-col gap-2">
                                                 {customer.phone && (
-                                                    <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
-                                                        <Smartphone size={12} className="text-gray-400" /> {customer.phone}
+                                                    <div className="flex items-center gap-2.5 text-[13px] font-black text-gray-600">
+                                                        <div className="p-1 px-1.5 bg-gray-50 rounded-lg border border-gray-100"><Smartphone size={12} className="text-gray-400" /></div>
+                                                        {customer.phone}
                                                     </div>
                                                 )}
                                                 {customer.email && (
-                                                    <div className="flex items-center gap-2 text-xs font-bold text-gray-600">
-                                                        <Mail size={12} className="text-gray-400" /> {customer.email}
+                                                    <div className="flex items-center gap-2.5 text-[13px] font-black text-gray-600">
+                                                        <div className="p-1 px-1.5 bg-gray-50 rounded-lg border border-gray-100"><Mail size={12} className="text-gray-400" /></div>
+                                                        {customer.email}
                                                     </div>
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <span className="font-black text-gray-900">₵{Number(customer.totalSpent).toFixed(2)}</span>
+
+                                        <td className="p-6">
+                                            <div className="text-lg font-black text-gray-900 tracking-tight leading-none mb-1">
+                                                ₵{Number(customer.totalSpent).toFixed(2)}
+                                            </div>
+                                            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Liquidity</div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-gray-100 text-gray-800">
-                                                {customer.totalOrders}
-                                            </span>
+
+                                        <td className="p-6">
+                                            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 transition-all group-hover:bg-black group-hover:text-white group-hover:border-black">
+                                                <DollarSign size={12} className="opacity-50" />
+                                                <span className="text-[11px] font-black uppercase tracking-widest">{customer.totalOrders} Shipments</span>
+                                            </div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2 text-xs font-bold text-gray-500">
-                                                <Calendar size={12} />
-                                                {customer.lastOrderAt ? new Date(customer.lastOrderAt).toLocaleDateString() : "N/A"}
+
+                                        <td className="p-6 pr-10 text-right">
+                                            <div className="flex flex-col items-end gap-1">
+                                                <div className="flex items-center gap-2 text-[13px] font-black text-gray-900">
+                                                    <Calendar size={14} className="text-gray-300" />
+                                                    {customer.lastOrderAt ? new Date(customer.lastOrderAt).toLocaleDateString([], { month: 'short', day: '2-digit', year: 'numeric' }) : "---"}
+                                                </div>
+                                                <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Last Interaction</div>
                                             </div>
                                         </td>
                                     </tr>

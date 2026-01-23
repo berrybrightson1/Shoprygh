@@ -40,8 +40,8 @@ export default function SettingsShell({
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 min-h-[600px] items-start">
 
             {/* Sidebar Navigation */}
-            <aside className="w-full lg:w-64 shrink-0 lg:sticky lg:top-6 space-y-4">
-                <div className="px-2 md:px-0">
+            <aside className="w-full lg:w-64 shrink-0 lg:sticky lg:top-6 space-y-4 px-2 md:px-0">
+                <div className="px-2">
                     <h2 className="text-xl font-black text-gray-900">Settings</h2>
                     <p className="text-sm text-gray-500 font-medium">Manage your store preferences</p>
                 </div>
@@ -54,7 +54,7 @@ export default function SettingsShell({
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left ${isActive
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all text-left ${isActive
                                     ? "bg-gray-900 text-white shadow-lg shadow-gray-900/10"
                                     : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                                     } ${tab.danger && !isActive ? "hover:text-red-600 hover:bg-red-50" : ""}`}
@@ -70,13 +70,13 @@ export default function SettingsShell({
             </aside>
 
             {/* Content Area */}
-            <main className="flex-1 bg-white md:rounded-[32px] md:p-8 p-4 border border-gray-100 shadow-sm min-h-[600px] w-full">
-                <div className="max-w-4xl w-full">
+            <main className="flex-1 bg-white rounded-[32px] md:p-8 p-4 border border-gray-100 shadow-sm min-h-[600px] w-full">
+                <div className="max-w-5xl w-full mx-auto">
                     <div className="mb-8 border-b border-gray-100 pb-6">
-                        <h3 className="text-2xl font-black text-gray-900">
+                        <h3 className="text-xl md:text-2xl font-black text-gray-900">
                             {TABS.find(t => t.id === activeTab)?.label}
                         </h3>
-                        <p className="text-gray-500 font-medium mt-1">
+                        <p className="text-sm md:text-gray-500 font-medium mt-1">
                             {TABS.find(t => t.id === activeTab)?.description}
                         </p>
                     </div>

@@ -4,19 +4,26 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-// Components (Slots)
-import SettingsShell from "./components/SettingsShell";
+import SettingsLayout from "@/components/admin/SettingsLayout";
 import GeneralSettings from "./components/GeneralSettings";
 import AccountSettings from "./components/AccountSettings";
 import BillingSettings from "./components/BillingSettings";
 import ActivitySettings from "./components/ActivitySettings";
 import DangerSettings from "./components/DangerSettings";
 
-export default async function SettingsPage({ params }: { params: Promise<{ storeSlug: string }> }) {
+export default async function SettingsPage({
+    params,
+    searchParams
+}: {
+    params: Promise<{ storeSlug: string }>,
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
     const session = await getSession();
     if (!session) redirect("/login");
 
     const { storeSlug } = await params;
+    const { tab } = await searchParams;
+    const activeTab = (typeof tab === "string" ? tab : "general") as string;
 
     // Fetch store details & Logs
     const store = await prisma.store.findUnique({
@@ -44,30 +51,12 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
     });
 
     return (
-        <div className="p-4 sm:p-8 max-w-[1600px] mx-auto space-y-8">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-8">
-                <div>
-                    <Link
-                        href={`/${storeSlug}/admin/inventory`}
-                        className="inline-flex items-center gap-2 text-gray-400 hover:text-black transition mb-4 font-bold text-xs uppercase tracking-wide"
-                    >
-                        <ArrowLeft size={14} strokeWidth={3} />
-                        Back to Dashboard
-                    </Link>
-                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
-                        Settings
-                    </h1>
-                </div>
-            </header>
-
-            {/* Client Shell takes over from here */}
-            <SettingsShell
-                GeneralSlot={<GeneralSettings store={store} />}
-                AccountSlot={<AccountSettings session={session} />}
-                BillingSlot={<BillingSettings store={store} />}
-                ActivitySlot={<ActivitySettings logs={logs} />}
-                DangerSlot={<DangerSettings />}
-            />
-        </div>
+        <SettingsLayout storeSlug={storeSlug} activeTab={activeTab}>
+            {activeTab === "general" && <GeneralSettings store={store} />}
+            {activeTab === "account" && <AccountSettings session={session} />}
+            {activeTab === "billing" && <BillingSettings store={store} />}
+            {activeTab === "activity" && <ActivitySettings logs={logs} />}
+            {activeTab === "danger" && <DangerSettings />}
+        </SettingsLayout>
     );
 }

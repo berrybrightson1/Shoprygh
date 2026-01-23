@@ -1,14 +1,17 @@
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { BadgeCheck } from "lucide-react";
 import VerificationClient from "./VerificationClient";
+import SettingsLayout from "@/components/admin/SettingsLayout";
 
 export default async function VerificationPage({ params }: { params: Promise<{ storeSlug: string }> }) {
+    const { storeSlug } = await params;
     const session = await getSession();
     if (!session) redirect("/login");
 
     const store = await prisma.store.findUnique({
-        where: { id: session.storeId },
+        where: { slug: storeSlug },
         select: {
             id: true,
             name: true,
@@ -20,19 +23,22 @@ export default async function VerificationPage({ params }: { params: Promise<{ s
 
     if (!store) redirect("/login");
 
+    // Authorization check
+    if (store.id !== session.storeId && !session.isPlatformAdmin) {
+        redirect(`/${storeSlug}/admin`);
+    }
+
     // Calculate Real Progress Stats
     const totalSales = await prisma.order.count({
         where: {
             storeId: store.id,
-            status: "COMPLETED" // Ensure this matches your OrderStatus enum!
+            status: "COMPLETED"
         }
     });
 
-    // Mock Ship Time (Since we don't have detailed shipping logs yet)
-    // In future, this would be avg(deliveredAt - paidAt)
-    const avgShipTime = 22; // Hardcoded "good" value for now to encourage them
+    const avgShipTime = 22;
 
-    // Check Identity (Mock logic: if they have a phone, counts as partial identity)
+    // Check Identity
     const owner = await prisma.user.findFirst({
         where: { storeId: store.id, role: "OWNER" }
     });
@@ -40,11 +46,25 @@ export default async function VerificationPage({ params }: { params: Promise<{ s
 
     const stats = {
         sales: totalSales,
-        salesGoal: 50, // Goal to reach "Standard" verification
+        salesGoal: 50,
         shipTime: avgShipTime,
         shipTimeGoal: 24,
         identityVerified: identityVerified
     };
 
-    return <VerificationClient store={store} stats={stats} />;
+    return (
+        <SettingsLayout
+            storeSlug={storeSlug}
+            activeTab="verification"
+            title={
+                <div className="flex items-center gap-3">
+                    Verification Center
+                    {store.isVerified && <BadgeCheck className="text-blue-500 fill-blue-100" size={24} />}
+                </div>
+            }
+            description="Build trust and boost sales with the Blue Tick."
+        >
+            <VerificationClient store={store} stats={stats} />
+        </SettingsLayout>
+    );
 }

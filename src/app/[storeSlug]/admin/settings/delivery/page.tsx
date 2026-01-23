@@ -1,8 +1,9 @@
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { MapPin, Plus, Trash2, Truck } from "lucide-react";
+import { MapPin, Plus, Trash2 } from "lucide-react";
 import { createDeliveryZone, deleteDeliveryZone } from "./actions";
+import SettingsLayout from "@/components/admin/SettingsLayout";
 
 export default async function DeliverySettings({ params }: { params: Promise<{ storeSlug: string }> }) {
     const { storeSlug } = await params;
@@ -15,19 +16,12 @@ export default async function DeliverySettings({ params }: { params: Promise<{ s
     });
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
-            <header>
-                <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
-                    <span className="w-12 h-12 rounded-2xl bg-orange-50 text-brand-orange flex items-center justify-center border border-orange-100 shadow-sm">
-                        <Truck size={24} />
-                    </span>
-                    Delivery Zones
-                </h1>
-                <p className="text-gray-500 font-bold mt-2 ml-1 max-w-xl">
-                    Define specific areas where you deliver and set custom fees. These will be shown to customers during checkout.
-                </p>
-            </header>
-
+        <SettingsLayout
+            storeSlug={storeSlug}
+            activeTab="delivery"
+            title="Delivery Zones"
+            description="Define specific areas where you deliver and set custom fees. These will be shown to customers during checkout."
+        >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Create Form */}
                 <div className="lg:col-span-1">
@@ -111,6 +105,6 @@ export default async function DeliverySettings({ params }: { params: Promise<{ s
                     )}
                 </div>
             </div>
-        </div>
+        </SettingsLayout>
     );
 }

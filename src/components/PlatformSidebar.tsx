@@ -17,7 +17,7 @@ export default function PlatformSidebar({ user }: { user: any }) {
     return (
         <>
             {/* Mobile Header Bar */}
-            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-xl text-gray-900 z-30 flex items-center px-4 justify-between shadow-sm border-b border-gray-100">
+            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-xl text-gray-900 z-30 flex items-center px-4 justify-between shadow-sm border-b border-gray-100/50">
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setIsOpen(true)}
@@ -27,8 +27,8 @@ export default function PlatformSidebar({ user }: { user: any }) {
                         <Menu size={24} />
                     </button>
                     <div className="flex flex-col">
-                        <span className="font-black text-base leading-none tracking-tight">Shopry</span>
-                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Platform</span>
+                        <span className="font-medium text-base leading-none tracking-tight">Shopry</span>
+                        <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Platform</span>
                     </div>
                 </div>
 
@@ -54,7 +54,7 @@ export default function PlatformSidebar({ user }: { user: any }) {
 
                 {/* Header */}
                 <div className="p-8 flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-gray-200 border border-gray-100 bg-white">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-gray-200 border border-gray-100/50 bg-white">
                         <img
                             src={`https://api.dicebear.com/9.x/micah/svg?seed=Platform&backgroundColor=b6e3f4,c0aede,d1d4f9`}
                             alt="Platform"
@@ -62,14 +62,14 @@ export default function PlatformSidebar({ user }: { user: any }) {
                         />
                     </div>
                     <div>
-                        <span className="font-black text-xl text-gray-900 block leading-none tracking-tight">Shopry</span>
-                        <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase mt-1 block">Platform Admin</span>
+                        <span className="font-medium text-xl text-gray-900 block leading-none tracking-tight">Shopry</span>
+                        <span className="text-[10px] font-medium tracking-widest text-gray-400 uppercase mt-1 block">Platform Admin</span>
                     </div>
                 </div>
 
                 {/* Navigation */}
                 <nav className="flex-1 px-4 space-y-1 mt-2 overflow-y-auto custom-scrollbar">
-                    <div className="px-4 text-xs font-black text-gray-300 uppercase tracking-widest mb-3 mt-2">Menu</div>
+                    <div className="px-4 text-xs font-medium text-gray-300 uppercase tracking-widest mb-3 mt-2">Menu</div>
 
                     <NavLink
                         href="/platform-admin"
@@ -116,8 +116,8 @@ export default function PlatformSidebar({ user }: { user: any }) {
                             />
                         </div>
                         <div className="text-left flex-1 min-w-0">
-                            <p className="text-sm font-black text-gray-900 leading-tight truncate">{currentUser.name}</p>
-                            <p className="text-xs text-gray-400 font-bold truncate mt-0.5">{currentUser.email}</p>
+                            <p className="text-sm font-medium text-gray-900 leading-tight truncate">{currentUser.name}</p>
+                            <p className="text-xs text-gray-400 font-medium truncate mt-0.5">{currentUser.email}</p>
                         </div>
                         <ChevronUp size={16} className={`text-gray-400 transition-transform duration-300 ${isSwitcherOpen ? "rotate-0" : "rotate-180"}`} />
                     </button>
@@ -126,7 +126,7 @@ export default function PlatformSidebar({ user }: { user: any }) {
                     {isSwitcherOpen && (
                         <div className="mt-2 text-center">
                             <form action={logout}>
-                                <button className="w-full text-xs font-bold text-red-500 hover:bg-red-50 py-3 rounded-xl flex items-center justify-center gap-2 transition">
+                                <button className="w-full text-xs font-medium text-red-500 hover:bg-red-50 py-3 rounded-xl flex items-center justify-center gap-2 transition">
                                     <LogOut size={14} /> Sign Out
                                 </button>
                             </form>
@@ -151,7 +151,7 @@ function NavLink({ href, icon, label, active = false, isExternal = false }: { hr
             <span className={`relative z-10 transition-colors ${active ? "text-brand-orange" : "text-gray-400 group-hover:text-gray-900"}`}>
                 {icon}
             </span>
-            <span className={`relative z-10 text-sm tracking-tight ${active ? "font-black" : ""}`}>{label}</span>
+            <span className={`relative z-10 text-sm tracking-tight ${active ? "font-medium" : ""}`}>{label}</span>
 
             {active && (
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-brand-orange rounded-l-full" />

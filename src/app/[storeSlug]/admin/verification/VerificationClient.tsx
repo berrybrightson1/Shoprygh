@@ -65,15 +65,7 @@ export default function VerificationClient({ store, stats }: VerificationClientP
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
-            {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                    Verification Center
-                    {store.isVerified && <BadgeCheck className="text-blue-500 fill-blue-100" size={32} />}
-                </h1>
-                <p className="text-gray-500 font-medium mt-2">Build trust and boost sales with the Blue Tick.</p>
-            </div>
+        <div className="space-y-8 animate-in fade-in duration-500">
 
             {/* Value Prop Banner */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[32px] p-8 text-white relative overflow-hidden shadow-2xl shadow-blue-200">

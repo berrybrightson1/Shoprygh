@@ -35,11 +35,11 @@ export default function AddToCartBar({ product }: { product: Product }) {
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 safe-area-bottom">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100/50 safe-area-bottom">
             <div className="max-w-xl mx-auto flex gap-4">
                 <button
                     onClick={handleAddToCart}
-                    className={`flex-1 font-bold py-4 rounded-full shadow-xl active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 ${isAdded
+                    className={`flex-1 font-medium py-4 rounded-full shadow-xl active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 ${isAdded
                         ? "bg-green-600 text-white shadow-green-200"
                         : "bg-black text-white shadow-black/20"
                         }`}
@@ -48,7 +48,7 @@ export default function AddToCartBar({ product }: { product: Product }) {
                         <div className="relative">
                             <ShoppingBag size={20} />
                             {/* Badge */}
-                            <span className="absolute -top-2 -right-2 bg-white text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                            <span className="absolute -top-2 -right-2 bg-white text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
                                 {items.reduce((acc, i) => acc + i.quantity, 0)}
                             </span>
                         </div>

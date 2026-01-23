@@ -5,7 +5,7 @@ import { AlertTriangle, Trash2 } from "lucide-react";
 export default function DangerSettings() {
     return (
         <div className="space-y-6">
-            <div className="bg-red-50 border border-red-100 rounded-2xl p-6">
+            <div className="bg-red-50 border border-red-100 rounded-[24px] p-6">
                 <div className="flex gap-4">
                     <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center shrink-0 text-red-600">
                         <AlertTriangle size={20} />

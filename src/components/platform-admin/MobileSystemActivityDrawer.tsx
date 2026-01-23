@@ -33,7 +33,7 @@ export default function MobileSystemActivityDrawer({ session, user, logs }: Mobi
                     title="Open System Activity"
                 >
                     <Activity size={24} />
-                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white animate-pulse">
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white animate-pulse">
                         •
                     </span>
                 </button>
@@ -49,8 +49,8 @@ export default function MobileSystemActivityDrawer({ session, user, logs }: Mobi
                     {/* Header */}
                     <div className="px-6 py-2 flex items-center justify-between border-b border-gray-100 pb-4">
                         <div>
-                            <h2 className="text-xl font-black text-gray-900">System Activity</h2>
-                            <p className="text-xs text-gray-500 font-bold">Realtime platform logs</p>
+                            <h2 className="text-xl font-medium text-gray-900">System Activity</h2>
+                            <p className="text-xs text-gray-500 font-medium">Realtime platform logs</p>
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
@@ -78,7 +78,7 @@ export default function MobileSystemActivityDrawer({ session, user, logs }: Mobi
                                         <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
                                     </div>
                                 </div>
-                                <h3 className="font-bold text-lg text-gray-900">{user?.name || "Super Admin"}</h3>
+                                <h3 className="font-medium text-lg text-gray-900">{user?.name || "Super Admin"}</h3>
                                 <p className="text-xs text-gray-500 font-medium mb-4">{session.email}</p>
                                 <div className="flex gap-2 w-full justify-center">
                                     <BroadcastModal />
@@ -99,8 +99,8 @@ export default function MobileSystemActivityDrawer({ session, user, logs }: Mobi
                         {/* Logs Feed */}
                         <div className="p-6 pt-2">
                             <div className="flex justify-between items-center mb-4 px-2">
-                                <h3 className="font-bold text-gray-900">Recent Logs</h3>
-                                <span className="text-[10px] font-bold bg-white border border-gray-200 px-2 py-1 rounded-full text-gray-500 shadow-sm">REALTIME</span>
+                                <h3 className="font-medium text-gray-900">Recent Logs</h3>
+                                <span className="text-[10px] font-medium bg-white border border-gray-200 px-2 py-1 rounded-full text-gray-500 shadow-sm">REALTIME</span>
                             </div>
                             <ActivityLogFeed logs={logs} />
                         </div>

@@ -51,13 +51,13 @@ export default function ActivityLogFeed({ logs }: { logs: any[] }) {
     return (
         <div className="space-y-4">
             {/* Time Period Filter */}
-            <div className="flex items-center gap-1 p-1 w-full md:w-fit mb-2">
+            <div className="flex flex-wrap items-center gap-1 p-1 w-full md:w-fit mb-2">
                 {TIME_PERIODS.map(({ key, label }) => (
                     <button
                         key={key}
                         onClick={() => setPeriod(key)}
-                        className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-all duration-300 ${period === key
-                            ? 'bg-black text-white shadow-md shadow-gray-200'
+                        className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all duration-300 ${period === key
+                            ? 'bg-gray-900 text-white shadow-md shadow-gray-200'
                             : 'text-gray-400 hover:text-gray-900 hover:bg-gray-100'
                             }`}
                     >
@@ -70,11 +70,11 @@ export default function ActivityLogFeed({ logs }: { logs: any[] }) {
             {filteredLogs.length === 0 ? (
                 <div className="text-center py-12 bg-gray-50 rounded-2xl border border-gray-100">
                     <Calendar className="mx-auto mb-3 text-gray-300" size={32} />
-                    <p className="text-gray-400 font-bold text-sm">No activity in this period.</p>
+                    <p className="text-gray-400 font-medium text-sm">No activity in this period.</p>
                 </div>
             ) : (
                 filteredLogs.map((log) => (
-                    <div key={log.id} className="flex gap-4 p-4 rounded-2xl bg-gray-50/50 border border-gray-100/50 hover:bg-white hover:border-gray-200 hover:shadow-sm transition duration-200 group">
+                    <div key={log.id} className="flex gap-3 md:gap-4 p-3 md:p-4 rounded-2xl bg-gray-50/50 border border-gray-100/50 hover:bg-white hover:border-gray-200 hover:shadow-sm transition duration-200 group">
                         <div className="relative shrink-0">
                             <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center group-hover:scale-105 transition duration-300">
                                 <ActionIcon action={log.action} />
@@ -86,7 +86,7 @@ export default function ActivityLogFeed({ logs }: { logs: any[] }) {
                                     className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-sm object-cover"
                                 />
                             ) : (
-                                <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-sm bg-black text-white text-[8px] flex items-center justify-center font-black">
+                                <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-sm bg-gray-900 text-white text-[8px] flex items-center justify-center font-medium">
                                     {log.user.name?.[0] || "U"}
                                 </div>
                             )}

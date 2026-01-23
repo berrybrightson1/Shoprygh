@@ -20,6 +20,19 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
     const [logoPreview, setLogoPreview] = useState(store.logo || "");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Form states for dirty checking
+    const [name, setName] = useState(store.name);
+    const [description, setDescription] = useState(store.description || "");
+    const [phone, setPhone] = useState(store.ownerPhone || "");
+    const [address, setAddress] = useState(store.address || "");
+
+    const isDirty =
+        name !== store.name ||
+        description !== (store.description || "") ||
+        phone !== (store.ownerPhone || "") ||
+        address !== (store.address || "") ||
+        logoPreview !== (store.logo || "");
+
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -41,28 +54,8 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
     };
 
     return (
-        <div className="">
-            {/* Header with Save Button */}
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                        <Building2 size={24} className="text-gray-400" />
-                        Store Profile
-                    </h2>
-                    <p className="text-sm text-gray-600 mt-1">Update your store information and branding</p>
-                </div>
-                <button
-                    type="submit"
-                    form="profile-form"
-                    disabled={isSubmitting}
-                    className="flex items-center gap-2 bg-black text-white px-3 py-2 rounded-lg md:px-6 md:py-3 md:rounded-xl text-xs md:text-sm font-bold shadow-sm hover:bg-gray-800 transition-all disabled:opacity-50 whitespace-nowrap"
-                >
-                    <Save size={14} className="md:w-[18px] md:h-[18px]" />
-                    {isSubmitting ? "Saving..." : <><span className="md:hidden">Save</span><span className="hidden md:inline">Save Changes</span></>}
-                </button>
-            </div>
-
-            <form id="profile-form" action={handleSubmit} className="space-y-12">
+        <div className="space-y-12">
+            <form id="profile-form" action={handleSubmit} className="space-y-12 pb-24">
                 <input type="hidden" name="storeId" value={store.id} />
 
                 {/* Logo & Branding Section */}
@@ -112,7 +105,8 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                     type="text"
                                     id="name"
                                     name="name"
-                                    defaultValue={store.name}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     required
                                     className="w-full px-4 py-2.5 md:py-3 border border-gray-200 md:border-2 rounded-lg md:rounded-xl focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan text-gray-900 font-semibold transition-all placeholder:text-gray-400"
                                     placeholder="My Awesome Store"
@@ -128,7 +122,8 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                     id="description"
                                     name="description"
                                     rows={4}
-                                    defaultValue={store.description || ""}
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
                                     className="w-full px-4 py-2.5 md:py-3 border border-gray-200 md:border-2 rounded-lg md:rounded-xl focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan text-gray-900 resize-none transition-all placeholder:text-gray-400"
                                     placeholder="Tell customers about your store..."
                                 />
@@ -155,7 +150,8 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                 type="tel"
                                 id="phone"
                                 name="phone"
-                                defaultValue={store.ownerPhone || ""}
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
                                 className="w-full px-4 py-2.5 md:py-3 border border-gray-200 md:border-2 rounded-lg md:rounded-xl focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange text-gray-900 transition-all placeholder:text-gray-400"
                                 placeholder="+233 24 123 4567"
                             />
@@ -171,13 +167,53 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                 type="text"
                                 id="address"
                                 name="address"
-                                defaultValue={store.address || ""}
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
                                 className="w-full px-4 py-2.5 md:py-3 border border-gray-200 md:border-2 rounded-lg md:rounded-xl focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange text-gray-900 transition-all placeholder:text-gray-400"
                                 placeholder="123 Main Street, Accra"
                             />
                         </div>
                     </div>
                 </div>
+
+                {/* Floating Action Bar */}
+                {isDirty && (
+                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-8 duration-500">
+                        <div className="bg-white/80 backdrop-blur-xl border border-gray-100 p-2 rounded-[28px] shadow-2xl shadow-black/10 flex items-center gap-4 min-w-[300px] md:min-w-[450px]">
+                            <div className="flex-1 px-4 hidden md:block border-r border-gray-100">
+                                <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Unsaved Changes</p>
+                                <p className="text-[10px] text-gray-500 font-medium">You have modified your store profile</p>
+                            </div>
+                            <div className="flex items-center gap-2 p-1 w-full md:w-auto">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setName(store.name);
+                                        setDescription(store.description || "");
+                                        setPhone(store.ownerPhone || "");
+                                        setAddress(store.address || "");
+                                        setLogoPreview(store.logo || "");
+                                    }}
+                                    className="px-6 py-3 rounded-2xl text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors"
+                                >
+                                    Reset
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-black text-white px-8 py-3 rounded-2xl text-xs font-black shadow-xl shadow-black/10 hover:bg-gray-800 transition-all active:scale-95 disabled:opacity-50"
+                                >
+                                    {isSubmitting ? "Saving..." : (
+                                        <>
+                                            <Save size={14} />
+                                            Save Changes
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </form>
         </div>
     );

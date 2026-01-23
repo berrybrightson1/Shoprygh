@@ -38,9 +38,9 @@ export default function MobileActivityDrawer({ orders, storeSlug }: { orders: an
                     className="md:hidden flex items-center gap-2 bg-white border border-gray-200 shadow-sm px-3 py-1.5 rounded-full active:scale-95 transition-all mb-4"
                 >
                     <History size={16} className="text-gray-600" />
-                    <span className="text-xs font-bold text-gray-700">View Activity</span>
+                    <span className="text-xs font-medium text-gray-700">View Activity</span>
                     {orders.length > 0 && (
-                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
                             {orders.length}
                         </span>
                     )}
@@ -57,8 +57,8 @@ export default function MobileActivityDrawer({ orders, storeSlug }: { orders: an
                     {/* Header */}
                     <div className="px-6 py-2 flex items-center justify-between">
                         <div>
-                            <h2 className="text-xl font-black text-gray-900">System Activity</h2>
-                            <p className="text-xs text-gray-500 font-bold">Recent orders and updates</p>
+                            <h2 className="text-xl font-medium text-gray-900">System Activity</h2>
+                            <p className="text-xs text-gray-500 font-medium">Recent orders and updates</p>
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
@@ -74,7 +74,7 @@ export default function MobileActivityDrawer({ orders, storeSlug }: { orders: an
                         {orders.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 text-center text-gray-400">
                                 <ShoppingBag size={48} className="opacity-20 mb-4" />
-                                <p className="font-bold text-gray-900">No activity yet</p>
+                                <p className="font-medium text-gray-900">No activity yet</p>
                             </div>
                         ) : (
                             <div className="space-y-3">
@@ -87,25 +87,25 @@ export default function MobileActivityDrawer({ orders, storeSlug }: { orders: an
                                     >
                                         <div className="flex items-center justify-between mb-2">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-cyan/20 to-blue-50 text-brand-cyan flex items-center justify-center font-black">
+                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-cyan/20 to-blue-50 text-brand-cyan flex items-center justify-center font-medium">
                                                     {order.customerName?.charAt(0) || "?"}
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-gray-900 text-sm">{order.customerName || "Guest"}</p>
-                                                    <p className="text-[10px] text-gray-400 font-bold">
+                                                    <p className="font-medium text-gray-900 text-sm">{order.customerName || "Guest"}</p>
+                                                    <p className="text-[10px] text-gray-400 font-medium">
                                                         {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </p>
                                                 </div>
                                             </div>
                                             <div className="text-right">
-                                                <p className="font-black text-gray-900">₵{Number(order.total).toFixed(2)}</p>
+                                                <p className="font-medium text-gray-900">₵{Number(order.total).toFixed(2)}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center justify-between pl-[52px]">
                                             <span className="text-xs text-gray-500 font-medium">{order.items.length} items</span>
-                                            <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${order.status === 'COMPLETED' ? 'bg-green-50 text-green-700 border-green-100' :
-                                                order.status === 'PENDING' ? 'bg-orange-50 text-orange-700 border-orange-100' :
-                                                    'bg-gray-50 text-gray-600 border-gray-100'
+                                            <span className={`text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full border ${order.status === 'COMPLETED' ? 'bg-green-50 text-green-700 border-green-100/50' :
+                                                order.status === 'PENDING' ? 'bg-orange-50 text-orange-700 border-orange-100/50' :
+                                                    'bg-gray-50 text-gray-600 border-gray-100/50'
                                                 }`}>
                                                 {order.status}
                                             </span>
@@ -118,7 +118,7 @@ export default function MobileActivityDrawer({ orders, storeSlug }: { orders: an
                         <div className="pt-4">
                             <Link
                                 href={`/${storeSlug}/admin/orders`}
-                                className="w-full py-3 bg-gray-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition"
+                                className="w-full py-3 bg-gray-900 text-white rounded-xl font-medium flex items-center justify-center gap-2 active:scale-95 transition"
                                 onClick={() => setIsOpen(false)}
                             >
                                 View All History

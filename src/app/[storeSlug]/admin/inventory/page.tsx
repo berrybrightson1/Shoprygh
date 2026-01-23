@@ -2,6 +2,7 @@
 import CreatorStudio from "@/components/CreatorStudio";
 import InventoryTable from "@/components/InventoryTable";
 import ProductCardList from "@/components/ProductCardList";
+import { Package } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { createProduct } from "./actions";
@@ -50,37 +51,54 @@ export default async function InventoryPage({ params }: Props) {
     const createProductWithStore = createProduct.bind(null, store.id);
 
     return (
-        <div className="p-4 sm:p-8 max-w-[1400px] mx-auto space-y-8">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-8">
+        <div className="p-8 lg:p-12 animate-in fade-in duration-700">
+            {/* Header Section */}
+            <header className="mb-12 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8">
                 <div>
-                    <div className="flex items-center gap-3 mb-1">
-                        <span className="text-sm font-black text-brand-orange tracking-widest uppercase">Store Management</span>
-                        <div className="h-px bg-gray-200 flex-1" />
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-12 h-12 rounded-2xl bg-orange-50 text-brand-orange flex items-center justify-center border border-orange-100 shadow-sm">
+                            <Package size={24} strokeWidth={2.5} />
+                        </div>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">
+                            Global Catalog
+                        </h1>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
-                        {store.name}
-                    </h1>
+                    <p className="text-sm text-gray-400 font-bold ml-1 uppercase tracking-widest">Inventory orchestration & logistical depth</p>
                 </div>
-                {products.length === 0 && (
-                    <div className="flex-shrink-0">
-                        <SeedButton storeId={store.id} />
+
+                <div className="flex items-center gap-4">
+                    {products.length === 0 && (
+                        <div className="flex-shrink-0">
+                            <SeedButton storeId={store.id} />
+                        </div>
+                    )}
+                    <div className="bg-white px-6 py-3 rounded-2xl border border-gray-100 shadow-sm">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">Total Assets</span>
+                        <span className="text-xl font-black text-gray-900 tabular-nums">{products.length} Items</span>
                     </div>
-                )}
+                </div>
             </header>
 
-            {/* Creator Studio (Client Component) */}
-            <CreatorStudio createAction={createProductWithStore} storeTier={store.tier} />
+            <div className="space-y-12">
+                {/* Creator Studio (Client Component) */}
+                <CreatorStudio createAction={createProductWithStore} storeTier={store.tier} />
 
-            {/* Live Inventory Table (Desktop) */}
-            <div className="hidden md:block">
-                <InventoryTable products={products} storeId={store.id} storeName={store.name} storeSlug={storeSlug} />
+                {/* Live Inventory Table (Desktop) */}
+                <div className="hidden md:block">
+                    <InventoryTable products={products} storeId={store.id} storeName={store.name} storeSlug={storeSlug} />
+                </div>
+
+                {/* Mobile Card List */}
+                <div className="md:hidden">
+                    <div className="flex items-center justify-between mb-6 px-2">
+                        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">Live Inventory</h3>
+                        <span className="text-[10px] font-black text-brand-orange bg-orange-50 px-2 py-1 rounded-lg uppercase tracking-widest">Mobile View</span>
+                    </div>
+                    <ProductCardList
+                        products={products.map(p => ({ ...p, category: p.category, image: p.image || null }))}
+                    />
+                </div>
             </div>
-
-            {/* Mobile Card List */}
-            {/* FIX: Removed 'onEdit' function prop to prevent Server Component crash */}
-            <ProductCardList
-                products={products.map(p => ({ ...p, category: p.category, image: p.image || null }))}
-            />
         </div>
     );
 }

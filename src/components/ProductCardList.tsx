@@ -24,63 +24,69 @@ export default function ProductCardList({ products, onEdit }: ProductCardListPro
                 <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-3 text-gray-300">
                     <Package size={20} />
                 </div>
-                <p className="text-sm font-bold text-gray-400">No products found</p>
+                <p className="text-sm font-medium text-gray-400">No products found</p>
             </div>
         );
     }
 
     return (
-        <div className="space-y-3 md:hidden">
+        <div className="space-y-4 md:hidden pb-20">
             {products.map((product) => (
                 <div
                     key={product.id}
-                    className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4 active:scale-[0.98] transition-transform"
+                    className="bg-white p-4 rounded-[32px] border border-gray-100 shadow-xl shadow-gray-200/50 flex items-center gap-5 active:scale-[0.98] transition-all relative overflow-hidden group"
                 >
+                    {/* Decorative Hint */}
+                    <div className="absolute top-0 left-0 w-1 h-full bg-brand-cyan opacity-0 group-active:opacity-100 transition-opacity" />
+
                     {/* Image */}
-                    <div className="relative w-16 h-16 shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+                    <div className="relative w-20 h-20 shrink-0 bg-gray-50 rounded-[24px] overflow-hidden border border-gray-100 shadow-inner">
                         {product.image ? (
                             <Image
                                 src={product.image}
                                 alt={product.name}
                                 fill
-                                className="object-cover"
+                                className="object-cover group-hover:scale-110 transition-transform duration-500"
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                <Package size={20} />
+                                <Package size={24} />
                             </div>
                         )}
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start mb-1">
-                            <h3 className="font-bold text-gray-900 truncate text-sm leading-tight pr-2">{product.name}</h3>
-                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 shrink-0 bg-gray-100 px-1.5 py-0.5 rounded-md border border-gray-200">{product.category}</span>
-                        </div>
-
-                        <div className="flex items-center gap-2 mt-2">
-                            <span className="font-black text-brand-orange text-base tracking-tight">₵{product.priceRetail.toFixed(2)}</span>
-                            <div className="h-4 w-px bg-gray-200" />
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 ${product.stockQty > 0
-                                ? "bg-green-50 text-green-700 border border-green-100"
-                                : "bg-red-50 text-red-700 border border-red-100"
-                                }`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${product.stockQty > 0 ? "bg-green-500" : "bg-red-500"}`} />
-                                {product.stockQty > 0 ? `${product.stockQty} Units` : "Out of Stock"}
+                    <div className="flex-1 min-w-0 py-1">
+                        <div className="flex justify-between items-start mb-1.5">
+                            <h3 className="font-medium text-gray-900 truncate text-[15px] leading-tight pr-2 tracking-tight">{product.name}</h3>
+                            <span className="text-[9px] font-medium uppercase tracking-widest text-brand-cyan bg-cyan-50 px-2 py-1 rounded-lg border border-cyan-100/50 shrink-0">
+                                {product.category}
                             </span>
                         </div>
+
+                        <div className="flex items-center gap-3">
+                            <span className="font-medium text-gray-900 text-lg tracking-tight tabular-nums">₵{product.priceRetail.toFixed(2)}</span>
+                            <div className="h-4 w-px bg-gray-100" />
+                            <div className={`flex items-center gap-1.5 ${product.stockQty > 0 ? "text-emerald-600" : "text-red-500"}`}>
+                                <div className={`w-1.5 h-1.5 rounded-full ${product.stockQty > 0 ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)] animate-pulse"}`} />
+                                <span className="text-[10px] font-medium uppercase tracking-widest">
+                                    {product.stockQty > 0 ? `${product.stockQty} Unit${product.stockQty > 1 ? 's' : ''}` : "Out of Stock"}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* ID Hint */}
+                        <p className="text-[9px] font-medium text-gray-300 uppercase tracking-widest mt-2">SN: {product.id.slice(-6).toUpperCase()}</p>
                     </div>
 
-                    {/* Action */}
                     {/* Action */}
                     {onEdit && (
                         <button
                             onClick={() => onEdit(product)}
-                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                            className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gray-50 text-gray-400 hover:bg-black hover:text-white transition-all active:scale-90 border border-transparent hover:border-black/5"
                             aria-label="Edit product"
                         >
-                            <Edit size={18} />
+                            <Edit size={20} strokeWidth={2.5} />
                         </button>
                     )}
                 </div>

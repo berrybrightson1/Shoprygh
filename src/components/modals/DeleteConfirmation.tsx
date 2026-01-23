@@ -34,7 +34,7 @@ export default function DeleteConfirmation({
                 </div>
 
                 <div className="flex-1">
-                    <h3 className="text-lg font-black text-gray-900 mb-1">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">
                         {title}
                     </h3>
                     <p className="text-sm text-gray-500 font-medium leading-relaxed">
@@ -46,14 +46,14 @@ export default function DeleteConfirmation({
                     <button
                         onClick={onClose}
                         disabled={isLoading}
-                        className="px-5 py-3 bg-gray-50 hover:bg-white border border-gray-200 text-gray-700 font-bold rounded-xl transition shadow-sm hover:shadow text-sm whitespace-nowrap"
+                        className="px-5 py-3 bg-gray-50 hover:bg-white border border-gray-200/50 text-gray-700 font-medium rounded-xl transition shadow-sm hover:shadow text-sm whitespace-nowrap"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={onConfirm}
                         disabled={isLoading}
-                        className="px-5 py-3 bg-black hover:bg-gray-900 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition text-sm whitespace-nowrap flex items-center gap-2"
+                        className="px-5 py-3 bg-black hover:bg-gray-900 text-white font-medium rounded-xl shadow-xl hover:shadow-2xl transition text-sm whitespace-nowrap flex items-center gap-2"
                     >
                         {isLoading && <Loader2 size={14} className="animate-spin" />}
                         {confirmLabel}

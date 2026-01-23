@@ -48,8 +48,8 @@ export default function BroadcastModal() {
                                     <Megaphone size={20} />
                                 </div>
                                 <div>
-                                    <h3 className="font-black text-lg text-gray-900 leading-none">Broadcast</h3>
-                                    <p className="text-xs text-gray-500 font-bold mt-1">Send a notification to all sellers</p>
+                                    <h3 className="font-medium text-lg text-gray-900 leading-none">Broadcast</h3>
+                                    <p className="text-xs text-gray-500 font-medium mt-1">Send a notification to all sellers</p>
                                 </div>
                             </div>
                             <button onClick={() => setIsOpen(false)} title="Close" aria-label="Close" className="text-gray-400 hover:text-gray-900 transition hover:bg-gray-100 p-2 rounded-full">
@@ -59,18 +59,18 @@ export default function BroadcastModal() {
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5 ml-1">Title</label>
+                                <label className="block text-xs font-medium text-gray-900 uppercase mb-1.5 ml-1">Title</label>
                                 <input
                                     value={title}
                                     onChange={e => setTitle(e.target.value)}
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition"
+                                    className="w-full bg-gray-50 border border-gray-200/50 rounded-xl px-4 py-3 font-medium text-sm outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 transition"
                                     placeholder="e.g. System Maintenance"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-900 uppercase mb-1.5 ml-1">Message</label>
+                                <label className="block text-xs font-medium text-gray-900 uppercase mb-1.5 ml-1">Message</label>
                                 <textarea
                                     value={message}
                                     onChange={e => setMessage(e.target.value)}
@@ -81,15 +81,15 @@ export default function BroadcastModal() {
                             </div>
 
                             <div className="grid grid-cols-3 gap-2">
-                                <button type="button" onClick={() => setType('INFO')} className={`py-2 rounded-xl text-xs font-bold border-2 transition ${type === 'INFO' ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-transparent bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>INFO</button>
-                                <button type="button" onClick={() => setType('WARNING')} className={`py-2 rounded-xl text-xs font-bold border-2 transition ${type === 'WARNING' ? 'border-orange-500 bg-orange-50 text-orange-600' : 'border-transparent bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>WARNING</button>
-                                <button type="button" onClick={() => setType('ALERT')} className={`py-2 rounded-xl text-xs font-bold border-2 transition ${type === 'ALERT' ? 'border-red-500 bg-red-50 text-red-600' : 'border-transparent bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>ALERT</button>
+                                <button type="button" onClick={() => setType('INFO')} className={`py-2 rounded-xl text-xs font-medium border-2 transition ${type === 'INFO' ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-transparent bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>INFO</button>
+                                <button type="button" onClick={() => setType('WARNING')} className={`py-2 rounded-xl text-xs font-medium border-2 transition ${type === 'WARNING' ? 'border-orange-500 bg-orange-50 text-orange-600' : 'border-transparent bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>WARNING</button>
+                                <button type="button" onClick={() => setType('ALERT')} className={`py-2 rounded-xl text-xs font-medium border-2 transition ${type === 'ALERT' ? 'border-red-500 bg-red-50 text-red-600' : 'border-transparent bg-gray-50 text-gray-500 hover:bg-gray-100'}`}>ALERT</button>
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full bg-gray-900 text-white font-black py-4 rounded-2xl hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition shadow-xl shadow-gray-200 flex items-center justify-center gap-2"
+                                className="w-full bg-gray-900 text-white font-medium py-4 rounded-2xl hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition shadow-xl shadow-gray-200 flex items-center justify-center gap-2"
                             >
                                 {isSubmitting ? <span className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full" /> : <Send size={18} />}
                                 Send Broadcast

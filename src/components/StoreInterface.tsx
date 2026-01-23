@@ -59,7 +59,7 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
                     </button>
 
                     {/* Price Tag */}
-                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-gray-900 text-xs font-black px-3 py-1.5 rounded-full z-10 shadow-lg shadow-black/5">
+                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-gray-900 text-xs font-medium px-3 py-1.5 rounded-full z-10 shadow-lg shadow-black/5">
                         ₵{price.toFixed(0)}
                     </div>
 
@@ -79,10 +79,10 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
                 </div>
 
                 <div className="space-y-1.5 px-1">
-                    <h3 className="font-bold text-gray-900 text-[13px] leading-tight line-clamp-2 group-hover:text-brand-purple transition-colors">{product.name}</h3>
+                    <h3 className="font-medium text-gray-900 text-[13px] leading-tight line-clamp-2 group-hover:text-brand-purple transition-colors">{product.name}</h3>
                     {/* Store Name & Colors */}
                     <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{product.category || 'General'}</span>
+                        <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{product.category || 'General'}</span>
                         {/* Mock Colors */}
                         <div className="flex -space-x-1">
                             <div className="w-2.5 h-2.5 rounded-full bg-purple-400 border border-white"></div>
@@ -134,10 +134,10 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                 <div className="px-5 mb-4 flex justify-between items-center">
                     {/* Logo / Brand */}
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center font-black text-xs shadow-lg shadow-gray-200">
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center font-medium text-xs shadow-lg shadow-gray-200">
                             <Zap size={18} className="fill-white" />
                         </div>
-                        <span className={`font-black text-lg tracking-tight text-gray-900 transition-opacity ${isScrolled ? 'opacity-100' : 'opacity-100'}`}>
+                        <span className={`font-medium text-lg tracking-tight text-gray-900 transition-opacity ${isScrolled ? 'opacity-100' : 'opacity-100'}`}>
                             {storeName}
                         </span>
                     </div>
@@ -159,7 +159,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                         <button aria-label="Cart" title="Cart" className="relative w-10 h-10 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center transition-all group" onClick={toggleCart}>
                             <ShoppingBag className="text-gray-900 group-hover:scale-110 transition-transform" size={18} />
                             {mounted && cartItems.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white animate-in zoom-in shadow-sm">
+                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-medium border-2 border-white animate-in zoom-in shadow-sm">
                                     {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
                                 </span>
                             )}
@@ -175,7 +175,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                             value={searchQuery}
                             type="text"
                             placeholder="Find your favorites..."
-                            className="w-full bg-gray-50/80 hover:bg-gray-50 focus:bg-white rounded-[20px] py-3.5 pl-11 pr-4 text-sm font-bold text-gray-900 outline-none border border-transparent focus:border-purple-100 focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-gray-400"
+                            className="w-full bg-gray-50/80 hover:bg-gray-50 focus:bg-white rounded-[20px] py-3.5 pl-11 pr-4 text-sm font-medium text-gray-900 outline-none border border-transparent focus:border-purple-100 focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-gray-400"
                         />
                     </div>
                 </div>
@@ -206,9 +206,9 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                                             container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
                                         }
                                     }}
-                                    className={`px-5 py-2.5 rounded-2xl text-xs font-black transition-all duration-300 flex-shrink-0 border ${activeCategory === cat
+                                    className={`px-5 py-2.5 rounded-2xl text-xs font-medium transition-all duration-300 flex-shrink-0 border ${activeCategory === cat
                                         ? "bg-gray-900 text-white border-gray-900 shadow-lg shadow-gray-200 scale-105"
-                                        : "bg-white text-gray-500 border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+                                        : "bg-white text-gray-500 border-gray-100/50 hover:border-gray-200 hover:bg-gray-50"
                                         }`}
                                 >
                                     {cat}
@@ -223,9 +223,9 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
             <div className="px-5">
                 {/* Section Header */}
                 <div className="flex justify-between items-center mb-6 mt-2">
-                    <h2 className="text-lg font-black text-gray-900 tracking-tight flex items-center gap-2">
+                    <h2 className="text-lg font-medium text-gray-900 tracking-tight flex items-center gap-2">
                         {activeCategory === "All" ? "Trending Now" : activeCategory}
-                        <span className="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{filteredProducts.length}</span>
+                        <span className="text-[10px] font-medium bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{filteredProducts.length}</span>
                     </h2>
                 </div>
 
@@ -239,11 +239,11 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
                                 <ShoppingBag className="text-gray-300" size={32} />
                             </div>
-                            <h3 className="font-black text-gray-900 text-lg mb-2">No products found</h3>
+                            <h3 className="font-medium text-gray-900 text-lg mb-2">No products found</h3>
                             <p className="text-gray-400 text-sm max-w-[200px]">Try adjusting your search or filters to find what you're looking for.</p>
                             <button
                                 onClick={() => { setSearchQuery(""); setActiveCategory("All"); }}
-                                className="mt-6 px-6 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm shadow-xl shadow-gray-200 hover:scale-105 transition-transform"
+                                className="mt-6 px-6 py-3 bg-gray-900 text-white rounded-xl font-medium text-sm shadow-xl shadow-gray-200 hover:scale-105 transition-transform"
                             >
                                 Clear Filters
                             </button>

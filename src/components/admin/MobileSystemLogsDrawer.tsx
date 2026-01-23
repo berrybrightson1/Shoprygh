@@ -30,7 +30,7 @@ export default function MobileSystemLogsDrawer({ logs, storeSlug, user, trigger 
                     >
                         <span className="relative z-10 text-gray-400 group-hover:text-gray-900"><Activity size={20} /></span>
                         <span className="relative z-10 text-sm tracking-tight flex-1">System Activity</span>
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-[10px] font-bold text-white uppercase">R</span>
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-[10px] font-medium text-white uppercase">R</span>
                     </button>
                 )}
             </Drawer.Trigger>
@@ -45,10 +45,10 @@ export default function MobileSystemLogsDrawer({ logs, storeSlug, user, trigger 
                     {/* Header */}
                     <div className="px-6 py-2 flex items-center justify-between border-b border-gray-100 pb-4">
                         <div>
-                            <Drawer.Title className="text-xl font-black text-gray-900">
+                            <Drawer.Title className="text-xl font-medium text-gray-900">
                                 {activeView === 'notifications' ? 'Notifications' : 'System Activity'}
                             </Drawer.Title>
-                            <Drawer.Description className="text-xs text-gray-500 font-bold">
+                            <Drawer.Description className="text-xs text-gray-500 font-medium">
                                 {activeView === 'notifications' ? 'Updates & Alerts' : 'Security & Action Logs'}
                             </Drawer.Description>
                         </div>
@@ -79,7 +79,7 @@ export default function MobileSystemLogsDrawer({ logs, storeSlug, user, trigger 
                                             <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
                                         </div>
                                     </div>
-                                    <h3 className="font-bold text-lg text-gray-900">{currentUser.name}</h3>
+                                    <h3 className="font-medium text-lg text-gray-900">{currentUser.name}</h3>
                                     <p className="text-xs text-gray-500 font-medium mb-4">{currentUser.email}</p>
 
                                     <div className="flex gap-2 w-full justify-center">
@@ -116,8 +116,8 @@ export default function MobileSystemLogsDrawer({ logs, storeSlug, user, trigger 
                         )}
 
                         <div className="flex justify-between items-center mb-4 px-2">
-                            <h3 className="font-bold text-gray-900">{activeView === 'notifications' ? 'Recent Notifications' : 'Recent Logs'}</h3>
-                            <span className={`text-[10px] font-bold px-2 py-1 rounded-full border shadow-sm ${activeView === 'notifications' ? 'bg-orange-100 text-orange-600 border-orange-200' : 'bg-white text-gray-500 border-gray-200'}`}>
+                            <h3 className="font-medium text-gray-900">{activeView === 'notifications' ? 'Recent Notifications' : 'Recent Logs'}</h3>
+                            <span className={`text-[10px] font-medium px-2 py-1 rounded-full border shadow-sm ${activeView === 'notifications' ? 'bg-orange-100 text-orange-600 border-orange-200/50' : 'bg-white text-gray-500 border-gray-200/50'}`}>
                                 {activeView === 'notifications' ? '3 NEW' : 'REALTIME'}
                             </span>
                         </div>
@@ -131,9 +131,9 @@ export default function MobileSystemLogsDrawer({ logs, storeSlug, user, trigger 
                                             <Sparkles size={14} />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-black text-gray-900 mb-1">Welcome to Seller Hub</p>
+                                            <p className="text-xs font-medium text-gray-900 mb-1">Welcome to Seller Hub</p>
                                             <p className="text-xs text-gray-500 font-medium leading-relaxed">Your store is now live! Start by adding your first product.</p>
-                                            <p className="text-[10px] text-gray-400 font-bold mt-2">Just now</p>
+                                            <p className="text-[10px] text-gray-400 font-medium mt-2">Just now</p>
                                         </div>
                                     </div>
                                 </div>
@@ -144,9 +144,9 @@ export default function MobileSystemLogsDrawer({ logs, storeSlug, user, trigger 
                                             <Settings size={14} />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-black text-gray-900 mb-1">Profile Complete</p>
+                                            <p className="text-xs font-medium text-gray-900 mb-1">Profile Complete</p>
                                             <p className="text-xs text-gray-500 font-medium leading-relaxed">You have successfully updated your store profile.</p>
-                                            <p className="text-[10px] text-gray-400 font-bold mt-2">10m ago</p>
+                                            <p className="text-[10px] text-gray-400 font-medium mt-2">10m ago</p>
                                         </div>
                                     </div>
                                 </div>
@@ -157,9 +157,9 @@ export default function MobileSystemLogsDrawer({ logs, storeSlug, user, trigger 
                                             <Bell size={14} />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-bold text-gray-900 mb-1">System Update</p>
+                                            <p className="text-xs font-medium text-gray-900 mb-1">System Update</p>
                                             <p className="text-xs text-gray-500 font-medium leading-relaxed">Platform maintenance scheduled for tonight.</p>
-                                            <p className="text-[10px] text-gray-400 font-bold mt-2">2h ago</p>
+                                            <p className="text-[10px] text-gray-400 font-medium mt-2">2h ago</p>
                                         </div>
                                     </div>
                                 </div>

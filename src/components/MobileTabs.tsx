@@ -39,9 +39,9 @@ export default function MobileTabs({ storeSlug }: MobileTabsProps) {
                             key={tab.href}
                             href={tab.href}
                             target={tab.isExternal ? "_blank" : undefined}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${isActive
-                                    ? "bg-gray-900 text-white shadow-lg"
-                                    : "text-gray-600 hover:bg-gray-50"
+                            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${isActive
+                                ? "bg-gray-900 text-white shadow-lg"
+                                : "text-gray-600 hover:bg-gray-50"
                                 }`}
                         >
                             <Icon size={18} className={isActive ? "text-brand-orange" : ""} />

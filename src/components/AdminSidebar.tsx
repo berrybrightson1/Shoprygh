@@ -25,18 +25,18 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
     return (
         <>
             {/* Mobile Header Bar */}
-            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-xl text-gray-900 z-30 flex items-center px-4 justify-between shadow-sm border-b border-gray-100">
-                <div className="flex items-center gap-3">
+            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-2xl text-gray-900 z-30 flex items-center px-6 justify-between border-b border-gray-100/50">
+                <div className="flex items-center gap-4">
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition text-gray-600 hover:text-gray-900"
+                        className="p-2.5 -ml-2 rounded-2xl bg-gray-50 text-gray-900 border border-gray-100 active:scale-95 transition-all shadow-sm"
                         aria-label="Open sidebar"
                     >
-                        <Menu size={24} />
+                        <Menu size={20} strokeWidth={2.5} />
                     </button>
                     <div className="flex flex-col">
-                        <span className="font-bold text-base leading-none tracking-tight">Shopry</span>
-                        <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Seller Hub</span>
+                        <span className="font-medium text-lg leading-none tracking-tight">Shopry</span>
+                        <span className="text-[9px] text-gray-400 font-medium uppercase tracking-[0.2em] mt-1">Seller Hub</span>
                     </div>
                 </div>
 
@@ -75,49 +75,53 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
 
             {/* SIDEBAR MAIN */}
             {/* Note: On desktop (md), we remove 'fixed' and let it be a flex item in the layout */}
-            <aside className={`fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-200 flex flex-col h-screen text-gray-600 transition-all duration-300 ease-in-out md:relative md:flex shrink-0 ${isOpen ? "translate-x-0" : "-translate-x-full"} ${isDesktopHidden ? 'md:w-0 md:overflow-hidden' : 'md:w-72 md:translate-x-0'}`}>
+            <aside className={`fixed inset-y-0 left-0 z-40 w-80 bg-gray-50/50 border-r border-gray-100 flex flex-col h-screen text-gray-600 transition-all duration-300 ease-in-out md:relative md:flex shrink-0 ${isOpen ? "translate-x-0" : "-translate-x-full"} ${isDesktopHidden ? 'md:w-0 md:overflow-hidden' : 'md:w-80 md:translate-x-0'}`}>
 
                 {/* Header */}
-                <div className="p-8 flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-gray-200 border border-gray-100 bg-white">
-                        <img
-                            src={`https://api.dicebear.com/9.x/micah/svg?seed=Shopry&backgroundColor=b6e3f4,c0aede,d1d4f9`}
-                            alt="Shopry"
-                            className="w-full h-full object-cover"
-                        />
+                <div className="p-8 pb-4 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-2xl shadow-gray-200 border border-white bg-white p-1">
+                        <div className="w-full h-full rounded-xl overflow-hidden">
+                            <img
+                                src={`https://api.dicebear.com/9.x/micah/svg?seed=Shopry&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                                alt="Shopry"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
                     </div>
                     <div>
-                        <span className="font-bold text-xl text-gray-900 block leading-none tracking-tight">Shopry</span>
-                        <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mt-1 block">Seller Hub</span>
+                        <span className="font-medium text-xl text-gray-900 block leading-none tracking-tight">Shopry</span>
+                        <span className="text-[10px] font-medium tracking-[0.2em] text-gray-400 uppercase mt-1.5 block">Seller Hub</span>
                     </div>
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-4 space-y-1 mt-2 overflow-y-auto custom-scrollbar">
-                    <div className="px-4 text-xs font-bold text-gray-300 uppercase tracking-widest mb-3 mt-2">Menu</div>
+                <nav className="flex-1 px-4 lg:px-6 space-y-1 mt-4 overflow-y-auto custom-scrollbar">
+                    <div className="px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] mb-4 mt-2">Core Hub</div>
 
                     <NavLink
                         href={`/${storeSlug}`}
                         icon={<Store size={20} />}
                         label="Front Store"
+                        description="View your public storefront"
                         active={false}
                         isExternal
                     />
 
-                    <div className="h-4" /> {/* Spacer */}
+                    <div className="h-4" />
 
                     <NavLink
                         href={`/${storeSlug}/admin`}
                         icon={<LayoutDashboard size={20} />}
                         label="Overview"
+                        description="Sales summary and quick stats"
                         active={pathname === `/${storeSlug}/admin` || pathname === `/${storeSlug}/admin/`}
                     />
-
 
                     <NavLink
                         href={`/${storeSlug}/admin/inventory`}
                         icon={<Package size={20} />}
                         label="Inventory"
+                        description="Manage products and categories"
                         active={pathname?.startsWith(`/${storeSlug}/admin/inventory`)}
                     />
 
@@ -125,6 +129,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         href={`/${storeSlug}/admin/orders`}
                         icon={<ShoppingBag size={20} />}
                         label="Orders"
+                        description="View and process customer orders"
                         active={pathname?.startsWith(`/${storeSlug}/admin/orders`)}
                     />
 
@@ -137,12 +142,15 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         href={`/${storeSlug}/admin/staff`}
                         icon={<Users size={20} />}
                         label="Staff"
+                        description="Manage team permissions"
                         active={pathname?.startsWith(`/${storeSlug}/admin/staff`)}
                     />
+
                     <NavLink
                         href={`/${storeSlug}/admin/reports`}
                         icon={<BarChart size={20} />}
                         label="Reports"
+                        description="Detailed sales and store analytics"
                         active={pathname?.startsWith(`/${storeSlug}/admin/reports`)}
                     />
 
@@ -150,10 +158,11 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         href={`/${storeSlug}/admin/customers`}
                         icon={<Users size={20} />}
                         label="Customers"
+                        description="View customer list and history"
                         active={pathname?.startsWith(`/${storeSlug}/admin/customers`)}
                     />
 
-                    {/* Updates Tab with Green Dot Indicator */}
+                    {/* Updates Tab with Indicator */}
                     <UpdatesNavLink
                         href={`/${storeSlug}/admin/updates`}
                         latestUpdateDate={latestUpdateDate}
@@ -164,15 +173,18 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         href={`/${storeSlug}/admin/finance`}
                         icon={<Wallet size={20} />}
                         label="Finance"
+                        description="Revenue and payouts"
                         active={pathname?.startsWith(`/${storeSlug}/admin/finance`)}
                     />
 
-                    <div className="h-4" /> {/* Spacer */}
+                    <div className="h-6" />
+                    <div className="px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] mb-4">Preferences</div>
 
                     <NavLink
                         href={`/${storeSlug}/admin/settings`}
-                        icon={<Store size={20} />}
+                        icon={<Settings size={20} />}
                         label="Settings"
+                        description="Store profile and preferences"
                         active={pathname?.startsWith(`/${storeSlug}/admin/settings`) && !pathname?.includes("/delivery")}
                     />
 
@@ -180,48 +192,42 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         href={`/${storeSlug}/admin/settings/delivery`}
                         icon={<Truck size={20} />}
                         label="Delivery"
+                        description="Delivery zones and fees"
                         active={pathname?.startsWith(`/${storeSlug}/admin/settings/delivery`)}
                     />
 
                     {/* Verification Link */}
-                    <Link
+                    <NavLink
                         href={`/${storeSlug}/admin/verification`}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative mb-1 ${pathname?.startsWith(`/${storeSlug}/admin/verification`)
-                            ? 'bg-blue-50 text-blue-700 font-bold'
-                            : 'text-gray-500 hover:bg-blue-50/50 hover:text-blue-600 font-medium'
-                            }`}
-                    >
-                        <BadgeCheck size={20} className={pathname?.startsWith(`/${storeSlug}/admin/verification`) ? 'text-blue-600' : 'text-blue-400 group-hover:text-blue-600 transition-colors'} />
-                        <span className="relative z-10 text-sm tracking-tight flex-1">Get Verified</span>
-                        {/* Assuming we don't have isVerified on user object yet, showing lock by default if not strictly known, or nothing */}
-                        <Lock size={12} className="ml-auto text-gray-300" />
-                    </Link>
-
+                        icon={<BadgeCheck size={20} className="text-blue-500" />}
+                        label="Get Verified"
+                        description="Build trust with blue tick"
+                        active={pathname?.startsWith(`/${storeSlug}/admin/verification`)}
+                    />
 
                     {/* Platform Admin Link - Only for Super Admins */}
                     {currentUser.isPlatformAdmin && (
                         <>
-                            <div className="h-px bg-gray-100 mx-4 my-3" />
-                            <Link
+                            <div className="h-6" />
+                            <div className="px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] mb-4">Operations</div>
+                            <NavLink
                                 href="/platform-admin"
-                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-brand-cyan transition-all duration-200 group"
-                            >
-                                <span className="text-gray-400 group-hover:text-brand-cyan transition-colors">
-                                    <Shield size={20} />
-                                </span>
-                                <span className="font-bold text-sm">Platform Admin</span>
-                            </Link>
+                                icon={<Shield size={20} />}
+                                label="Platform Admin"
+                                description="Deep system administration"
+                                active={pathname?.startsWith("/platform-admin")}
+                            />
                         </>
                     )}
                 </nav>
 
                 {/* User Profile / Switcher - Simplified for Design System */}
-                <div className="p-4 border-t border-gray-200">
+                <div className="p-4 border-t border-gray-100/50 bg-white/50 backdrop-blur-sm">
                     <button
                         onClick={() => setIsSwitcherOpen(!isSwitcherOpen)}
-                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-gray-50 ${isSwitcherOpen ? "bg-gray-50" : ""}`}
+                        className={`w-full flex items-center gap-4 p-4 rounded-3xl transition-all ${isSwitcherOpen ? "bg-white shadow-xl shadow-gray-200/50 ring-1 ring-gray-100" : "hover:bg-white hover:shadow-lg hover:shadow-gray-200/30"}`}
                     >
-                        <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shrink-0 border border-gray-200">
+                        <div className="w-10 h-10 rounded-2xl bg-white border border-gray-100 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
                             <img
                                 src={currentUser.image && currentUser.image.length > 0
                                     ? currentUser.image
@@ -232,17 +238,17 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                             />
                         </div>
                         <div className="text-left flex-1 min-w-0">
-                            <p className="text-sm font-bold text-gray-900 leading-tight truncate">{currentUser.name || "User"}</p>
-                            <p className="text-xs text-gray-400 font-medium truncate mt-0.5">{currentUser.role || "Admin"}</p>
+                            <p className="text-sm font-medium text-gray-900 leading-tight truncate">{currentUser.name || "User"}</p>
+                            <p className="text-[11px] text-gray-400 font-medium truncate mt-0.5 uppercase tracking-widest">{currentUser.role || "Admin"}</p>
                         </div>
-                        <ChevronUp size={16} className={`text-gray-400 transition-transform duration-300 ${isSwitcherOpen ? "rotate-0" : "rotate-180"}`} />
+                        <ChevronUp size={16} className={`text-gray-400 transition-transform duration-500 ${isSwitcherOpen ? "rotate-0 text-gray-900" : "rotate-180"}`} />
                     </button>
 
                     {/* Switcher Dropdown */}
                     {isSwitcherOpen && (
-                        <div className="mt-2 text-center">
+                        <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-300">
                             <form action={logout}>
-                                <button className="w-full text-xs font-bold text-red-500 hover:bg-red-50 py-3 rounded-xl flex items-center justify-center gap-2 transition">
+                                <button className="w-full text-[11px] font-medium text-red-500 hover:bg-red-50 p-4 rounded-2xl flex items-center justify-center gap-2 transition uppercase tracking-widest border border-transparent hover:border-red-100">
                                     <LogOut size={14} /> Sign Out
                                 </button>
                             </form>
@@ -254,24 +260,45 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
     );
 }
 
-function NavLink({ href, icon, label, active = false, isExternal = false }: { href: string; icon: React.ReactNode; label: string; active?: boolean, isExternal?: boolean }) {
+function NavLink({
+    href,
+    icon,
+    label,
+    description,
+    active = false,
+    isExternal = false,
+    danger = false,
+    badge = null
+}: {
+    href: string;
+    icon: React.ReactNode;
+    label: string;
+    description?: string;
+    active?: boolean;
+    isExternal?: boolean;
+    danger?: boolean;
+    badge?: React.ReactNode;
+}) {
     return (
         <Link
             href={href}
             target={isExternal ? "_blank" : undefined}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative mb-1 ${active
-                ? "bg-gray-900 text-white shadow-lg shadow-gray-900/20"
-                : "text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium"
-                }`}
+            className={`w-full flex items-center gap-4 p-4 rounded-3xl transition-all ${active
+                ? "bg-white text-gray-900 shadow-xl shadow-gray-200/50 ring-1 ring-gray-100"
+                : "text-gray-500 hover:bg-white hover:shadow-lg hover:shadow-gray-200/30"
+                } ${danger && !active ? 'hover:text-red-600' : ''}`}
         >
-            <span className={`relative z-10 transition-colors ${active ? "text-brand-orange" : "text-gray-400 group-hover:text-gray-900"}`}>
+            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 transition-all ${active
+                ? (danger ? 'bg-red-50 text-red-600' : 'bg-black text-white')
+                : 'bg-white border border-gray-100 text-gray-400 group-hover:scale-110'
+                }`}>
                 {icon}
-            </span>
-            <span className={`relative z-10 text-sm tracking-tight ${active ? "font-bold" : ""}`}>{label}</span>
-
-            {active && (
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-brand-orange rounded-l-full" />
-            )}
+            </div>
+            <div className="flex-1 min-w-0">
+                <div className={`text-sm font-medium truncate tracking-tight ${active ? 'text-gray-900' : 'text-gray-600'}`}>{label}</div>
+                {description && <div className="text-[11px] text-gray-400 font-medium truncate mt-0.5">{description}</div>}
+            </div>
+            {badge ? badge : <ChevronRight size={16} className={`text-gray-300 transition-transform ${active ? 'translate-x-1 text-gray-900' : ''}`} />}
         </Link>
     );
 }
@@ -280,10 +307,8 @@ function UpdatesNavLink({ href, latestUpdateDate, active }: { href: string, late
     const [isMounted, setIsMounted] = useState(false);
     const [lastRead, setLastRead] = useState<number>(0);
 
-    // Set mounted state after hydration
     useEffect(() => {
         setIsMounted(true);
-        // Initialize from localStorage on mount
         if (typeof window !== 'undefined') {
             const stored = localStorage.getItem('lastReadUpdates');
             if (stored) setLastRead(parseInt(stored));
@@ -308,11 +333,10 @@ function UpdatesNavLink({ href, latestUpdateDate, active }: { href: string, late
                 href={href}
                 icon={<Sparkles size={20} />}
                 label="Updates"
+                description="New features and releases"
                 active={active}
+                badge={isMounted && hasNewUpdates ? <div className="w-2.5 h-2.5 bg-brand-cyan rounded-full ring-4 ring-brand-cyan/20 animate-pulse" /> : null}
             />
-            {isMounted && hasNewUpdates && (
-                <span className="absolute top-3 right-4 w-2 h-2 bg-brand-cyan rounded-full border border-white" />
-            )}
         </div>
     );
 }

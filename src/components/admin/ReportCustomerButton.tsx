@@ -51,7 +51,7 @@ export default function ReportCustomerButton({ customerId, storeId, customerName
                                 <div className="bg-red-100 p-2 rounded-full">
                                     <AlertTriangle size={24} />
                                 </div>
-                                <h3 className="font-bold text-lg text-gray-900">Report Customer</h3>
+                                <h3 className="font-medium text-base text-gray-900">Report Customer</h3>
                             </div>
                             <button onClick={() => setIsOpen(false)} title="Close" aria-label="Close" className="text-gray-400 hover:text-gray-600">
                                 <X size={20} />
@@ -63,7 +63,7 @@ export default function ReportCustomerButton({ customerId, storeId, customerName
                         </p>
 
                         <div className="space-y-4 mb-6">
-                            <label className="block text-xs font-bold uppercase text-gray-500">Reason</label>
+                            <label className="block text-xs font-medium uppercase text-gray-500">Reason</label>
                             <div className="space-y-2">
                                 {["Fake Payment", "Refused Delivery", "Abusive / Harassment", "Other"].map((r) => (
                                     <label key={r} className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition">
@@ -85,14 +85,14 @@ export default function ReportCustomerButton({ customerId, storeId, customerName
                             <button
                                 onClick={() => setIsOpen(false)}
                                 disabled={isLoading}
-                                className="flex-1 py-3 font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition"
+                                className="flex-1 py-3 font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleReport}
                                 disabled={isLoading}
-                                className="flex-1 py-3 font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-lg shadow-red-200 transition flex items-center justify-center gap-2"
+                                className="flex-1 py-3 font-medium text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-lg shadow-red-200 transition flex items-center justify-center gap-2"
                             >
                                 {isLoading ? <Loader2 className="animate-spin" size={18} /> : "Submit Report"}
                             </button>
