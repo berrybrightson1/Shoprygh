@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
-import dynamic from "next/dynamic";
-
-const Toaster = dynamic(() => import("sonner").then((mod) => mod.Toaster), {
-  ssr: false,
-});
+import { DynamicToaster } from "@/components/DynamicToaster";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -28,7 +24,7 @@ export default function RootLayout({
         className={`${sora.variable} antialiased font-sans`}
       >
         {children}
-        <Toaster position="top-center" richColors />
+        <DynamicToaster />
       </body>
     </html>
   );
