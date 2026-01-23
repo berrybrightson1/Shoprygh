@@ -51,7 +51,6 @@ export default function ActivityLogFeed({ logs }: { logs: any[] }) {
     return (
         <div className="space-y-4">
             {/* Time Period Filter */}
-            {/* Time Period Filter */}
             <div className="flex items-center gap-1 p-1 w-full md:w-fit mb-2">
                 {TIME_PERIODS.map(({ key, label }) => (
                     <button

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Lock, ArrowLeft, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
-import { login, magicAdminLogin } from "./actions";
+import { login } from "./actions";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -117,28 +117,7 @@ export default function LoginPage() {
                         </p>
                     </div>
 
-                    {/* Magic Admin Login (Developer Only) */}
-                    <div className="mt-8 flex justify-center">
-                        <form action={async () => {
-                            setIsLoading(true);
-                            const res = await magicAdminLogin();
-                            if (res?.success && res?.url) {
-                                router.push(res.url);
-                            } else if (res?.error) {
-                                toast.error(res.error);
-                                setIsLoading(false);
-                            }
-                        }}>
-                            <button
-                                type="submit"
-                                disabled={isLoading}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 rounded-lg text-xs font-mono font-bold transition-all border border-gray-200 hover:border-gray-300 shadow-sm disabled:opacity-50"
-                            >
-                                <Lock size={12} className="opacity-70" />
-                                [DEV] Magic Admin Access
-                            </button>
-                        </form>
-                    </div>
+
                 </div>
             </div>
         </div>

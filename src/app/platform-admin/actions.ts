@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { StoreStatus } from "@prisma/client";
-import { getSession, encrypt } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -88,6 +88,7 @@ export async function impersonateStoreOwner(formData: FormData) {
     if (!targetUser) throw new Error("Store has no users");
 
     // 3. Create Session for Target User
+    /*
     // We re-use logic similar to login/actions.ts
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
     const sessionPayload = {
@@ -109,6 +110,8 @@ export async function impersonateStoreOwner(formData: FormData) {
     });
 
     redirect(`/${store.slug}/admin/reports`);
+    */
+    throw new Error("Impersonation temporarily disabled during Auth Migration");
 }
 
 export async function updateStoreTierManually(formData: FormData) {

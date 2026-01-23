@@ -1,53 +1,65 @@
-import { jwtVerify, SignJWT } from "jose";
+import { createClient } from "@/lib/supabase/server";
+import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
 
-const SECRET_KEY = process.env.JWT_SECRET || "super-secret-key-change-this-in-env";
-
-if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
-    console.warn("⚠️  SECURITY WARNING: Using default JWT_SECRET in production. Please set JWT_SECRET environment variable.");
+// Cached Session Interface (matches what the app expects)
+export interface SessionData {
+    id: string;
+    email: string;
+    name: string;
+    image?: string | null;
+    role: string;
+    isPlatformAdmin: boolean;
+    storeId?: string;
+    storeSlug?: string;
+    phone?: string | null;
+    isVerified?: boolean;
 }
 
-const key = new TextEncoder().encode(SECRET_KEY);
+/**
+ * Retrieves the current user session from Supabase and enriches it with Prisma data.
+ * This replaces the old "double auth" cookie system.
+ */
+export async function getSession(): Promise<SessionData | null> {
+    const supabase = await createClient();
 
-export async function encrypt(payload: any) {
-    return await new SignJWT(payload)
-        .setProtectedHeader({ alg: "HS256" })
-        .setIssuedAt()
-        .setExpirationTime("24h")
-        .sign(key);
-}
+    // 1. Check Supabase Auth (The Source of Truth)
+    const { data: { user: authUser }, error } = await supabase.auth.getUser();
 
-export async function decrypt(input: string): Promise<any> {
-    const { payload } = await jwtVerify(input, key, {
-        algorithms: ["HS256"],
-    });
-    return payload;
-}
+    if (error || !authUser || !authUser.email) {
+        return null; // Not logged in
+    }
 
-export async function getSession() {
-    const session = (await cookies()).get("session")?.value;
-    if (!session) return null;
+    // 2. Fetch User Profile from Prisma (The Data Layer)
+    // We look up by email because it's the stable link between the two systems
     try {
-        return await decrypt(session);
-    } catch (error) {
+        const user = await prisma.user.findUnique({
+            where: { email: authUser.email },
+            include: { store: true }
+        });
+
+        if (!user) {
+            // Edge case: Auth exists but Data missing (The "Config Error" scenario)
+            // We return null so the user is forced to re-login/signup or hit the self-healing flow
+            return null;
+        }
+
+        // 3. Return Normalized Session Data
+        return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image,
+            role: user.role, // OWNER or STAFF
+            isPlatformAdmin: user.isPlatformAdmin,
+            storeId: user.store?.id,
+            storeSlug: user.store?.slug,
+            phone: user.phone,
+            isVerified: user.isVerified
+        };
+
+    } catch (dbError) {
+        console.error("Session DB Fetch Error:", dbError);
         return null;
     }
-}
-
-export async function updateSession(request: NextRequest) {
-    const session = request.cookies.get("session")?.value;
-    if (!session) return;
-
-    // Refresh token logic if needed, simplied for now just return same
-    const parsed = await decrypt(session);
-    parsed.expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    const res = NextResponse.next();
-    res.cookies.set({
-        name: "session",
-        value: await encrypt(parsed),
-        httpOnly: true,
-        expires: parsed.expires,
-    });
-    return res;
 }
