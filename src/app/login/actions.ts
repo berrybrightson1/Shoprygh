@@ -36,8 +36,80 @@ export async function login(formData: FormData) {
 
         if (!user) {
             console.error("[LOGIN] User missing in Prisma but present in Supabase:", email);
-            // Edge case: User in Supabase but not Prisma?
-            return { error: "Account config error. Contact support." };
+
+            // SELF-HEALING: Auto-create the user and store to allow access ("record new signups but free access")
+            // This handles cases where the signup transaction failed but Supabase user was created.
+            try {
+                console.log("[LOGIN] Attempting to self-heal orphaned account...");
+                const newStoreName = `Store ${email.split('@')[0]}`;
+                const newSlug = `store-${Date.now()}`; // Unique slug
+
+                // Create Store & User in a transaction
+                const result = await prisma.$transaction(async (tx) => {
+                    const store = await tx.store.create({
+                        data: {
+                            name: newStoreName,
+                            slug: newSlug,
+                            tier: "HUSTLER", // Default free tier
+                            address: "Digital Address",
+                            isVerified: false,
+                            status: "ACTIVE"
+                        }
+                    });
+
+                    const newUser = await tx.user.create({
+                        data: {
+                            id: supabaseUser.id,
+                            email: email,
+                            password: "", // Managed by Supabase
+                            name: supabaseUser.user_metadata?.display_name || email.split('@')[0],
+                            role: "OWNER",
+                            storeId: store.id,
+                            isVerified: false
+                        },
+                        include: { store: true }
+                    });
+
+                    return newUser;
+                });
+
+                // Use the newly created user for the session
+                // We need to re-assign 'user' (which is const), so we'll just use 'result' and update the flow below.
+                // However, since 'user' is declared as const 'const user = ...', we cannot reassign it.
+                // We will redirect recursively or handle session creation here.
+
+                // Best approach: Recursively call login? No, infinite loop risk if it fails again.
+                // Let's just update the local variables needed for session creation.
+
+                // We can't update 'user' variable. 
+                // We will proceed by creating the session manually with 'result' data
+
+                const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+                const sessionPayload = {
+                    id: result.id,
+                    email: result.email,
+                    name: result.name,
+                    role: result.role,
+                    isPlatformAdmin: result.isPlatformAdmin,
+                    storeId: result.store?.id,
+                    storeSlug: result.store?.slug,
+                    phone: result.phone,
+                    isVerified: result.isVerified,
+                    expires
+                };
+
+                const session = await encrypt(sessionPayload);
+                (await cookies()).set("session", session, { expires, httpOnly: true });
+
+                const redirectTo = `/${result.store?.slug}/admin/inventory`;
+                await logActivity("LOGIN", "Orphaned account self-healed", "USER", result.id);
+
+                return { success: true, url: redirectTo };
+
+            } catch (recoveryError) {
+                console.error("[LOGIN RECOVERY FAILED]", recoveryError);
+                return { error: "Account error. Please contact support." };
+            }
         }
 
         // Check for Store OR Platform Admin privileges
