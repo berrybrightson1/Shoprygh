@@ -7,7 +7,9 @@ import { logActivity } from "@/lib/audit";
 
 export async function createDeliveryZone(formData: FormData) {
     const session = await getSession();
-    if (!session) throw new Error("Unauthorized");
+    if (!session || !session.storeId) throw new Error("Unauthorized");
+
+    const storeId = session.storeId;
 
     const name = formData.get("name") as string;
     const fee = formData.get("fee") as string;
@@ -17,7 +19,7 @@ export async function createDeliveryZone(formData: FormData) {
 
     await prisma.deliveryZone.create({
         data: {
-            storeId: session.storeId,
+            storeId,
             name,
             fee: parseFloat(fee),
             description
@@ -30,11 +32,13 @@ export async function createDeliveryZone(formData: FormData) {
 
 export async function deleteDeliveryZone(formData: FormData) {
     const session = await getSession();
-    if (!session) throw new Error("Unauthorized");
+    if (!session || !session.storeId) throw new Error("Unauthorized");
+
+    const storeId = session.storeId;
 
     const id = formData.get("id") as string;
     await prisma.deliveryZone.delete({
-        where: { id, storeId: session.storeId }
+        where: { id, storeId }
     });
 
     await logActivity("DELIVERY_ZONE_DELETED", `Deleted delivery zone`, "DELIVERY_ZONE", id);

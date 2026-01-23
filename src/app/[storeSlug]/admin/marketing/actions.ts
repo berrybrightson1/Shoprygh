@@ -9,6 +9,8 @@ export async function createCoupon(formData: FormData) {
     const session = await getSession();
     if (!session || !session.storeId) throw new Error("Unauthorized");
 
+    const storeId = session.storeId;
+
     const code = (formData.get("code") as string).toUpperCase().replace(/\s/g, "");
     const type = formData.get("type") as string; // PERCENTAGE | FIXED
     const value = parseFloat(formData.get("value") as string);
@@ -23,7 +25,7 @@ export async function createCoupon(formData: FormData) {
     try {
         await prisma.coupon.create({
             data: {
-                storeId: session.storeId,
+                storeId,
                 code,
                 type,
                 value,
@@ -44,11 +46,13 @@ export async function toggleCouponStatus(formData: FormData) {
     const session = await getSession();
     if (!session || !session.storeId) throw new Error("Unauthorized");
 
+    const storeId = session.storeId;
+
     const couponId = formData.get("couponId") as string;
     const isActive = formData.get("isActive") === "true";
 
     await prisma.coupon.update({
-        where: { id: couponId, storeId: session.storeId },
+        where: { id: couponId, storeId },
         data: { isActive: !isActive }
     });
 
@@ -60,10 +64,12 @@ export async function deleteCoupon(formData: FormData) {
     const session = await getSession();
     if (!session || !session.storeId) throw new Error("Unauthorized");
 
+    const storeId = session.storeId;
+
     const couponId = formData.get("couponId") as string;
 
     await prisma.coupon.delete({
-        where: { id: couponId, storeId: session.storeId }
+        where: { id: couponId, storeId }
     });
 
     await logActivity("COUPON_DELETED", `Deleted coupon`, "COUPON", couponId);

@@ -9,9 +9,11 @@ export async function syncCustomersFromOrders() {
     const session = await getSession();
     if (!session || !session.storeId) throw new Error("Unauthorized");
 
+    const storeId = session.storeId;
+
     // 1. Fetch all orders for this store
     const orders = await prisma.order.findMany({
-        where: { storeId: session.storeId, status: { not: "CANCELLED" } }, // Only count valid orders
+        where: { storeId, status: { not: "CANCELLED" } }, // Only count valid orders
         select: {
             id: true,
             customerName: true,
@@ -34,7 +36,7 @@ export async function syncCustomersFromOrders() {
         const existing = await prisma.customer.findUnique({
             where: {
                 storeId_phone: {
-                    storeId: session.storeId,
+                    storeId: storeId,
                     phone: order.customerPhone
                 }
             }
@@ -48,7 +50,7 @@ export async function syncCustomersFromOrders() {
 
             // Let's do a "Recalculate Totals" approach for correctness
             const customerOrders = await prisma.order.findMany({
-                where: { storeId: session.storeId, customerPhone: order.customerPhone, status: { not: "CANCELLED" } }
+                where: { storeId: storeId, customerPhone: order.customerPhone, status: { not: "CANCELLED" } }
             });
 
             const totalSpent = customerOrders.reduce((sum, o) => sum + Number(o.total), 0);
@@ -68,7 +70,7 @@ export async function syncCustomersFromOrders() {
         } else {
             await prisma.customer.create({
                 data: {
-                    storeId: session.storeId,
+                    storeId: storeId,
                     name: order.customerName || "Unknown",
                     phone: order.customerPhone,
                     totalSpent: order.total,
@@ -89,11 +91,13 @@ export async function updateCustomerNotes(formData: FormData) {
     const session = await getSession();
     if (!session || !session.storeId) throw new Error("Unauthorized");
 
+    const storeId = session.storeId;
+
     const customerId = formData.get("customerId") as string;
     const notes = formData.get("notes") as string;
 
     await prisma.customer.update({
-        where: { id: customerId, storeId: session.storeId },
+        where: { id: customerId, storeId },
         data: { notes }
     });
 
