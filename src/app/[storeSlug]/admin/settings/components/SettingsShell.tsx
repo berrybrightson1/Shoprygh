@@ -37,39 +37,40 @@ export default function SettingsShell({
     const [activeTab, setActiveTab] = useState("general");
 
     return (
-        <div className="flex flex-col lg:flex-row gap-8 min-h-[600px]">
-            {/* Sidebar */}
-            <aside className="w-full lg:w-64 flex-shrink-0 space-y-1">
-                <div className="mb-6 px-2 md:px-0">
-                    <h2 className="text-xl font-black text-gray-900">Settings</h2>
-                    <p className="text-sm text-gray-500 font-medium">Manage your store preferences</p>
-                </div>
+        <div className="flex flex-col lg:grid lg:grid-cols-[16rem_1fr] gap-4 lg:gap-8 min-h-[600px]">
+            {/* Header (Mobile: Top, Desktop: Top-Left) */}
+            <div className="lg:col-start-1 mb-2 lg:mb-0" style={{ order: -1 }}>
+                <h2 className="text-xl font-black text-gray-900">Settings</h2>
+                <p className="text-sm text-gray-500 font-medium">Manage your store preferences</p>
+            </div>
 
-                <nav className="flex lg:flex-col overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 gap-1">
-                    {TABS.map((tab) => {
-                        const Icon = tab.icon;
-                        const isActive = activeTab === tab.id;
-                        return (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left flex-shrink-0 whitespace-nowrap lg:whitespace-normal ${isActive
-                                    ? "bg-gray-900 text-white shadow-lg shadow-gray-900/10"
-                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                                    } ${tab.danger && !isActive ? "hover:text-red-600 hover:bg-red-50" : ""}`}
-                            >
-                                <Icon size={18} className={isActive ? "text-brand-orange" : tab.danger ? "text-red-400" : "text-gray-400"} />
-                                <div>
-                                    <div className={`text-sm font-bold ${tab.danger && !isActive ? "text-red-600" : ""}`}>{tab.label}</div>
-                                </div>
-                            </button>
-                        );
-                    })}
-                </nav>
-            </aside>
+            {/* Tabs */}
+            {TABS.map((tab, index) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        style={{ order: index * 2 }}
+                        className={`lg:col-start-1 flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left ${isActive
+                            ? "bg-gray-900 text-white shadow-lg shadow-gray-900/10"
+                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                            } ${tab.danger && !isActive ? "hover:text-red-600 hover:bg-red-50" : ""}`}
+                    >
+                        <Icon size={18} className={isActive ? "text-brand-orange" : tab.danger ? "text-red-400" : "text-gray-400"} />
+                        <div>
+                            <div className={`text-sm font-bold ${tab.danger && !isActive ? "text-red-600" : ""}`}>{tab.label}</div>
+                        </div>
+                    </button>
+                );
+            })}
 
             {/* Content Area */}
-            <main className="flex-1 bg-white md:rounded-[32px] md:p-8 p-4 border border-gray-100 shadow-sm min-h-[600px]">
+            <main
+                className="lg:col-start-2 lg:row-start-1 lg:row-span-12 bg-white md:rounded-[32px] md:p-8 p-4 border border-gray-100 shadow-sm min-h-[600px]"
+                style={{ order: (TABS.findIndex(t => t.id === activeTab) * 2) + 1 }}
+            >
                 <div className="max-w-3xl">
                     <div className="mb-8 border-b border-gray-100 pb-6">
                         <h3 className="text-2xl font-black text-gray-900">
