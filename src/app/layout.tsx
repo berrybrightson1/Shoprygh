@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -11,8 +12,6 @@ export const metadata: Metadata = {
   title: "Shopry - Launch Your Store",
   description: "The easiest way to start selling online in Ghana.",
 };
-
-import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
