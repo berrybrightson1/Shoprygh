@@ -82,7 +82,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ store
                             <p className="text-gray-400 font-medium">Your account details and login information.</p>
                         </div>
                         <div className="space-y-8">
-                            <UserProfileEditor user={{ name: session.user?.name || "User", image: session.user?.image || null, email: session.user?.email || "" }} />
+                            <UserProfileEditor user={{ name: session.name || "User", image: session.image || null, email: session.email || "" }} />
                             <div className="h-px bg-gray-100" />
                             <PasswordUpdateForm userEmail={session.email} />
                         </div>
