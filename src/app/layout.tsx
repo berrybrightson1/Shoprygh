@@ -26,7 +26,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${sora.variable} antialiased font-sans`}
-        suppressHydrationWarning
       >
         {children}
         <Toaster position="top-center" richColors />
