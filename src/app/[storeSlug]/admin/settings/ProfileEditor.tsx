@@ -41,7 +41,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
     };
 
     return (
-        <div className="bg-white p-4 md:p-6 rounded-[24px] md:rounded-[32px] border border-gray-100 shadow-sm mb-8">
+        <div className="">
             {/* Header with Save Button */}
             <div className="flex items-center justify-between mb-8">
                 <div>
@@ -62,11 +62,11 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                 </button>
             </div>
 
-            <form id="profile-form" action={handleSubmit} className="space-y-8">
+            <form id="profile-form" action={handleSubmit} className="space-y-12">
                 <input type="hidden" name="storeId" value={store.id} />
 
                 {/* Logo & Branding Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="">
                     <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-2">
                         <Building2 size={20} className="text-brand-cyan" />
                         Store Branding
@@ -138,7 +138,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                 </div>
 
                 {/* Contact Information Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="border-t border-gray-100 pt-8">
                     <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-2">
                         <Phone size={20} className="text-brand-orange" />
                         Contact Information
