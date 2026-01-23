@@ -285,18 +285,18 @@ function NavLink({
             target={isExternal ? "_blank" : undefined}
             className={`w-full flex items-center gap-4 p-4 rounded-3xl transition-all ${active
                 ? "bg-white text-gray-900 shadow-xl shadow-gray-200/50 ring-1 ring-gray-100"
-                : "text-gray-700 hover:bg-white hover:shadow-lg hover:shadow-gray-200/30"
+                : "text-gray-900 hover:bg-white hover:shadow-lg hover:shadow-gray-200/30"
                 } ${danger && !active ? 'hover:text-red-600' : ''}`}
         >
             <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 transition-all ${active
                 ? (danger ? 'bg-red-50 text-red-600' : 'bg-black text-white')
-                : 'bg-white border border-gray-100 text-gray-600 group-hover:scale-110'
+                : 'bg-white border border-gray-100 text-gray-900 group-hover:scale-110'
                 }`}>
                 {icon}
             </div>
             <div className="flex-1 min-w-0">
-                <div className={`text-sm font-medium truncate tracking-tight ${active ? 'text-gray-900' : 'text-gray-700'}`}>{label}</div>
-                {description && <div className="text-[11px] text-gray-500 font-medium truncate mt-0.5">{description}</div>}
+                <div className={`text-sm font-bold truncate tracking-tight ${active ? 'text-gray-900' : 'text-gray-900'}`}>{label}</div>
+                {description && <div className="text-[11px] text-gray-600 font-medium truncate mt-0.5">{description}</div>}
             </div>
             {badge ? badge : <ChevronRight size={16} className={`text-gray-400 transition-transform ${active ? 'translate-x-1 text-gray-900' : ''}`} />}
         </Link>

@@ -130,7 +130,7 @@ function TabLink({ tab, activeTabId, storeSlug, children }: { tab: any, activeTa
         <div className="flex flex-col">
             <Link
                 href={path}
-                className={`w-full flex items-center gap-4 p-4 rounded-3xl transition-all ${isActive
+                className={`w-full flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-3xl transition-all ${isActive
                     ? "bg-white text-gray-900 shadow-xl shadow-gray-200/50 ring-1 ring-gray-100"
                     : "text-gray-500 hover:bg-white hover:shadow-lg hover:shadow-gray-200/30"
                     }`}

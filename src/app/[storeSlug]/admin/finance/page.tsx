@@ -125,7 +125,7 @@ export default async function FinancePage({ params }: { params: Promise<{ storeS
                                 />
                             </div>
 
-                            <button type="submit" className="w-full bg-white hover:bg-brand-cyan text-black font-black py-4 rounded-2xl transition-all text-xs shadow-xl shadow-white/10 uppercase tracking-[0.2em] active:scale-95 group/btn">
+                            <button type="submit" className="w-full !bg-white hover:!bg-gray-50 !text-black font-black py-4 rounded-2xl transition-all text-xs shadow-xl shadow-white/10 uppercase tracking-[0.2em] active:scale-95 group/btn border border-gray-200">
                                 Request Liquidity
                             </button>
                         </form>
