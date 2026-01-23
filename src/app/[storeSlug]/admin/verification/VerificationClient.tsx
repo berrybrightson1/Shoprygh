@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgeCheck, Zap, Shield, TrendingUp, CheckCircle2, Lock, Clock } from "lucide-react";
+import { BadgeCheck, Zap, Shield, TrendingUp, CheckCircle2, Lock, Clock, Upload, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { requestVerification } from "./actions";
@@ -24,15 +24,38 @@ interface VerificationClientProps {
 
 export default function VerificationClient({ store, stats }: VerificationClientProps) {
     const [isLoading, setIsLoading] = useState(false);
+    const [showUpload, setShowUpload] = useState(false);
+    const [kycDocument, setKycDocument] = useState<string>("");
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error("File is too large (Max 5MB)");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setKycDocument(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const handleFastTrack = async () => {
+        if (!kycDocument) {
+            toast.error("Please upload a document first");
+            return;
+        }
+
         setIsLoading(true);
         try {
-            const res = await requestVerification(store.id);
+            const res = await requestVerification(store.id, kycDocument);
             if (res.error) {
                 toast.error(res.error);
             } else {
                 toast.success("Verification requested! We will review shortly.");
+                setShowUpload(false);
             }
         } catch (error) {
             toast.error("Something went wrong");
@@ -93,7 +116,7 @@ export default function VerificationClient({ store, stats }: VerificationClientP
             <h3 className="text-xl font-bold text-gray-900 uppercase tracking-tight">Choose your path</h3>
 
             <div className="grid md:grid-cols-2 gap-6">
-                {/* Option 1: Fast Track (Paywall) */}
+                {/* Option 1: Fast Track (Paywall / Upload) */}
                 <div className="bg-white rounded-[32px] p-8 border border-gray-200 shadow-xl shadow-gray-200/50 hover:shadow-2xl transition-all relative overflow-hidden group">
                     <div className="absolute top-0 right-0 bg-black text-white text-[10px] font-bold uppercase px-4 py-2 rounded-bl-2xl">
                         Recommended
@@ -126,10 +149,6 @@ export default function VerificationClient({ store, stats }: VerificationClientP
                     </ul>
 
                     <div className="mt-auto pt-6 border-t border-gray-100">
-                        <div className="flex items-end gap-2 mb-4">
-                            <span className="text-4xl font-bold text-gray-900">₵50</span>
-                            <span className="text-gray-400 font-medium mb-1">/ one-time</span>
-                        </div>
                         {store.verificationStatus === "PENDING" ? (
                             <button
                                 disabled
@@ -146,14 +165,60 @@ export default function VerificationClient({ store, stats }: VerificationClientP
                                 <CheckCircle2 size={20} />
                                 Verified
                             </button>
+                        ) : showUpload ? (
+                            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
+                                <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-blue-500 transition-colors relative cursor-pointer group/upload">
+                                    <input
+                                        type="file"
+                                        accept="image/*,.pdf"
+                                        onChange={handleFileChange}
+                                        aria-label="Upload KYC Document"
+                                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                                    />
+                                    {kycDocument ? (
+                                        <div className="flex flex-col items-center text-green-600">
+                                            <CheckCircle2 size={32} className="mb-2" />
+                                            <p className="text-sm font-bold">Document Selected</p>
+                                            <p className="text-xs">Click to change</p>
+                                        </div>
+                                    ) : (
+                                        <div className="text-gray-400 group-hover/upload:text-blue-500 transition-colors">
+                                            <Upload size={32} className="mx-auto mb-2" />
+                                            <p className="text-sm font-bold text-gray-700">Upload Business ID</p>
+                                            <p className="text-xs text-gray-500 mt-1">Passport, Ghana Card, or Cert.</p>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setShowUpload(false)}
+                                        aria-label="Cancel upload"
+                                        className="py-4 px-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl font-bold transition-all"
+                                    >
+                                        <X size={20} />
+                                    </button>
+                                    <button
+                                        onClick={handleFastTrack}
+                                        disabled={isLoading || !kycDocument}
+                                        className="flex-1 py-4 bg-black hover:bg-gray-800 text-white font-bold rounded-xl transition-all shadow-lg shadow-black/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    >
+                                        {isLoading ? "Uploading..." : "Submit Application"}
+                                    </button>
+                                </div>
+                            </div>
                         ) : (
-                            <button
-                                onClick={handleFastTrack}
-                                disabled={isLoading}
-                                className="w-full py-4 bg-black hover:bg-gray-800 text-white font-bold rounded-xl transition-all shadow-lg shadow-black/20 hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
-                            >
-                                {isLoading ? "Processing..." : "Get Verified Now"}
-                            </button>
+                            <div>
+                                <div className="flex items-end gap-2 mb-4">
+                                    <span className="text-4xl font-bold text-gray-900">₵50</span>
+                                    <span className="text-gray-400 font-medium mb-1">/ one-time</span>
+                                </div>
+                                <button
+                                    onClick={() => setShowUpload(true)}
+                                    className="w-full py-4 bg-black hover:bg-gray-800 text-white font-bold rounded-xl transition-all shadow-lg shadow-black/20 hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
+                                >
+                                    Get Verified Now
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>
