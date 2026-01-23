@@ -52,7 +52,7 @@ export default function BroadcastModal() {
                                     <p className="text-xs text-gray-500 font-bold mt-1">Send a notification to all sellers</p>
                                 </div>
                             </div>
-                            <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-900 transition hover:bg-gray-100 p-2 rounded-full">
+                            <button onClick={() => setIsOpen(false)} title="Close" aria-label="Close" className="text-gray-400 hover:text-gray-900 transition hover:bg-gray-100 p-2 rounded-full">
                                 <X size={20} />
                             </button>
                         </div>

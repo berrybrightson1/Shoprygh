@@ -318,6 +318,8 @@ export default function InventoryTable({ products, storeId, storeName, storeSlug
                         {/* Close Button */}
                         <button
                             onClick={() => setStatusProduct(null)}
+                            title="Close"
+                            aria-label="Close"
                             className="absolute top-4 right-4 p-2.5 bg-black/5 hover:bg-black/10 rounded-full transition-colors z-20"
                         >
                             <X size={18} className="text-gray-600" />

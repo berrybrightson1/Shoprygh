@@ -711,7 +711,7 @@ export default function CreatorStudio({
                             {/* Status Bar - Desktop Only */}
                             <div className="hidden xl:flex absolute top-[22px] left-[32px] right-[32px] h-[20px] z-20 justify-between items-center px-1 pointer-events-none">
                                 {/* Time - Left aligned properly for Dynamic Island */}
-                                <span className="text-[15px] text-black font-semibold tracking-tight ml-4 font-sans" style={{ fontVariantNumeric: 'tabular-nums' }}>9:41</span>
+                                <span className="text-[15px] text-black font-semibold tracking-tight ml-4 font-sans tabular-nums">9:41</span>
 
                                 <div className="flex gap-2 items-center mr-4">
                                     {/* WiFi - Modern Curve (Simplified) */}
@@ -721,7 +721,7 @@ export default function CreatorStudio({
                                     {/* Battery with Percentage */}
                                     <div className="flex items-center gap-1">
                                         <div className="w-[25px] h-[12px] border border-black/30 rounded-[3px] relative p-[1px] flex items-center bg-transparent">
-                                            <div className="h-full bg-black rounded-[1px]" style={{ width: '100%' }} />
+                                            <div className="h-full bg-black rounded-[1px] w-full" />
                                         </div>
                                         <div className="w-[1.5px] h-[4px] bg-black/30 rounded-r-[1px] -ml-[3px]" />
                                     </div>

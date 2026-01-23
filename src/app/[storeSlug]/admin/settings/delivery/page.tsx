@@ -92,7 +92,7 @@ export default async function DeliverySettings({ params }: { params: Promise<{ s
                                         </div>
                                         <form action={deleteDeliveryZone}>
                                             <input type="hidden" name="id" value={zone.id} />
-                                            <button className="text-gray-300 hover:text-red-500 p-1.5 hover:bg-red-50 rounded-lg transition-colors">
+                                            <button title="Delete Zone" aria-label="Delete Zone" className="text-gray-300 hover:text-red-500 p-1.5 hover:bg-red-50 rounded-lg transition-colors">
                                                 <Trash2 size={16} />
                                             </button>
                                         </form>

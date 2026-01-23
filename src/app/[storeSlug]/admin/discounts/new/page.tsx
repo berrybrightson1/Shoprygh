@@ -78,8 +78,10 @@ export default async function NewCouponPage({ params }: { params: Promise<{ stor
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-black text-gray-400 uppercase tracking-wider mb-2">Expires (Optional)</label>
+                                    <label htmlFor="expiresAt" className="block text-xs font-black text-gray-400 uppercase tracking-wider mb-2">Expires (Optional)</label>
                                     <input
+                                        id="expiresAt"
+                                        title="Expiration Date"
                                         type="date"
                                         name="expiresAt"
                                         className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 font-medium text-gray-900 focus:border-brand-purple outline-none text-sm"

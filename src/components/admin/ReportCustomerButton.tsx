@@ -53,7 +53,7 @@ export default function ReportCustomerButton({ customerId, storeId, customerName
                                 </div>
                                 <h3 className="font-bold text-lg text-gray-900">Report Customer</h3>
                             </div>
-                            <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">
+                            <button onClick={() => setIsOpen(false)} title="Close" aria-label="Close" className="text-gray-400 hover:text-gray-600">
                                 <X size={20} />
                             </button>
                         </div>

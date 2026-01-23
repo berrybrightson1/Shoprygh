@@ -95,6 +95,8 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName }: { is
                         </div>
                         <button
                             onClick={() => effectiveOnClose()}
+                            title="Close Cart"
+                            aria-label="Close Cart"
                             className="p-2 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
                         >
                             <X className="w-6 h-6 text-gray-900" strokeWidth={2.5} />
@@ -143,6 +145,8 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName }: { is
                                             <div className="flex items-center bg-white rounded-xl border border-gray-300 p-1 h-9 shadow-sm">
                                                 <button
                                                     onClick={() => decreaseItem(item.id)}
+                                                    title="Decrease quantity"
+                                                    aria-label="Decrease quantity"
                                                     className="w-8 h-full flex items-center justify-center hover:bg-gray-100 rounded-lg transition disabled:opacity-30"
                                                     disabled={item.quantity <= 1}
                                                 >
@@ -151,6 +155,8 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName }: { is
                                                 <span className="w-8 text-center text-sm font-black text-gray-900">{item.quantity}</span>
                                                 <button
                                                     onClick={() => addItem(item)}
+                                                    title="Increase quantity"
+                                                    aria-label="Increase quantity"
                                                     className="w-8 h-full flex items-center justify-center hover:bg-gray-100 rounded-lg transition"
                                                 >
                                                     <Plus size={14} className="text-gray-900" strokeWidth={2.5} />
