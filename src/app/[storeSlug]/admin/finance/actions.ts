@@ -9,6 +9,9 @@ export async function requestPayout(formData: FormData) {
     const session = await getSession();
     if (!session || !session.storeId) throw new Error("Unauthorized");
 
+    // Capture strictly as string to satisfy TS inside the transaction closure
+    const storeId = session.storeId;
+
     const amount = parseFloat(formData.get("amount") as string);
     const method = formData.get("method") as string;
     const destination = formData.get("destination") as string;
@@ -19,7 +22,7 @@ export async function requestPayout(formData: FormData) {
     await prisma.$transaction(async (tx) => {
         // 1. Get current balance (fresh read)
         const store = await tx.store.findUnique({
-            where: { id: session.storeId },
+            where: { id: storeId },
             select: { walletBalance: true }
         });
 
@@ -30,7 +33,7 @@ export async function requestPayout(formData: FormData) {
         // 2. Create Payout Request
         const payout = await tx.payoutRequest.create({
             data: {
-                storeId: session.storeId,
+                storeId: storeId,
                 amount,
                 method,
                 destination,
@@ -41,7 +44,7 @@ export async function requestPayout(formData: FormData) {
         // 3. Create Debit Transaction
         await tx.walletTransaction.create({
             data: {
-                storeId: session.storeId,
+                storeId: storeId,
                 amount: -amount, // Negative for debit
                 type: "PAYOUT_REQUEST",
                 description: `Payout Request via ${method}`,
@@ -51,13 +54,13 @@ export async function requestPayout(formData: FormData) {
 
         // 4. Update Balance
         await tx.store.update({
-            where: { id: session.storeId },
+            where: { id: storeId },
             data: {
                 walletBalance: { decrement: amount }
             }
         });
     });
 
-    await logActivity("PAYOUT_REQUESTED", `Requested payout of ₵${amount} via ${method} to ${destination}`, "STORE", session.storeId, { amount, method });
+    await logActivity("PAYOUT_REQUESTED", `Requested payout of ₵${amount} via ${method} to ${destination}`, "STORE", storeId, { amount, method });
     revalidatePath(`/${session.storeSlug}/admin/finance`);
 }
