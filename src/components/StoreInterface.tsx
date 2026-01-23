@@ -230,12 +230,12 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-8">
+                <div className="grid grid-cols-2 gap-x-3 gap-y-6 md:gap-x-4 md:gap-y-8">
                     {filteredProducts.map(p => (
                         <ProductCard key={p.id} product={p} storeSlug={storeSlug} />
                     ))}
                     {filteredProducts.length === 0 && (
-                        <div className="col-span-2 py-24 flex flex-col items-center justify-center text-center">
+                        <div className="col-span-2 py-16 md:py-24 flex flex-col items-center justify-center text-center">
                             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
                                 <ShoppingBag className="text-gray-300" size={32} />
                             </div>

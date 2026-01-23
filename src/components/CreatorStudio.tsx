@@ -282,20 +282,20 @@ export default function CreatorStudio({
             {/* Floating Mobile Toggle (Assistive Touch) */}
             <DraggablePill viewMode={viewMode} setViewMode={setViewMode} />
 
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 mb-20 pb-24 animate-in fade-in duration-700">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 md:gap-12 mb-20 pb-24 animate-in fade-in duration-700">
                 {/* LEFT: Editor Form (7/12 cols) */}
                 <div className={`xl:col-span-7 space-y-6 ${viewMode === 'preview' ? 'hidden xl:block' : ''}`}>
-                    <div className="bg-white p-8 lg:p-12 rounded-[40px] shadow-2xl shadow-gray-200/50 border border-gray-100 relative overflow-hidden">
+                    <div className="bg-white p-5 md:p-8 lg:p-12 rounded-[32px] md:rounded-[40px] shadow-2xl shadow-gray-200/50 border border-gray-100 relative overflow-hidden">
 
-                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 md:mb-12 gap-4">
                             <div>
-                                <h2 className="text-3xl font-medium text-gray-900 flex items-center gap-3 tracking-tight">
-                                    <span className="w-12 h-12 rounded-2xl bg-purple-50 text-brand-purple flex items-center justify-center border border-purple-100 shadow-sm shrink-0">
-                                        <Sparkles size={24} strokeWidth={2.5} />
+                                <h2 className="text-2xl md:text-3xl font-medium text-gray-900 flex items-center gap-3 tracking-tight">
+                                    <span className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-purple-50 text-brand-purple flex items-center justify-center border border-purple-100 shadow-sm shrink-0">
+                                        <Sparkles size={20} className="md:w-6 md:h-6" strokeWidth={2.5} />
                                     </span>
                                     Creator Studio
                                 </h2>
-                                <p className="text-sm font-medium text-gray-400 uppercase tracking-widest ml-1 mt-2">Craft your next bestseller</p>
+                                <p className="text-xs md:text-sm font-medium text-gray-400 uppercase tracking-widest ml-1 mt-2">Craft your next bestseller</p>
                             </div>
                             <div className="flex gap-2 self-start md:self-auto">
                                 <span className="px-6 py-2 rounded-xl bg-gray-50 text-gray-400 border border-gray-100/50 text-[10px] font-medium uppercase tracking-widest whitespace-nowrap">
@@ -348,7 +348,7 @@ export default function CreatorStudio({
                             }}
                             className="space-y-12"
                         >
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
 
                                 {/* COL 1: Visuals (4/12) */}
                                 <div className="lg:col-span-4 space-y-4">
@@ -365,7 +365,7 @@ export default function CreatorStudio({
                                             </>
                                         ) : (
                                             <div className="text-center p-4">
-                                                <div className="w-16 h-16 bg-white shadow-xl shadow-gray-200 rounded-[24px] flex items-center justify-center mx-auto mb-4 text-brand-purple/50 group-hover:scale-110 transition-transform border border-gray-50">
+                                                <div className="w-14 h-14 md:w-16 md:h-16 bg-white shadow-xl shadow-gray-200 rounded-[24px] flex items-center justify-center mx-auto mb-4 text-brand-purple/50 group-hover:scale-110 transition-transform border border-gray-50">
                                                     <Plus size={24} strokeWidth={2} />
                                                 </div>
                                                 <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest group-hover:text-brand-purple transition-colors">Primary Cover</p>
@@ -377,7 +377,7 @@ export default function CreatorStudio({
                                     {/* Gallery Row */}
                                     <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
                                         {gallery.map((url, idx) => (
-                                            <div key={idx} className="shrink-0 w-20 h-20 relative rounded-2xl overflow-hidden border border-gray-100 group bg-gray-100 shadow-sm">
+                                            <div key={idx} className="shrink-0 w-16 h-16 md:w-20 md:h-20 relative rounded-2xl overflow-hidden border border-gray-100 group bg-gray-100 shadow-sm">
                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img src={url} className="w-full h-full object-cover" alt={`Gallery ${idx}`} />
                                                 <button
@@ -394,7 +394,7 @@ export default function CreatorStudio({
                                                 </button>
                                             </div>
                                         ))}
-                                        <div className="shrink-0 w-20 h-20 bg-gray-50 border-2 border-dashed border-gray-100 rounded-2xl flex items-center justify-center text-gray-300 hover:text-brand-purple hover:border-brand-purple hover:bg-purple-50 transition-all relative cursor-pointer active:scale-95">
+                                        <div className="shrink-0 w-16 h-16 md:w-20 md:h-20 bg-gray-50 border-2 border-dashed border-gray-100 rounded-2xl flex items-center justify-center text-gray-300 hover:text-brand-purple hover:border-brand-purple hover:bg-purple-50 transition-all relative cursor-pointer active:scale-95">
                                             <Plus size={20} strokeWidth={3} />
                                             <input type="file" title="Add gallery image" aria-label="Add gallery image" multiple accept="image/*" onChange={handleGallery} className="absolute inset-0 opacity-0 cursor-pointer" />
                                         </div>
@@ -402,8 +402,8 @@ export default function CreatorStudio({
                                 </div>
 
                                 {/* COL 2: Details (8/12) */}
-                                <div className="lg:col-span-8 space-y-8">
-                                    <div className="space-y-8">
+                                <div className="lg:col-span-8 space-y-6 md:space-y-8">
+                                    <div className="space-y-6 md:space-y-8">
                                         <label className="block text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-4 ml-1">Specifications</label>
 
                                         {/* Product Name */}
@@ -415,18 +415,18 @@ export default function CreatorStudio({
                                                 value={name}
                                                 onChange={e => setName(e.target.value)}
                                                 placeholder="e.g. Premium Silk Bundle"
-                                                className={`${inputClass} text-lg py-5`}
+                                                className={`${inputClass} text-base md:text-lg py-4 md:py-5`}
                                                 required
                                             />
                                         </div>
 
                                         {/* Price / Cost / Stock Grid */}
-                                        <div className="grid grid-cols-2 gap-6">
+                                        <div className="grid grid-cols-2 gap-4 md:gap-6">
                                             {/* Price */}
                                             <div className="space-y-2">
                                                 <label className="block text-[10px] font-medium text-gray-400 uppercase tracking-widest ml-1">Retail Value</label>
                                                 <div className="relative">
-                                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">₵</span>
+                                                    <span className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">₵</span>
                                                     <input
                                                         name="price"
                                                         title="Price"
@@ -435,7 +435,7 @@ export default function CreatorStudio({
                                                         type="number"
                                                         step="0.01"
                                                         placeholder="0.00"
-                                                        className={`${inputClass} pl-10`}
+                                                        className={`${inputClass} pl-8 md:pl-10`}
                                                         required
                                                     />
                                                 </div>
@@ -554,7 +554,7 @@ export default function CreatorStudio({
                                                 type="button"
                                                 onClick={generateDescription}
                                                 disabled={isGeneratingAI}
-                                                className="text-[10px] font-medium text-white bg-black hover:bg-brand-cyan hover:text-black px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-xl shadow-black/10 active:scale-95 disabled:opacity-50"
+                                                className="text-[10px] font-medium text-white bg-black hover:bg-brand-cyan hover:text-black px-3 py-1.5 md:px-4 md:py-2 rounded-xl flex items-center gap-2 transition-all shadow-xl shadow-black/10 active:scale-95 disabled:opacity-50"
                                             >
                                                 {isGeneratingAI ? <span className="animate-spin w-3 h-3 border-2 border-white/30 border-t-white rounded-full" /> : <Wand2 size={12} strokeWidth={2} />}
                                                 Intelligence Hub
@@ -565,7 +565,7 @@ export default function CreatorStudio({
                                             value={description}
                                             onChange={e => setDescription(e.target.value)}
                                             placeholder="Write a compelling story for this product..."
-                                            className="w-full bg-gray-50 border border-gray-200/50 rounded-[32px] px-8 py-6 min-h-[180px] resize-none font-normal text-gray-900 text-[15px] outline-none leading-relaxed focus:border-brand-cyan/30 focus:bg-white focus:ring-4 focus:ring-brand-cyan/5 transition-all shadow-sm"
+                                            className="w-full bg-gray-50 border border-gray-200/50 rounded-[32px] px-5 py-4 md:px-8 md:py-6 min-h-[150px] md:min-h-[180px] resize-none font-normal text-gray-900 text-sm md:text-[15px] outline-none leading-relaxed focus:border-brand-cyan/30 focus:bg-white focus:ring-4 focus:ring-brand-cyan/5 transition-all shadow-sm"
                                         />
                                     </div>
                                 </div>
@@ -576,27 +576,27 @@ export default function CreatorStudio({
 
                             {/* 4. Variants */}
                             {storeTier !== 'HUSTLER' && (
-                                <section className="bg-gray-50/50 rounded-[32px] p-8 border border-gray-100 relative group transition-colors">
-                                    <div className="flex items-center justify-between mb-8">
+                                <section className="bg-gray-50/50 rounded-[32px] p-5 md:p-8 border border-gray-100 relative group transition-colors">
+                                    <div className="flex items-center justify-between mb-6 md:mb-8">
                                         <div className="flex items-center gap-3">
-                                            <div className="p-3 bg-white rounded-2xl shadow-sm border border-gray-100 text-gray-900">
-                                                <Layers size={20} strokeWidth={2.5} />
+                                            <div className="p-2.5 md:p-3 bg-white rounded-2xl shadow-sm border border-gray-100 text-gray-900">
+                                                <Layers size={18} className="md:w-5 md:h-5" strokeWidth={2.5} />
                                             </div>
                                             <span className="font-medium text-gray-900 uppercase tracking-widest text-xs">SKU Variations</span>
                                         </div>
-                                        <button type="button" onClick={addVariant} className="text-[10px] font-medium text-brand-cyan bg-white hover:bg-brand-cyan hover:text-white border border-cyan-100/50 px-6 py-3 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest">
+                                        <button type="button" onClick={addVariant} className="text-[10px] font-medium text-brand-cyan bg-white hover:bg-brand-cyan hover:text-white border border-cyan-100/50 px-4 py-2.5 md:px-6 md:py-3 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest">
                                             + Add Model
                                         </button>
                                     </div>
 
                                     {variants.length === 0 ? (
-                                        <div className="text-center py-12 text-gray-400 text-[10px] font-medium uppercase tracking-widest border-2 border-dashed border-gray-100/50 rounded-[28px]">
+                                        <div className="text-center py-10 md:py-12 text-gray-400 text-[10px] font-medium uppercase tracking-widest border-2 border-dashed border-gray-100/50 rounded-[28px]">
                                             No distinct variants configured
                                         </div>
                                     ) : (
-                                        <div className="space-y-4">
+                                        <div className="space-y-3 md:space-y-4">
                                             {variants.map((v) => (
-                                                <div key={v.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-white p-6 rounded-[24px] border border-gray-100 shadow-sm animate-in slide-in-from-left-4 hover:shadow-xl hover:shadow-gray-200/50 transition-all">
+                                                <div key={v.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-white p-4 md:p-6 rounded-[24px] border border-gray-100 shadow-sm animate-in slide-in-from-left-4 hover:shadow-xl hover:shadow-gray-200/50 transition-all">
                                                     <div className="md:col-span-4">
                                                         <input
                                                             title="Variant Name"
