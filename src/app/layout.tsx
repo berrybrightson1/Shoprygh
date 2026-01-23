@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "sonner";
+import dynamic from "next/dynamic";
+
+const Toaster = dynamic(() => import("sonner").then((mod) => mod.Toaster), {
+  ssr: false,
+});
 
 const sora = Sora({
   subsets: ["latin"],
