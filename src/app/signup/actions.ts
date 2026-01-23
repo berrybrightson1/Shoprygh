@@ -62,16 +62,21 @@ export async function createStore(formData: FormData) {
             if (error && error.message?.includes("already been registered")) {
                 console.warn("Orphaned Supabase user found. Cleaning up...");
                 // We know they are not in Prisma (checked above), so delete from Supabase
-                const { data: listData } = await adminSupabase.auth.admin.listUsers();
-                const orphan = listData.users.find(u => u.email?.toLowerCase() === email);
+                const { data: listData, error: listError } = await adminSupabase.auth.admin.listUsers();
 
-                if (orphan) {
-                    await adminSupabase.auth.admin.deleteUser(orphan.id);
-                    console.log("Orphan deleted. Retrying creation...");
-                    // Retry creation
-                    const retry = await tryCreate();
-                    data = retry.data;
-                    error = retry.error;
+                if (listError) {
+                    console.error("Failed to list users for cleanup:", listError);
+                } else if (listData && listData.users) {
+                    const orphan = listData.users.find(u => u.email?.toLowerCase() === email);
+
+                    if (orphan) {
+                        await adminSupabase.auth.admin.deleteUser(orphan.id);
+                        console.log("Orphan deleted. Retrying creation...");
+                        // Retry creation
+                        const retry = await tryCreate();
+                        data = retry.data;
+                        error = retry.error;
+                    }
                 }
             }
 
@@ -90,14 +95,19 @@ export async function createStore(formData: FormData) {
             authUser = data?.user;
         }
 
-        if (authErrorMsg) return { error: authErrorMsg };
+        if (authErrorMsg) {
+            console.error("[SIGNUP] Auth Error:", authErrorMsg);
+            return { error: authErrorMsg };
+        }
         if (!authUser) return { error: "Failed to create account (Auth provider error)." };
 
+        console.log("[SIGNUP] Auth Successful. Proceeding to Prisma Transaction...");
         const user = authUser;
 
         // 4. Create Prisma Data (Transaction)
         try {
             await prisma.$transaction(async (tx) => {
+                console.log("[SIGNUP] Creating Store record...");
                 // Create Store
                 const store = await tx.store.create({
                     data: {
@@ -105,60 +115,60 @@ export async function createStore(formData: FormData) {
                         slug: storeSlug,
                         tier: tier,
                         address: storeAddress,
-                        isVerified: false, // Default to false, but allow operation
+                        isVerified: false,
                         status: "ACTIVE"
                     }
                 });
 
+                console.log("[SIGNUP] Creating User record...");
                 // Create User (Owner)
                 await tx.user.create({
                     data: {
-                        id: user.id, // Sync ID
+                        id: user.id,
                         email,
-                        password: "", // We don't store pw hash here (Supabase handles it)
+                        password: "",
                         name: ownerName,
                         role: "OWNER",
                         storeId: store.id,
                         isVerified: false,
-                        image: avatar, // Save avatar URL
+                        image: avatar,
                     }
                 });
+            }, {
+                timeout: 10000 // 10 second timeout for transaction
             });
 
+            console.log("[SIGNUP] Database Transaction Complete. Attempting Auto-Login...");
+
             // 5. Auto-Login
-            // Now that the user exists, log them in to set the session cookie
             const { error: signInError } = await supabase.auth.signInWithPassword({
                 email,
                 password
             });
 
             if (signInError) {
-                console.error("Auto-login failed:", signInError);
+                console.warn("[SIGNUP] Auto-login failed (Data created though):", signInError.message);
                 return { success: true, redirectUrl: "/login" };
             }
 
-        } catch (error: any) {
-            console.error("Signup Transaction Error:", error);
+            console.log("[SIGNUP] Signup Lifecycle Complete.");
 
-            // ROLLBACK: Attempt to delete the Supabase user so they can try again
-            if (authUser && authUser.id) {
+        } catch (error: any) {
+            console.error("[SIGNUP] Transaction/Post-Process Error:", error);
+
+            // ROLLBACK: Attempt to delete the Supabase user if they were created but DB failed
+            if (authUser && authUser.id && adminSupabase) {
                 try {
-                    // Try to get admin client again if possible
-                    const { createAdminClient } = await import("@/lib/supabase/admin");
-                    const cleanupSupabase = createAdminClient();
-                    if (cleanupSupabase) {
-                        console.log("Rolling back Supabase user creation...");
-                        await cleanupSupabase.auth.admin.deleteUser(authUser.id);
-                    }
+                    console.log("[SIGNUP] Rolling back Supabase user...");
+                    await adminSupabase.auth.admin.deleteUser(authUser.id);
                 } catch (cleanupError) {
-                    console.error("CRITICAL: Failed to rollback Supabase user. Manual cleanup required for ID:", authUser.id);
+                    console.error("[SIGNUP] CRITICAL: Rollback failed for ID:", authUser.id);
                 }
             }
 
-            return { error: "Failed to set up store data. Please contact support." };
+            return { error: `Database Error: ${error.message || "Failed to set up store data."}` };
         }
 
-        // 6. Return Success & URL (Let client handle redirect for UX)
         return { success: true, redirectUrl: `/${storeSlug}/admin/inventory` };
 
     } catch (error: any) {

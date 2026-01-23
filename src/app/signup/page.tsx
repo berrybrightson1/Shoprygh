@@ -63,15 +63,22 @@ export default function SignupPage() {
 
         try {
             const res = await createStore(formData);
+
+            if (res.error) {
+                toast.error(res.error);
+                setIsLoading(false);
+                return;
+            }
+
             if (res.success && res.redirectUrl) {
                 toast.success("Account created! Ready to launch.");
                 setIsSuccess(true);
                 setRedirectUrl(res.redirectUrl);
-                setIsLoading(false);
             }
         } catch (error: any) {
             console.error(error);
             toast.error(error.message || "Failed to create store");
+        } finally {
             setIsLoading(false);
         }
     };
