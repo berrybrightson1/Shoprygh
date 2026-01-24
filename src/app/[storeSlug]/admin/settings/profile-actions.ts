@@ -31,6 +31,6 @@ export async function updateStoreProfile(formData: FormData) {
 
     await logActivity("UPDATE_STORE_SETTINGS", `Updated store profile for ${name}`, "STORE", storeId);
 
-    revalidatePath(`/${store.slug}/admin/settings`);
+    revalidatePath(`/${store.slug}/admin`, 'layout');
     redirect(`/${store.slug}/admin/settings?updated=true`);
 }

@@ -17,11 +17,8 @@ export default function MobileTabs({ storeSlug }: MobileTabsProps) {
         { name: "Orders", href: `/${storeSlug}/admin/orders`, icon: ShoppingBag },
         { name: "Customers", href: `/${storeSlug}/admin/customers`, icon: Users },
         { name: "Staff", href: `/${storeSlug}/admin/staff`, icon: Staff },
-        { name: "Reports", href: `/${storeSlug}/admin/reports`, icon: BarChart },
-        { name: "Finance", href: `/${storeSlug}/admin/finance`, icon: Wallet },
         { name: "Updates", href: `/${storeSlug}/admin/updates`, icon: Sparkles },
         { name: "Settings", href: `/${storeSlug}/admin/settings`, icon: Settings },
-        { name: "Delivery", href: `/${storeSlug}/admin/settings/delivery`, icon: Truck },
         { name: "Storefront", href: `/${storeSlug}`, icon: Store, isExternal: true },
     ];
 

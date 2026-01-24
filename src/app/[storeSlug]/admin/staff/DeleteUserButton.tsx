@@ -1,38 +1,40 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { useFormStatus } from "react-dom";
+import { toast } from "sonner";
+import { useState, useTransition } from "react";
 
-export default function DeleteUserButton({ onDelete, userId }: { onDelete: (formData: FormData) => void, userId: string }) {
+export default function DeleteUserButton({ onDelete, userId }: { onDelete: (formData: FormData) => Promise<void>, userId: string }) {
+    const [isPending, startTransition] = useTransition();
 
-    // We wrap the server action in a client handler to add confirmation
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleDelete = () => {
         const confirmed = window.confirm("Are you sure you want to revoke access? This action cannot be undone.");
         if (confirmed) {
-            const formData = new FormData(e.currentTarget);
-            onDelete(formData);
+            startTransition(async () => {
+                const formData = new FormData();
+                formData.append("id", userId);
+
+                toast.promise(onDelete(formData), {
+                    loading: 'Revoking access...',
+                    success: 'Access revoked successfully',
+                    error: 'Failed to revoke access'
+                });
+            });
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex">
-            <input type="hidden" name="id" value={userId} />
-            <SubmitButton />
-        </form>
-    );
-}
-
-function SubmitButton() {
-    const { pending } = useFormStatus();
-
-    return (
         <button
             title="Revoke Access"
-            disabled={pending}
+            disabled={isPending}
+            onClick={handleDelete}
             className="p-2.5 md:p-3 bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-600 hover:border-red-100 border border-gray-100 rounded-xl md:rounded-2xl transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center"
         >
-            {pending ? <span className="animate-spin w-5 h-5 border-2 border-red-200 border-t-red-600 rounded-full block" /> : <Trash2 size={18} className="md:w-5 md:h-5" strokeWidth={2.5} />}
+            {isPending ? (
+                <span className="animate-spin w-5 h-5 border-2 border-red-200 border-t-red-600 rounded-full block" />
+            ) : (
+                <Trash2 size={18} className="md:w-5 md:h-5" strokeWidth={2.5} />
+            )}
         </button>
     );
 }
