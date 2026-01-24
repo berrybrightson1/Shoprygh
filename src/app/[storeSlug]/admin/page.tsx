@@ -35,7 +35,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
         revenueResult,
         ordersToday,
         totalCustomers,
-        lowStockCount,
+        totalProducts,
         recentOrders,
         auditLogs
     ] = await Promise.all([
@@ -55,12 +55,9 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
         prisma.customer.count({
             where: { storeId }
         }),
-        // 4. Low Stock Items (< 5)
+        // 4. Total Inventory Items
         prisma.product.count({
-            where: {
-                storeId,
-                stockQty: { lt: 5 }
-            }
+            where: { storeId }
         }),
         // 5. Recent Orders Feed
         prisma.order.findMany({
@@ -95,6 +92,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
             green: "text-emerald-600 bg-emerald-50",
             red: "text-red-600 bg-red-50",
             gray: "text-gray-400 bg-gray-50",
+            blue: "text-blue-600 bg-blue-50",
         };
 
         return (
@@ -176,11 +174,11 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
                 />
                 <Link href={`/${storeSlug}/admin/inventory`} className="block group">
                     <StatCard
-                        label="Stock Health"
-                        value={lowStockCount}
-                        color={lowStockCount > 0 ? "red" : "gray"}
-                        icon={AlertCircle}
-                        subtext={lowStockCount > 0 ? "At Risk" : "Optimized"}
+                        label="Inventory Items"
+                        value={totalProducts}
+                        color="blue"
+                        icon={Package}
+                        subtext="Total Products"
                     />
                 </Link>
             </div>
@@ -277,27 +275,6 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
                                 label="Inventory"
                                 description="Add catalog items"
                                 color="cyan"
-                            />
-                            <ActionLink
-                                href={`/${storeSlug}/admin/marketing`}
-                                icon={<Tag size={22} />}
-                                label="Campaigns"
-                                description="Create marketing logic"
-                                color="orange"
-                            />
-                            <ActionLink
-                                href={`/${storeSlug}/admin/finance`}
-                                icon={<Wallet size={22} />}
-                                label="Payouts"
-                                description="Manage store capital"
-                                color="purple"
-                            />
-                            <ActionLink
-                                href={`/${storeSlug}/admin/inventory`}
-                                icon={<Package size={22} />}
-                                label="Stocking"
-                                description="Bulk qty adjustment"
-                                color="gray"
                             />
                         </div>
 
