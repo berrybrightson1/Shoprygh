@@ -16,7 +16,15 @@ export default async function StaffPage({ params }: { params: Promise<{ storeSlu
     // Filter users by storeId
     const staffMembers = await prisma.user.findMany({
         where: { storeId: store.id },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            createdAt: true
+        }
     });
 
     const createUserWithStore = createUser.bind(null, store.id);
