@@ -37,30 +37,34 @@ export default function BrandedDropdown({
         if (!isOpen && buttonRef.current) {
             const rect = buttonRef.current.getBoundingClientRect();
             setPosition({
-                top: rect.bottom + window.scrollY + 8,
-                left: rect.left + window.scrollX,
+                top: rect.bottom + 8,
+                left: rect.left,
                 width: rect.width
             });
         }
         setIsOpen(!isOpen);
     };
 
-    // Update position on resize only (Scroll is handled by absolute positioning)
+    // Update position on scroll/resize using CAPTURE phase to detect inner scrolling
     useEffect(() => {
         if (isOpen && buttonRef.current) {
             const updatePosition = () => {
                 const rect = buttonRef.current?.getBoundingClientRect();
                 if (rect) {
                     setPosition({
-                        top: rect.bottom + window.scrollY + 8,
-                        left: rect.left + window.scrollX,
+                        top: rect.bottom + 8,
+                        left: rect.left,
                         width: rect.width
                     });
                 }
             };
 
+            // Critical: 'true' enables capture phase to catch scroll events from nested containers
+            document.addEventListener("scroll", updatePosition, true);
             window.addEventListener("resize", updatePosition);
+
             return () => {
+                document.removeEventListener("scroll", updatePosition, true);
                 window.removeEventListener("resize", updatePosition);
             };
         }
@@ -125,7 +129,7 @@ export default function BrandedDropdown({
                         left: position.left,
                         minWidth: position.width
                     }}
-                    className="absolute z-[9999] bg-white rounded-xl shadow-xl border border-gray-100/50 p-1.5 origin-top-left"
+                    className="fixed z-[9999] bg-white rounded-xl shadow-xl border border-gray-100/50 p-1.5 origin-top-left"
                 >
                     {options.map((option) => (
                         <button

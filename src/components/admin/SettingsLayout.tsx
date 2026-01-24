@@ -86,7 +86,7 @@ export default function SettingsLayout({
 
                         <div className="h-4" />
                         <div className="px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] mb-3">Safety & History</div>
-                        {[TABS[5], TABS[6]].map((tab) => (
+                        {[TABS[5]].filter(Boolean).map((tab) => (
                             <TabLink key={tab.id} tab={tab} activeTabId={activeTabId} storeSlug={storeSlug}>
                                 {activeTabId === tab.id && <div className="lg:hidden mt-2 pl-4 pr-2 pb-4 animate-in slide-in-from-top-2 fade-in">{children}</div>}
                             </TabLink>
