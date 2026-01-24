@@ -109,7 +109,11 @@ export default function AdminRightSidebar({ user, logs }: { user: any, logs: any
                     </div>
                 ) : (
                     <div className="animate-in slide-in-from-bottom-2 duration-500">
-                        <ActivityLogFeed logs={logs} />
+                        {/* Audit Logs Disabled for Sellers */}
+                        <div className="text-center py-10 opacity-50">
+                            <p className="text-[10px] uppercase tracking-widest font-bold">Activity Feed Restricted</p>
+                        </div>
+                        {/* <ActivityLogFeed logs={logs} /> */}
                     </div>
                 )}
             </div>

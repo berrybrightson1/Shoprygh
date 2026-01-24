@@ -40,26 +40,26 @@ export default async function AdminLayout({
     const latestUpdateDate = latestUpdate?.createdAt ? latestUpdate.createdAt.toISOString() : undefined;
 
     // Fetch Logs for the Right Sidebar - Store Wide
-    // OPTIMIZATION: Reduced from 20 to 5 to lighten layout load
-    let recentLogs: any[] = [];
-    if (session?.id) {
-        const rawLogs = await prisma.auditLog.findMany({
-            where: {
-                user: {
-                    storeId: store.id
-                }
-            },
-            take: 5,
-            orderBy: { createdAt: "desc" },
-            include: { user: { select: { name: true, image: true, email: true } } }
-        });
-
-        // Serialize Logs
-        recentLogs = rawLogs.map(log => ({
-            ...log,
-            createdAt: log.createdAt.toISOString()
-        }));
-    }
+    // REMOVED: Audit Logs disabled for sellers per user request
+    const recentLogs: any[] = [];
+    // if (session?.id) {
+    //     const rawLogs = await prisma.auditLog.findMany({
+    //         where: {
+    //             user: {
+    //                 storeId: store.id
+    //             }
+    //         },
+    //         take: 5,
+    //         orderBy: { createdAt: "desc" },
+    //         include: { user: { select: { name: true, image: true, email: true } } }
+    //     });
+    // 
+    //     // Serialize Logs
+    //     recentLogs = rawLogs.map(log => ({
+    //         ...log,
+    //         createdAt: log.createdAt.toISOString()
+    //     }));
+    // }
 
     return (
         <div className="flex h-screen overflow-hidden bg-gray-50 font-sans text-gray-900 selection:bg-brand-cyan/30">

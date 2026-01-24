@@ -18,7 +18,8 @@ const TABS = [
     { id: "verification", label: "Verification", icon: BadgeCheck, description: "Get verified badge", path: (slug: string) => `/${slug}/admin/verification` },
     { id: "account", label: "My Account", icon: User, description: "Personal details and password", path: (slug: string) => `/${slug}/admin/settings?tab=account` },
     { id: "billing", label: "Billing", icon: CreditCard, description: "Subscription tier and payments", path: (slug: string) => `/${slug}/admin/settings?tab=billing` },
-    { id: "activity", label: "Activity", icon: Activity, description: "Audit logs and history", path: (slug: string) => `/${slug}/admin/settings?tab=activity` },
+
+    // { id: "activity", label: "Activity", icon: Activity, description: "Audit logs and history", path: (slug: string) => `/${slug}/admin/settings?tab=activity` },
     { id: "danger", label: "Danger Zone", icon: ShieldAlert, description: "Irreversible actions", danger: true, path: (slug: string) => `/${slug}/admin/settings?tab=danger` },
 ];
 
