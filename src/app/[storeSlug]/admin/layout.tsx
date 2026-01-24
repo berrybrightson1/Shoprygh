@@ -39,27 +39,7 @@ export default async function AdminLayout({
     // Serialize Date for Client Component
     const latestUpdateDate = latestUpdate?.createdAt ? latestUpdate.createdAt.toISOString() : undefined;
 
-    // Fetch Logs for the Right Sidebar - Store Wide
-    // REMOVED: Audit Logs disabled for sellers per user request
-    const recentLogs: any[] = [];
-    // if (session?.id) {
-    //     const rawLogs = await prisma.auditLog.findMany({
-    //         where: {
-    //             user: {
-    //                 storeId: store.id
-    //             }
-    //         },
-    //         take: 5,
-    //         orderBy: { createdAt: "desc" },
-    //         include: { user: { select: { name: true, image: true, email: true } } }
-    //     });
-    // 
-    //     // Serialize Logs
-    //     recentLogs = rawLogs.map(log => ({
-    //         ...log,
-    //         createdAt: log.createdAt.toISOString()
-    //     }));
-    // }
+
 
     return (
         <div className="flex h-screen overflow-hidden bg-gray-50 font-sans text-gray-900 selection:bg-brand-cyan/30">
@@ -71,7 +51,7 @@ export default async function AdminLayout({
 
             {/* LEFT SIDEBAR - Navigation (Desktop & Mobile Drawer) */}
             <div className="h-full">
-                {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdateDate} logs={recentLogs} />}
+                {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdateDate} />}
             </div>
 
 
@@ -84,7 +64,7 @@ export default async function AdminLayout({
                 </main>
 
                 {/* RIGHT SIDEBAR - Profile & Activity */}
-                {session && <AdminRightSidebar user={session} logs={recentLogs} />}
+                {session && <AdminRightSidebar user={session} />}
             </div>
         </div>
     );

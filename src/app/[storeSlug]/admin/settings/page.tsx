@@ -8,7 +8,7 @@ import SettingsLayout from "@/components/admin/SettingsLayout";
 import GeneralSettings from "./components/GeneralSettings";
 import AccountSettings from "./components/AccountSettings";
 import BillingSettings from "./components/BillingSettings";
-import ActivitySettings from "./components/ActivitySettings";
+// import ActivitySettings from "./components/ActivitySettings";
 import DangerSettings from "./components/DangerSettings";
 
 export default async function SettingsPage({
@@ -60,7 +60,7 @@ export default async function SettingsPage({
             {activeTab === "general" && <GeneralSettings store={store} />}
             {activeTab === "account" && <AccountSettings session={session} />}
             {activeTab === "billing" && <BillingSettings store={store} />}
-            {activeTab === "activity" && <ActivitySettings logs={logs} />}
+            {/* {activeTab === "activity" && <ActivitySettings logs={logs} />} */}
             {activeTab === "danger" && <DangerSettings />}
         </SettingsLayout>
     );

@@ -7,9 +7,10 @@ import { logout } from "@/app/actions/auth";
 
 import { useState } from "react";
 
-export default function AdminRightSidebar({ user, logs }: { user: any, logs: any[] }) {
+export default function AdminRightSidebar({ user }: { user: any }) {
     const initials = user.name ? user.name.charAt(0) : "U";
-    const [activeView, setActiveView] = useState<'activity' | 'notifications'>('activity');
+    // Default to notifications since activity is removed
+    const [activeView, setActiveView] = useState<'notifications'>('notifications');
 
     return (
         <aside className="w-[420px] bg-gray-50/50 border-l border-gray-100 flex flex-col z-20 hidden 2xl:flex overflow-hidden">
@@ -41,12 +42,9 @@ export default function AdminRightSidebar({ user, logs }: { user: any, logs: any
 
                     <div className="grid grid-cols-3 gap-3 w-full">
                         <button
-                            onClick={() => setActiveView('notifications')}
-                            className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all ${activeView === 'notifications'
-                                ? 'bg-black text-white shadow-xl shadow-black/20'
-                                : 'bg-gray-50 text-gray-400 hover:bg-white hover:text-gray-900 hover:shadow-lg border border-transparent hover:border-gray-100'}`}
+                            className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all bg-black text-white shadow-xl shadow-black/20 cursor-default`}
                         >
-                            <Bell size={20} className={activeView === 'notifications' ? 'animate-bounce' : ''} />
+                            <Bell size={20} />
                             <span className="text-[9px] font-medium uppercase tracking-widest">Inbox</span>
                         </button>
 
@@ -77,45 +75,32 @@ export default function AdminRightSidebar({ user, logs }: { user: any, logs: any
                     <div className="flex items-center gap-3">
                         <div className="w-2 h-2 rounded-full bg-brand-cyan animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
                         <h3 className="font-medium text-gray-900 tracking-tight uppercase text-xs tracking-[0.2em]">
-                            {activeView === 'notifications' ? 'Critical Alerts' : 'Live Activity'}
+                            Critical Alerts
                         </h3>
                     </div>
-                    {activeView === 'notifications' && (
-                        <span className="text-[9px] font-medium bg-gray-900 text-white px-3 py-1.5 rounded-full tracking-widest">3 UNREAD</span>
-                    )}
                 </div>
 
-                {activeView === 'notifications' ? (
-                    <div className="space-y-4">
-                        <NotificationCard
-                            title="Welcome to Hub"
-                            message="Your store architecture has been upgraded to Premium."
-                            time="Just now"
-                            type="success"
-                        />
-                        <NotificationCard
-                            title="Security Audit"
-                            message="We've optimized your admin session encryption."
-                            time="2h ago"
-                            type="info"
-                        />
-                        <NotificationCard
-                            title="System Update"
-                            message="New floating navigation components are now live."
-                            time="Yesterday"
-                            type="system"
-                            muted
-                        />
-                    </div>
-                ) : (
-                    <div className="animate-in slide-in-from-bottom-2 duration-500">
-                        {/* Audit Logs Disabled for Sellers */}
-                        <div className="text-center py-10 opacity-50">
-                            <p className="text-[10px] uppercase tracking-widest font-bold">Activity Feed Restricted</p>
-                        </div>
-                        {/* <ActivityLogFeed logs={logs} /> */}
-                    </div>
-                )}
+                <div className="space-y-4">
+                    <NotificationCard
+                        title="Welcome to Hub"
+                        message="Your store architecture has been upgraded to Premium."
+                        time="Just now"
+                        type="success"
+                    />
+                    <NotificationCard
+                        title="Security Audit"
+                        message="We've optimized your admin session encryption."
+                        time="2h ago"
+                        type="info"
+                    />
+                    <NotificationCard
+                        title="System Update"
+                        message="New floating navigation components are now live."
+                        time="Yesterday"
+                        type="system"
+                        muted
+                    />
+                </div>
             </div>
         </aside>
     );

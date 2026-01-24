@@ -7,9 +7,9 @@ import { useState, useEffect } from "react";
 import { logout } from "@/app/[storeSlug]/admin/login/actions";
 
 // Import MobileSystemLogsDrawer at top
-import MobileSystemLogsDrawer from "@/components/admin/MobileSystemLogsDrawer";
+// import MobileSystemLogsDrawer from "@/components/admin/MobileSystemLogsDrawer";
 
-export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate, logs = [] }: { user: any, storeTier?: string, latestUpdateDate?: string, logs?: any[] }) {
+export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate }: { user: any, storeTier?: string, latestUpdateDate?: string }) {
     const pathname = usePathname();
     const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -40,20 +40,15 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                     </div>
                 </div>
 
-                <MobileSystemLogsDrawer
-                    logs={logs}
-                    storeSlug={storeSlug}
-                    user={currentUser}
-                    trigger={
-                        <button className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200 active:scale-95 transition-transform">
-                            <img
-                                src={currentUser.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(currentUser.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
-                                alt={currentUser.name}
-                                className="w-full h-full object-cover"
-                            />
-                        </button>
-                    }
-                />
+                <div className="md:hidden">
+                    <Link href={`/${storeSlug}/admin/settings`} className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200 active:scale-95 transition-transform">
+                        <img
+                            src={currentUser.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(currentUser.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
+                            alt={currentUser.name}
+                            className="w-full h-full object-cover"
+                        />
+                    </Link>
+                </div>
             </div>
 
             {/* Backdrop */}
@@ -133,10 +128,10 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname?.startsWith(`/${storeSlug}/admin/orders`)}
                     />
 
-                    {/* Mobile Only: System Activity in Menu */}
-                    <div className="md:hidden">
+                    {/* Mobile Only: System Activity in Menu - REMOVED */}
+                    {/* <div className="md:hidden">
                         <MobileSystemLogsDrawer logs={logs} storeSlug={storeSlug} user={currentUser} />
-                    </div>
+                    </div> */}
 
                     <NavLink
                         href={`/${storeSlug}/admin/staff`}
