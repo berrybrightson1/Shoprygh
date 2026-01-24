@@ -73,7 +73,7 @@ export default async function PlatformSettingsPage() {
                                     <User size={18} className="text-gray-400" />
                                     Public Profile
                                 </h2>
-                                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden h-full">
+                                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden h-full p-6">
                                     <UserProfileEditor user={{ name: user.name, image: user.image, email: user.email }} />
                                 </div>
                             </section>

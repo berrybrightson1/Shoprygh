@@ -1,5 +1,6 @@
 import { Store, Ban, Trash2, CheckCircle, User } from "lucide-react";
 import Link from "next/link";
+import BrandedDropdown from "@/components/ui/BrandedDropdown";
 import { toast } from "sonner";
 import { useState } from "react";
 import DeleteConfirmation from "@/components/modals/DeleteConfirmation";
@@ -47,17 +48,25 @@ export default function StoreActions({ store }: StoreActionsProps) {
                 toast.success("Store tier updated");
             }} className="mr-2">
                 <input type="hidden" name="storeId" value={store.id} />
-                <select
+                <BrandedDropdown
                     name="tier"
                     defaultValue={store.tier}
-                    onChange={(e) => e.target.form?.requestSubmit()}
-                    aria-label="Store Tier"
-                    className="text-xs font-bold uppercase text-gray-900 bg-gray-100 border-2 border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-cyan focus:border-brand-cyan outline-none cursor-pointer hover:bg-gray-200 hover:border-gray-400 transition shadow-sm"
-                >
-                    <option value="HUSTLER" className="text-gray-900 bg-white">Hustler</option>
-                    <option value="PRO" className="text-gray-900 bg-white">Pro</option>
-                    <option value="WHOLESALER" className="text-gray-900 bg-white">Wholesaler</option>
-                </select>
+                    onChange={(val) => {
+                        // Hack to trigger form submission since BrandedDropdown uses a hidden input
+                        // We need to find the form and submit it, or just call the action directly if we weren't using progressive enhancement.
+                        // Since custom dropdowns update state, we can simulate a form submit or just call the server action wrapper?
+                        // Actually, the easiest way with the existing form structure is to trigger requestSubmit on the form ref.
+                        // But since BrandedDropdown is inside the form, we can just grab the form element differently or pass a ref.
+                        // Let's use a simpler approach: hidden button click
+                        document.getElementById(`submit-tier-${store.id}`)?.click();
+                    }}
+                    options={[
+                        { value: "HUSTLER", label: "Hustler", className: "text-gray-600" },
+                        { value: "PRO", label: "Pro", className: "text-purple-600" },
+                        { value: "WHOLESALER", label: "Wholesaler", className: "text-orange-600" },
+                    ]}
+                />
+                <button type="submit" id={`submit-tier-${store.id}`} className="hidden" />
             </form>
 
             <Link
