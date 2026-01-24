@@ -145,13 +145,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname?.startsWith(`/${storeSlug}/admin/staff`)}
                     />
 
-                    <NavLink
-                        href={`/${storeSlug}/admin/reports`}
-                        icon={<BarChart size={20} />}
-                        label="Reports"
-                        description="Detailed sales and store analytics"
-                        active={pathname?.startsWith(`/${storeSlug}/admin/reports`)}
-                    />
+
 
                     <NavLink
                         href={`/${storeSlug}/admin/customers`}
@@ -168,14 +162,6 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname?.startsWith(`/${storeSlug}/admin/updates`)}
                     />
 
-                    <NavLink
-                        href={`/${storeSlug}/admin/finance`}
-                        icon={<Wallet size={20} />}
-                        label="Finance"
-                        description="Revenue and payouts"
-                        active={pathname?.startsWith(`/${storeSlug}/admin/finance`)}
-                    />
-
                     <div className="h-6" />
                     <div className="px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] mb-4">Preferences</div>
 
@@ -184,16 +170,10 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         icon={<Settings size={20} />}
                         label="Settings"
                         description="Store profile and preferences"
-                        active={pathname?.startsWith(`/${storeSlug}/admin/settings`) && !pathname?.includes("/delivery")}
+                        active={pathname?.startsWith(`/${storeSlug}/admin/settings`)}
                     />
 
-                    <NavLink
-                        href={`/${storeSlug}/admin/settings/delivery`}
-                        icon={<Truck size={20} />}
-                        label="Delivery"
-                        description="Delivery zones and fees"
-                        active={pathname?.startsWith(`/${storeSlug}/admin/settings/delivery`)}
-                    />
+
 
                     {/* Verification Link */}
                     <NavLink

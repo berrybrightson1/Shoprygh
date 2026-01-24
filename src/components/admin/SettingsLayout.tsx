@@ -14,7 +14,6 @@ interface SettingsLayoutProps {
 
 const TABS = [
     { id: "general", label: "General", icon: Store, description: "Store profile and contact info", path: (slug: string) => `/${slug}/admin/settings` },
-    { id: "delivery", label: "Delivery", icon: Truck, description: "Delivery zones and fees", path: (slug: string) => `/${slug}/admin/settings/delivery` },
     { id: "verification", label: "Verification", icon: BadgeCheck, description: "Get verified badge", path: (slug: string) => `/${slug}/admin/verification` },
     { id: "account", label: "My Account", icon: User, description: "Personal details and password", path: (slug: string) => `/${slug}/admin/settings?tab=account` },
     { id: "billing", label: "Billing", icon: CreditCard, description: "Subscription tier and payments", path: (slug: string) => `/${slug}/admin/settings?tab=billing` },
@@ -70,7 +69,7 @@ export default function SettingsLayout({
                     <nav className="flex-1 px-4 lg:px-6 pb-24 lg:pb-8 space-y-1">
                         {/* Store Section */}
                         <div className="px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] mb-3 mt-4">Store Management</div>
-                        {[TABS[0], TABS[1], TABS[2]].map((tab) => (
+                        {[TABS[0], TABS[1]].map((tab) => (
                             <TabLink key={tab.id} tab={tab} activeTabId={activeTabId} storeSlug={storeSlug}>
                                 {activeTabId === tab.id && <div className="lg:hidden mt-2 pl-4 pr-2 pb-4 animate-in slide-in-from-top-2 fade-in">{children}</div>}
                             </TabLink>
@@ -78,7 +77,7 @@ export default function SettingsLayout({
 
                         <div className="h-4" />
                         <div className="px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] mb-3">Personal Hub</div>
-                        {[TABS[3], TABS[4]].map((tab) => (
+                        {[TABS[2], TABS[3]].map((tab) => (
                             <TabLink key={tab.id} tab={tab} activeTabId={activeTabId} storeSlug={storeSlug}>
                                 {activeTabId === tab.id && <div className="lg:hidden mt-2 pl-4 pr-2 pb-4 animate-in slide-in-from-top-2 fade-in">{children}</div>}
                             </TabLink>
@@ -86,7 +85,7 @@ export default function SettingsLayout({
 
                         <div className="h-4" />
                         <div className="px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] mb-3">Safety & History</div>
-                        {[TABS[5]].filter(Boolean).map((tab) => (
+                        {[TABS[4]].filter(Boolean).map((tab) => (
                             <TabLink key={tab.id} tab={tab} activeTabId={activeTabId} storeSlug={storeSlug}>
                                 {activeTabId === tab.id && <div className="lg:hidden mt-2 pl-4 pr-2 pb-4 animate-in slide-in-from-top-2 fade-in">{children}</div>}
                             </TabLink>
