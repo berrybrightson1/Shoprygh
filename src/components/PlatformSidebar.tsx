@@ -50,7 +50,7 @@ export default function PlatformSidebar({ user }: { user: any }) {
             )}
 
             {/* SIDEBAR MAIN */}
-            <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-gray-50/50 border-r border-gray-100 flex flex-col h-screen text-gray-600 transition-all duration-300 ease-in-out md:relative md:flex shrink-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+            <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-gray-50/50 border-r border-gray-100 flex flex-col h-screen text-gray-600 transition-all duration-300 ease-in-out md:translate-x-0 md:relative md:flex shrink-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
 
                 {/* Header */}
                 <div className="p-8 pb-4 flex items-center gap-4">
