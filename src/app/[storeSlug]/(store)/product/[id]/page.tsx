@@ -8,7 +8,16 @@ import CartHeaderButton from "@/components/CartHeaderButton";
 export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string; storeSlug: string }> }) {
     const { id, storeSlug } = await params;
     const product = await prisma.product.findUnique({
-        where: { id }
+        where: { id },
+        select: {
+            id: true,
+            name: true,
+            description: true,
+            image: true,
+            category: true,
+            priceRetail: true,
+            storeId: true // Required if we need to check store ownership or links
+        }
     });
 
     if (!product) notFound();

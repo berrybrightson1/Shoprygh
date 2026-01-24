@@ -10,28 +10,55 @@ export default async function ReportsPage({ params }: { params: Promise<{ storeS
 
     if (!store) notFound();
 
-    // Fetch Analytics Data
-    const [orders, products] = await Promise.all([
+    // Fetch Analytics Data Efficiently
+    const [revenueAgg, orderCounts, productCount, recentOrders] = await Promise.all([
+        // 1. Total Revenue
+        prisma.order.aggregate({
+            where: {
+                storeId: store.id,
+                status: { not: 'CANCELLED' } // Exclude cancelled from revenue
+            },
+            _sum: { total: true }
+        }),
+        // 2. Order Counts (Grouped by status for efficiency if needed, or simple counts)
+        prisma.order.groupBy({
+            by: ['status'],
+            where: { storeId: store.id },
+            _count: { id: true }
+        }),
+        // 3. Catalog Depth
+        prisma.product.count({
+            where: { storeId: store.id }
+        }),
+        // 4. Recent Activity (Limit 8)
         prisma.order.findMany({
             where: { storeId: store.id },
-            orderBy: { createdAt: 'desc' }
-        }),
-        prisma.product.findMany({
-            where: { storeId: store.id }
+            orderBy: { createdAt: 'desc' },
+            take: 8,
+            select: {
+                id: true,
+                createdAt: true,
+                customerPhone: true,
+                total: true,
+                status: true
+            }
         })
     ]);
 
-    // Calculate Metrics
-    const totalRevenue = orders
-        .filter(o => o.status !== 'CANCELLED')
-        .reduce((sum, o) => sum + Number(o.total), 0);
+    // Process Metrics
+    const totalRevenue = revenueAgg._sum.total ? Number(revenueAgg._sum.total) : 0;
 
-    const totalOrders = orders.length;
-    const completedOrders = orders.filter(o => o.status === 'COMPLETED').length;
-    const pendingOrders = orders.filter(o => o.status === 'PENDING').length;
+    const totalOrders = orderCounts.reduce((acc, curr) => acc + curr._count.id, 0);
+    const completedOrders = orderCounts.find(c => c.status === 'COMPLETED')?._count.id || 0;
+    const pendingOrders = orderCounts.find(c => c.status === 'PENDING')?._count.id || 0;
 
     // Calculate Average Order Value
-    const averageOrderValue = totalOrders > 0 ? totalRevenue / orders.filter(o => o.status !== 'CANCELLED').length : 0;
+    const validOrdersCount = orderCounts.filter(c => c.status !== 'CANCELLED').reduce((acc, curr) => acc + curr._count.id, 0);
+    const averageOrderValue = validOrdersCount > 0 ? totalRevenue / validOrdersCount : 0;
+
+    // For UI compatibility mapping
+    const orders = recentOrders;
+    const products = { length: productCount }; // Mock object for length check
 
     return (
 
@@ -138,8 +165,8 @@ export default async function ReportsPage({ params }: { params: Promise<{ storeS
                                         </td>
                                         <td className="p-6 pr-10 text-right">
                                             <span className={`inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${order.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
-                                                    order.status === 'CANCELLED' ? 'bg-red-50 text-red-700 border-red-100' :
-                                                        'bg-orange-50 text-orange-700 border-orange-100'
+                                                order.status === 'CANCELLED' ? 'bg-red-50 text-red-700 border-red-100' :
+                                                    'bg-orange-50 text-orange-700 border-orange-100'
                                                 }`}>
                                                 {order.status}
                                             </span>

@@ -12,7 +12,18 @@ export default async function MarketingPage({ params }: { params: Promise<{ stor
 
     const coupons = await prisma.coupon.findMany({
         where: { storeId: session.storeId },
-        orderBy: { createdAt: "desc" }
+        orderBy: { createdAt: "desc" },
+        take: 50, // Limit to prevent crash
+        select: {
+            id: true,
+            code: true,
+            type: true,
+            value: true,
+            uses: true,
+            maxUses: true,
+            expiresAt: true,
+            isActive: true
+        }
     });
 
     return (

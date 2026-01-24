@@ -10,17 +10,27 @@ export default async function FinancePage({ params }: { params: Promise<{ storeS
     if (!session) redirect("/login");
     const { storeSlug } = await params;
 
-    const store = await prisma.store.findUnique({
-        where: { id: session.storeId },
-        include: {
-            transactions: { orderBy: { createdAt: "desc" }, take: 20 },
-            payouts: { orderBy: { createdAt: "desc" }, take: 10 }
-        }
-    });
+    const [store, walletAgg] = await Promise.all([
+        prisma.store.findUnique({
+            where: { id: session.storeId },
+            select: {
+                id: true,
+                name: true,
+                walletBalance: true,
+                transactions: { orderBy: { createdAt: "desc" }, take: 20 },
+                payouts: { orderBy: { createdAt: "desc" }, take: 10 }
+            }
+        }),
+        prisma.walletTransaction.aggregate({
+            where: { storeId: session.storeId, amount: { gt: 0 } },
+            _sum: { amount: true }
+        })
+    ]);
 
     if (!store) return <div className="p-10">Store not found</div>;
 
     const balance = Number(store.walletBalance).toFixed(2);
+    const totalEarned = walletAgg._sum.amount ? Number(walletAgg._sum.amount) : 0;
 
     return (
         <div className="p-8 lg:p-12 animate-in fade-in duration-700">
@@ -46,7 +56,7 @@ export default async function FinancePage({ params }: { params: Promise<{ storeS
                     <div className="relative z-10">
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Total Earned Life-Time</p>
                         <p className="text-2xl font-black text-gray-900 tracking-tighter tabular-nums leading-none">
-                            ₵{(store.transactions.filter(t => Number(t.amount) > 0).reduce((acc, t) => acc + Number(t.amount), 0)).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            ₵{totalEarned.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                         </p>
                     </div>
                 </div>
@@ -147,7 +157,7 @@ export default async function FinancePage({ params }: { params: Promise<{ storeS
                     </div>
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Aggregate Yield</p>
                     <p className="text-4xl font-black text-gray-900 tracking-tighter mb-4 tabular-nums block">
-                        ₵{(store.transactions.filter(t => Number(t.amount) > 0).reduce((acc, t) => acc + Number(t.amount), 0).toFixed(2))}
+                        ₵{totalEarned.toFixed(2)}
                     </p>
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" />

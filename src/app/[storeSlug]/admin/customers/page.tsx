@@ -12,7 +12,17 @@ export default async function CustomersPage({ params }: { params: Promise<{ stor
 
     const customers = await prisma.customer.findMany({
         where: { storeId: session.storeId },
-        orderBy: { lastOrderAt: "desc" }
+        orderBy: { lastOrderAt: "desc" },
+        take: 50,
+        select: {
+            id: true,
+            name: true,
+            phone: true,
+            email: true,
+            totalSpent: true,
+            totalOrders: true,
+            lastOrderAt: true
+        }
     });
 
     return (
