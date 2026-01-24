@@ -33,7 +33,19 @@ export default function BrandedDropdown({
 
     const selectedOption = options.find(opt => opt.value === value);
 
-    // Update position when opening
+    const handleToggle = () => {
+        if (!isOpen && buttonRef.current) {
+            const rect = buttonRef.current.getBoundingClientRect();
+            setPosition({
+                top: rect.bottom + window.scrollY + 8,
+                left: rect.left + window.scrollX,
+                width: rect.width
+            });
+        }
+        setIsOpen(!isOpen);
+    };
+
+    // Update position on resize only (Scroll is handled by absolute positioning)
     useEffect(() => {
         if (isOpen && buttonRef.current) {
             const updatePosition = () => {
@@ -46,11 +58,9 @@ export default function BrandedDropdown({
                     });
                 }
             };
-            updatePosition();
-            window.addEventListener("scroll", updatePosition);
+
             window.addEventListener("resize", updatePosition);
             return () => {
-                window.removeEventListener("scroll", updatePosition);
                 window.removeEventListener("resize", updatePosition);
             };
         }
@@ -60,8 +70,7 @@ export default function BrandedDropdown({
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
-                // Check if click is inside the portal menu (which we can't easily ref from here without more state or ID)
-                // Instead, we rely on the menu wrapper's onMouseDown/onClick propagation or a global listener that checks checks ID
+                // Check if click is inside the portal menu
                 const dropdownMenu = document.getElementById(`dropdown-menu-${name}`);
                 if (dropdownMenu && !dropdownMenu.contains(event.target as Node)) {
                     setIsOpen(false);
@@ -93,7 +102,7 @@ export default function BrandedDropdown({
             <button
                 ref={buttonRef}
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={handleToggle}
                 className={`flex items-center justify-between gap-3 px-3 py-2 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-brand-cyan/50 hover:shadow-md transition-all min-w-[140px] text-left outline-none focus:ring-2 focus:ring-brand-cyan/20 ${isOpen ? 'border-brand-cyan ring-2 ring-brand-cyan/20' : ''}`}
             >
                 <div className="flex flex-col">
@@ -116,7 +125,7 @@ export default function BrandedDropdown({
                         left: position.left,
                         minWidth: position.width
                     }}
-                    className="fixed z-[9999] bg-white rounded-xl shadow-xl border border-gray-100/50 p-1.5 animate-in fade-in zoom-in-95 duration-200 origin-top-left"
+                    className="absolute z-[9999] bg-white rounded-xl shadow-xl border border-gray-100/50 p-1.5 origin-top-left"
                 >
                     {options.map((option) => (
                         <button
