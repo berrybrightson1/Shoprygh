@@ -2,6 +2,7 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import PlatformSidebar from "@/components/PlatformSidebar";
 import prisma from "@/lib/prisma";
+import DashboardShell from "./DashboardShell";
 
 export default async function PlatformAdminLayout({
     children,
@@ -21,9 +22,16 @@ export default async function PlatformAdminLayout({
         redirect("/");
     }
 
+    // Fetch audit logs for the sidebar
+    const logs = await prisma.auditLog.findMany({
+        take: 20,
+        orderBy: { createdAt: "desc" },
+        include: { user: { select: { name: true, email: true, image: true } } }
+    });
+
     return (
-        <>
+        <DashboardShell session={session} user={user} logs={logs}>
             {children}
-        </>
+        </DashboardShell>
     );
 }

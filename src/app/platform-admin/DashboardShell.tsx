@@ -8,6 +8,7 @@ import BroadcastModal from "@/components/modals/BroadcastModal";
 import ActivityLogFeed from "@/components/ActivityLogFeed";
 
 import MobileSystemActivityDrawer from "@/components/platform-admin/MobileSystemActivityDrawer";
+import PlatformSidebar from "@/components/PlatformSidebar";
 
 interface DashboardShellProps {
     children: React.ReactNode;
@@ -17,50 +18,14 @@ interface DashboardShellProps {
 }
 
 export default function DashboardShell({ children, session, user, logs }: DashboardShellProps) {
-    const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
     const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
 
     return (
         <div className="flex h-screen bg-gray-50">
-            {/* LEFT SIDEBAR - Navigation */}
-            <aside className={`${leftSidebarOpen ? 'w-64' : 'w-0'} bg-white border-r border-gray-200 flex flex-col transition-all duration-300 overflow-hidden absolute md:relative z-40 h-full`}>
-                <div className="p-6 border-b border-gray-100">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                            P
-                        </div>
-                        <span className="font-bold text-gray-900">Platform</span>
-                    </div>
-                </div>
+            {/* LEFT SIDEBAR - Replaced with Component */}
+            <PlatformSidebar user={user} />
 
-                <nav className="flex-1 p-4 space-y-1">
-                    <Link href="/platform-admin" className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-white bg-gray-900 rounded-lg shadow-sm border-l-4 border-brand-cyan">
-                        <Store size={18} />
-                        Overview
-                    </Link>
-                    <Link href="/platform-admin/finance" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg">
-                        <Wallet size={18} />
-                        Finance
-                    </Link>
-                    <Link href="/platform-admin/updates" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg">
-                        <Sparkles size={18} />
-                        Updates
-                    </Link>
-                    <Link href="/platform-admin/settings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg">
-                        <Settings size={18} />
-                        Security
-                    </Link>
-                </nav>
-            </aside>
-
-            {/* LEFT SIDEBAR TOGGLE */}
-            <button
-                onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
-                className={`fixed top-4 z-50 bg-gray-900 text-white rounded-full p-3 shadow-lg hover:bg-gray-800 hover:scale-105 transition-all duration-200 flex items-center justify-center ${leftSidebarOpen ? 'left-[272px]' : 'left-4'}`}
-                title={leftSidebarOpen ? "Close Menu" : "Open Menu"}
-            >
-                {leftSidebarOpen ? <PanelLeftClose size={20} /> : <ChevronRight size={20} />}
-            </button>
+            {/* OLD TOGGLE REMOVED - PlatformSidebar handles its own mobile toggle internally */}
 
             {/* CENTER CONTENT */}
             <div className="flex-1 overflow-y-auto">
@@ -123,6 +88,6 @@ export default function DashboardShell({ children, session, user, logs }: Dashbo
                     <ActivityLogFeed logs={logs} />
                 </div>
             </aside>
-        </div>
+        </div >
     );
 }

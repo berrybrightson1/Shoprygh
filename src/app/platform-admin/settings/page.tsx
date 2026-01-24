@@ -19,7 +19,7 @@ export default async function PlatformSettingsPage() {
     if (!user) redirect("/login");
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="bg-gray-50 h-full">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
                 <div className="flex flex-col md:flex-row gap-10">
                     {/* SIDEBAR NAVIGATION */}
