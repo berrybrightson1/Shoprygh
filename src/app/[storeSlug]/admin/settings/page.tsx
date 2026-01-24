@@ -43,12 +43,17 @@ export default async function SettingsPage({
 
     if (!store) redirect("/login");
 
-    const logs = await prisma.auditLog.findMany({
-        where: { userId: session.id },
-        take: 20,
-        orderBy: { createdAt: "desc" },
-        include: { user: { select: { name: true, email: true } } }
-    });
+    // Conditional Data Fetching: Only fetch heavy data if the specific tab needs it
+    let logs: any[] = [];
+
+    if (activeTab === "activity") {
+        logs = await prisma.auditLog.findMany({
+            where: { userId: session.id },
+            take: 20,
+            orderBy: { createdAt: "desc" },
+            include: { user: { select: { name: true, image: true, email: true } } }
+        });
+    }
 
     return (
         <SettingsLayout storeSlug={storeSlug} activeTab={activeTab}>
