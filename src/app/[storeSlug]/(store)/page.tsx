@@ -26,6 +26,16 @@ export default async function StorePage({ params }: Props) {
             isArchived: false,
         },
         orderBy: { createdAt: "desc" },
+        select: {
+            id: true,
+            name: true,
+            priceRetail: true,
+            priceWholesale: true,
+            costPrice: true,
+            image: true,
+            category: true,
+            createdAt: true,
+        }
     });
 
     // Serialize Decimals to prevent serialization errors

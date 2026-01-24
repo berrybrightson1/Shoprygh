@@ -33,7 +33,19 @@ export default async function InventoryPage({ params }: Props) {
             storeId: store.id,
             isArchived: false
         },
-        orderBy: { createdAt: "desc" }
+        orderBy: { createdAt: "desc" },
+        select: {
+            id: true,
+            name: true,
+            stockQty: true,
+            priceRetail: true,
+            priceWholesale: true,
+            costPrice: true,
+            image: true,
+            category: true,
+            sku: true,
+            createdAt: true
+        }
     });
 
     // --- FIX FOR VERCEL DIGEST ERROR ---

@@ -9,19 +9,34 @@ export const dynamic = 'force-dynamic';
 export default async function OrdersPage({ params }: { params: Promise<{ storeSlug: string }> }) {
     const { storeSlug } = await params;
     const store = await prisma.store.findUnique({
-        where: { slug: storeSlug }
+        where: { slug: storeSlug },
+        select: { id: true, slug: true } // Select only needed fields
     });
 
     if (!store) return <div>Store not found</div>;
 
-    const orders = await prisma.order.findMany({
-        where: { storeId: store.id }, // Filter by Store
-        orderBy: { createdAt: 'desc' },
-        include: {
-            items: true,
-            customer: true // Include customer for reporting
-        }
-    });
+    // Parallelize Data Fetching
+    const [orders, revenueAgg] = await Promise.all([
+        // 1. Fetch recent orders (Limit 50)
+        prisma.order.findMany({
+            where: { storeId: store.id },
+            orderBy: { createdAt: 'desc' },
+            take: 50, // CRITICAL: Prevent crash on large datasets
+            include: {
+                items: true,
+                customer: {
+                    select: { name: true, isVerified: true, status: true } // Select only needed customer fields
+                }
+            }
+        }),
+        // 2. Efficient DB-side Aggregation for Total Revenue
+        prisma.order.aggregate({
+            where: { storeId: store.id },
+            _sum: { total: true }
+        })
+    ]);
+
+    const totalRevenue = revenueAgg._sum.total ? Number(revenueAgg._sum.total) : 0;
 
     const updateStatusWithStore = updateOrderStatus.bind(null, store.id);
     const deleteOrderWithStore = deleteOrder.bind(null, store.id);
@@ -50,7 +65,7 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                     <div className="relative z-10">
                         <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-0.5">Total Revenue Stream</p>
                         <p className="text-2xl font-medium text-gray-900 tracking-tighter tabular-nums leading-none">
-                            ₵{orders.reduce((acc, o) => acc + Number(o.total), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            ₵{totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                         </p>
                     </div>
                 </div>
