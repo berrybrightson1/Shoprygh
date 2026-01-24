@@ -8,19 +8,29 @@ export default function DeleteUserButton({ onDelete, userId }: { onDelete: (form
     const [isPending, startTransition] = useTransition();
 
     const handleDelete = () => {
-        const confirmed = window.confirm("Are you sure you want to revoke access? This action cannot be undone.");
-        if (confirmed) {
-            startTransition(async () => {
-                const formData = new FormData();
-                formData.append("id", userId);
+        toast("Revoke access for this member?", {
+            description: "This action cannot be undone.",
+            action: {
+                label: "Revoke",
+                onClick: () => {
+                    startTransition(async () => {
+                        const formData = new FormData();
+                        formData.append("id", userId);
 
-                toast.promise(onDelete(formData), {
-                    loading: 'Revoking access...',
-                    success: 'Access revoked successfully',
-                    error: 'Failed to revoke access'
-                });
-            });
-        }
+                        toast.promise(onDelete(formData), {
+                            loading: 'Revoking access...',
+                            success: 'Access revoked successfully',
+                            error: 'Failed to revoke access'
+                        });
+                    });
+                }
+            },
+            cancel: {
+                label: "Cancel",
+                onClick: () => { }
+            },
+            duration: 8000,
+        });
     };
 
     return (
