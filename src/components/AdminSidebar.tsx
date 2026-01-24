@@ -9,7 +9,7 @@ import { logout } from "@/app/[storeSlug]/admin/login/actions";
 // Import MobileSystemLogsDrawer at top
 // import MobileSystemLogsDrawer from "@/components/admin/MobileSystemLogsDrawer";
 
-export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate }: { user: any, storeTier?: string, latestUpdateDate?: string }) {
+export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdateDate, storeLogo, storeName }: { user: any, storeTier?: string, latestUpdateDate?: string, storeLogo?: string | null, storeName?: string }) {
     const pathname = usePathname();
     const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +35,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         <Menu size={20} strokeWidth={2.5} />
                     </button>
                     <div className="flex flex-col">
-                        <span className="font-medium text-lg leading-none tracking-tight">Shopry</span>
+                        <span className="font-medium text-lg leading-none tracking-tight">{storeName || 'Shopry'}</span>
                         <span className="text-[9px] text-gray-400 font-medium uppercase tracking-[0.2em] mt-1">Seller Hub</span>
                     </div>
                 </div>
@@ -75,16 +75,20 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                 {/* Header */}
                 <div className="p-8 pb-4 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-2xl shadow-gray-200 border border-white bg-white p-1">
-                        <div className="w-full h-full rounded-xl overflow-hidden">
-                            <img
-                                src={`https://api.dicebear.com/9.x/micah/svg?seed=Shopry&backgroundColor=b6e3f4,c0aede,d1d4f9`}
-                                alt="Shopry"
-                                className="w-full h-full object-cover"
-                            />
+                        <div className="w-full h-full rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center">
+                            {storeLogo ? (
+                                <img
+                                    src={storeLogo}
+                                    alt={storeName || "Store"}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <Store size={24} className="text-gray-300" />
+                            )}
                         </div>
                     </div>
                     <div>
-                        <span className="font-medium text-xl text-gray-900 block leading-none tracking-tight">Shopry</span>
+                        <span className="font-medium text-xl text-gray-900 block leading-none tracking-tight truncate max-w-[160px]">{storeName || 'Shopry'}</span>
                         <span className="text-[10px] font-medium tracking-[0.2em] text-gray-400 uppercase mt-1.5 block">Seller Hub</span>
                     </div>
                 </div>

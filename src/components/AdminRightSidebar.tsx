@@ -70,10 +70,10 @@ export default function AdminRightSidebar({ user }: { user: any }) {
             </div>
 
             {/* Content Feed */}
-            <div className={`flex-1 overflow-y-auto px-8 py-6 custom-scrollbar animate-in fade-in duration-700`}>
+            <div className={`flex-1 overflow-y-auto px-8 py-6 custom-scrollbar`}>
                 <div className="flex justify-between items-center mb-8 px-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-brand-cyan animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
+                        <div className="w-2 h-2 rounded-full bg-brand-cyan" />
                         <h3 className="font-medium text-gray-900 tracking-tight uppercase text-xs tracking-[0.2em]">
                             Critical Alerts
                         </h3>

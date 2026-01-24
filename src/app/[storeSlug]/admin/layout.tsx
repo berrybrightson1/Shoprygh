@@ -18,7 +18,8 @@ export default async function AdminLayout({
     // Parallelize independent fetches
     const [store, latestUpdate] = await Promise.all([
         prisma.store.findUnique({
-            where: { slug: storeSlug }
+            where: { slug: storeSlug },
+            select: { id: true, tier: true, logo: true, name: true } // Select Logo
         }),
         prisma.systemUpdate.findFirst({
             orderBy: { createdAt: 'desc' },
@@ -40,18 +41,13 @@ export default async function AdminLayout({
     const latestUpdateDate = latestUpdate?.createdAt ? latestUpdate.createdAt.toISOString() : undefined;
 
 
-
     return (
         <div className="flex h-screen overflow-hidden bg-gray-50 font-sans text-gray-900 selection:bg-brand-cyan/30">
-            {/* Background Gradients (Fixed Global) */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-400/10 blur-[130px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-400/10 blur-[130px]" />
-            </div>
+            {/* Background Gradients REMOVED for Performance */}
 
             {/* LEFT SIDEBAR - Navigation (Desktop & Mobile Drawer) */}
             <div className="h-full">
-                {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdateDate} />}
+                {session && <AdminSidebar user={session} storeTier={store.tier} latestUpdateDate={latestUpdateDate} storeLogo={store.logo} storeName={store.name} />}
             </div>
 
 
