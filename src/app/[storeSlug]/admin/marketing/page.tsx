@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Tag, Plus, Trash2, Power, Percent, DollarSign, Calendar, Hash } from "lucide-react";
 import { createCoupon, deleteCoupon, toggleCouponStatus } from "./actions";
+import BrandedDropdown from "@/components/ui/BrandedDropdown";
 
 export default async function MarketingPage({ params }: { params: Promise<{ storeSlug: string }> }) {
     const session = await getSession();
@@ -59,14 +60,15 @@ export default async function MarketingPage({ params }: { params: Promise<{ stor
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Reward Type</label>
-                                    <select
+                                    <BrandedDropdown
                                         name="type"
-                                        aria-label="Coupon Type"
-                                        className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-4 font-black text-gray-900 focus:border-brand-cyan focus:bg-white outline-none transition-all shadow-sm"
-                                    >
-                                        <option value="PERCENTAGE">Percentage (%)</option>
-                                        <option value="FIXED">Fixed (₵)</option>
-                                    </select>
+                                        placeholder="Select Type"
+                                        options={[
+                                            { value: "PERCENTAGE", label: "Percentage (%)" },
+                                            { value: "FIXED", label: "Fixed (₵)" }
+                                        ]}
+                                        defaultValue="PERCENTAGE"
+                                    />
                                 </div>
                                 <div>
                                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Benefit Value</label>

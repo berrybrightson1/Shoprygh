@@ -32,19 +32,41 @@ export default async function PlatformAdminPage() {
         );
     }
 
-    // Fetch all stores
-    const rawStores = await prisma.store.findMany({
-        include: {
-            users: {
-                where: { role: "OWNER" },
-                select: { name: true, email: true },
+    // --- Data Fetching (Parallelized) ---
+    // 1. Get package version (non-blocking for DB)
+    let currentVersion = "1.0.0";
+    try {
+        const packageJson = await import("../../../package.json");
+        currentVersion = packageJson.version;
+    } catch (error) {
+        // Silent fail
+    }
+
+    // 2. Parallel Database Queries
+    const [rawStores, revenueAgg, latestUpdate] = await Promise.all([
+        // A. Fetch all stores
+        prisma.store.findMany({
+            include: {
+                users: {
+                    where: { role: "OWNER" },
+                    select: { name: true, email: true },
+                },
+                _count: {
+                    select: { products: true, orders: true, users: true },
+                },
             },
-            _count: {
-                select: { products: true, orders: true, users: true },
-            },
-        },
-        orderBy: { createdAt: "desc" },
-    });
+            orderBy: { createdAt: "desc" },
+        }),
+        // B. Analytics (Revenue)
+        prisma.order.aggregate({
+            _sum: { total: true }
+        }),
+        // C. System Update Check
+        prisma.systemUpdate.findFirst({
+            orderBy: { createdAt: "desc" },
+            select: { version: true }
+        })
+    ]);
 
     // Serialize Decimal types for Client Components
     const stores = rawStores.map(store => ({
@@ -52,21 +74,11 @@ export default async function PlatformAdminPage() {
         walletBalance: store.walletBalance ? Number(store.walletBalance) : 0,
     }));
 
-    // --- AUTO UPDATE LOGIC ---
-    let currentVersion = "1.0.0";
-    try {
-        const packageJson = await import("../../../package.json");
-        currentVersion = packageJson.version;
-    } catch (error) {
-        console.warn("[PlatformAdmin] Could not load package.json version:", error);
-    }
-
-    const latestUpdate = await prisma.systemUpdate.findFirst({
-        orderBy: { createdAt: "desc" },
-        select: { version: true }
-    });
-
+    // --- AUTO UPDATE LOGIC (Side Effect) ---
+    // Check if we need to run an update (fire and forget pattern or just await it if critical)
+    // We keep it awaited to ensure we don't present stale state, but it is fast usually.
     if (currentVersion && (!latestUpdate || latestUpdate.version !== currentVersion)) {
+        // Double check specific version existence to avoid duplicates
         const existingVersion = await prisma.systemUpdate.findFirst({
             where: { version: currentVersion }
         });
@@ -84,10 +96,6 @@ export default async function PlatformAdminPage() {
         }
     }
 
-    // --- ANALYTICS ---
-    const revenueAgg = await prisma.order.aggregate({
-        _sum: { total: true }
-    });
     const totalRevenue = revenueAgg._sum.total ? Number(revenueAgg._sum.total) : 0;
 
     const stats = {

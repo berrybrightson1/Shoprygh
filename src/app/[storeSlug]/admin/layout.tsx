@@ -15,15 +15,16 @@ export default async function AdminLayout({
     const session = await getSession();
     const { storeSlug } = await params;
 
-    // Fetch store info for Tier
-    const store = await prisma.store.findUnique({
-        where: { slug: storeSlug }
-    });
-
-    const latestUpdate = await prisma.systemUpdate.findFirst({
-        orderBy: { createdAt: 'desc' },
-        select: { createdAt: true }
-    });
+    // Parallelize independent fetches
+    const [store, latestUpdate] = await Promise.all([
+        prisma.store.findUnique({
+            where: { slug: storeSlug }
+        }),
+        prisma.systemUpdate.findFirst({
+            orderBy: { createdAt: 'desc' },
+            select: { createdAt: true }
+        })
+    ]);
 
     if (!store) return notFound();
 
@@ -39,6 +40,7 @@ export default async function AdminLayout({
     const latestUpdateDate = latestUpdate?.createdAt ? latestUpdate.createdAt.toISOString() : undefined;
 
     // Fetch Logs for the Right Sidebar - Store Wide
+    // OPTIMIZATION: Reduced from 20 to 5 to lighten layout load
     let recentLogs: any[] = [];
     if (session?.id) {
         const rawLogs = await prisma.auditLog.findMany({
@@ -47,7 +49,7 @@ export default async function AdminLayout({
                     storeId: store.id
                 }
             },
-            take: 20,
+            take: 5,
             orderBy: { createdAt: "desc" },
             include: { user: { select: { name: true, image: true, email: true } } }
         });

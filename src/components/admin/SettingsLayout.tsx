@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { User, CreditCard, Activity, Store, ShieldAlert, Truck, BadgeCheck, ArrowLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
@@ -121,15 +121,34 @@ export default function SettingsLayout({
     );
 }
 
-function TabLink({ tab, activeTabId, storeSlug, children }: { tab: any, activeTabId?: string, storeSlug: string, children?: React.ReactNode }) {
+interface TabLinkProps {
+    tab: any;
+    activeTabId?: string;
+    storeSlug: string;
+    children?: React.ReactNode;
+}
+
+function TabLink({ tab, activeTabId, storeSlug, children }: TabLinkProps) {
     const Icon = tab.icon;
     const isActive = activeTabId === tab.id;
     const path = tab.path(storeSlug);
+    const router = useRouter();
+
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        // Only apply toggle behavior on mobile (lg breakpoint is 1024px)
+        if (isActive && window.innerWidth < 1024) {
+            e.preventDefault();
+            // Navigate to a "closed" state (using a special query param or just removing the tab param if default wasn't forced)
+            // Since page.tsx defaults '' to 'general', we use 'closed' to force an empty state
+            router.push(`/${storeSlug}/admin/settings?tab=closed`);
+        }
+    };
 
     return (
         <div className="flex flex-col">
             <Link
                 href={path}
+                onClick={handleClick}
                 className={`w-full flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-3xl transition-all ${isActive
                     ? "bg-white text-gray-900 shadow-xl shadow-gray-200/50 ring-1 ring-gray-100"
                     : "text-gray-500 hover:bg-white hover:shadow-lg hover:shadow-gray-200/30"

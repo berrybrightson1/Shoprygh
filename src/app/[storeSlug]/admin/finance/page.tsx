@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Wallet, ArrowUpRight, ArrowDownLeft, Clock, DollarSign, CreditCard } from "lucide-react";
 import { requestPayout } from "./actions";
+import BrandedDropdown from "@/components/ui/BrandedDropdown";
 
 export default async function FinancePage({ params }: { params: Promise<{ storeSlug: string }> }) {
     const session = await getSession();
@@ -107,14 +108,17 @@ export default async function FinancePage({ params }: { params: Promise<{ storeS
                                         />
                                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-xs">₵</span>
                                     </div>
-                                    <select
-                                        name="method"
-                                        aria-label="Payout Method"
-                                        className="bg-white/5 border border-white/10 rounded-2xl px-4 text-white text-[13px] font-black outline-none focus:border-brand-cyan transition-all"
-                                    >
-                                        <option value="MOMO" className="bg-[#0A0A0B]">MOMO</option>
-                                        <option value="BANK" className="bg-[#0A0A0B]">BANK</option>
-                                    </select>
+                                    <div className="min-w-[120px]">
+                                        <BrandedDropdown
+                                            name="method"
+                                            placeholder="Method"
+                                            options={[
+                                                { value: "MOMO", label: "MOMO" },
+                                                { value: "BANK", label: "BANK" }
+                                            ]}
+                                            defaultValue="MOMO"
+                                        />
+                                    </div>
                                 </div>
 
                                 <input

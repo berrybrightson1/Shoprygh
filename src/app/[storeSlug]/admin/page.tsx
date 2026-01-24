@@ -30,56 +30,60 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
 
     // --- Data Fetching ---
 
-    // 1. Total Revenue (Sum of all completed orders)
-    const revenueResult = await prisma.order.aggregate({
-        where: { storeId, status: "COMPLETED" },
-        _sum: { total: true }
-    });
+    // --- Data Fetching (Parallelized) ---
+    const [
+        revenueResult,
+        ordersToday,
+        totalCustomers,
+        lowStockCount,
+        recentOrders,
+        auditLogs
+    ] = await Promise.all([
+        // 1. Total Revenue
+        prisma.order.aggregate({
+            where: { storeId, status: "COMPLETED" },
+            _sum: { total: true }
+        }),
+        // 2. Orders Today
+        prisma.order.count({
+            where: {
+                storeId,
+                createdAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+            }
+        }),
+        // 3. Total Customers
+        prisma.customer.count({
+            where: { storeId }
+        }),
+        // 4. Low Stock Items (< 5)
+        prisma.product.count({
+            where: {
+                storeId,
+                stockQty: { lt: 5 }
+            }
+        }),
+        // 5. Recent Orders Feed
+        prisma.order.findMany({
+            where: { storeId },
+            orderBy: { createdAt: "desc" },
+            take: 5,
+            include: { items: true }
+        }),
+        // 6. System Activity Logs
+        prisma.auditLog.findMany({
+            where: {
+                OR: [
+                    { entityId: storeId, entityType: "STORE" }, // Actions ON the store
+                    { user: { storeId: storeId } }             // Actions BY store staff
+                ]
+            },
+            orderBy: { createdAt: "desc" },
+            take: 10,
+            include: { user: { select: { name: true, image: true, email: true } } }
+        })
+    ]);
+
     const totalRevenue = Number(revenueResult._sum.total || 0);
-
-    // 2. Orders Today
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    const ordersToday = await prisma.order.count({
-        where: {
-            storeId,
-            createdAt: { gte: startOfDay }
-        }
-    });
-
-    // 3. Total Customers
-    const totalCustomers = await prisma.customer.count({
-        where: { storeId }
-    });
-
-    // 4. Low Stock Items (< 5)
-    const lowStockCount = await prisma.product.count({
-        where: {
-            storeId,
-            stockQty: { lt: 5 }
-        }
-    });
-
-    // 5. Recent Orders Feed
-    const recentOrders = await prisma.order.findMany({
-        where: { storeId },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-        include: { items: true }
-    });
-
-    // 6. System Activity Logs (Store Level)
-    const auditLogs = await prisma.auditLog.findMany({
-        where: {
-            OR: [
-                { entityId: storeId, entityType: "STORE" }, // Actions ON the store
-                { user: { storeId: storeId } }             // Actions BY store staff
-            ]
-        },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-        include: { user: { select: { name: true, image: true, email: true } } }
-    });
 
     // --- UI Components ---
 

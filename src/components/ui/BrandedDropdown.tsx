@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown, Check } from "lucide-react";
 
 interface Option {
@@ -27,20 +28,53 @@ export default function BrandedDropdown({
 }: BrandedDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [value, setValue] = useState(defaultValue);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     const selectedOption = options.find(opt => opt.value === value);
+
+    // Update position when opening
+    useEffect(() => {
+        if (isOpen && buttonRef.current) {
+            const updatePosition = () => {
+                const rect = buttonRef.current?.getBoundingClientRect();
+                if (rect) {
+                    setPosition({
+                        top: rect.bottom + window.scrollY + 8,
+                        left: rect.left + window.scrollX,
+                        width: rect.width
+                    });
+                }
+            };
+            updatePosition();
+            window.addEventListener("scroll", updatePosition);
+            window.addEventListener("resize", updatePosition);
+            return () => {
+                window.removeEventListener("scroll", updatePosition);
+                window.removeEventListener("resize", updatePosition);
+            };
+        }
+    }, [isOpen]);
 
     // Close on click outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
+            if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
+                // Check if click is inside the portal menu (which we can't easily ref from here without more state or ID)
+                // Instead, we rely on the menu wrapper's onMouseDown/onClick propagation or a global listener that checks checks ID
+                const dropdownMenu = document.getElementById(`dropdown-menu-${name}`);
+                if (dropdownMenu && !dropdownMenu.contains(event.target as Node)) {
+                    setIsOpen(false);
+                }
             }
         };
-        document.addEventListener("mousedown", handleClickOutside);
+
+        if (isOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [isOpen, name]);
+
 
     const handleSelect = (newValue: string) => {
         setValue(newValue);
@@ -51,12 +85,13 @@ export default function BrandedDropdown({
     };
 
     return (
-        <div className="relative" ref={containerRef}>
+        <>
             {/* Hidden Input for Form Submission */}
             <input type="hidden" name={name} value={value} />
 
             {/* Trigger Button */}
             <button
+                ref={buttonRef}
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
                 className={`flex items-center justify-between gap-3 px-3 py-2 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-brand-cyan/50 hover:shadow-md transition-all min-w-[140px] text-left outline-none focus:ring-2 focus:ring-brand-cyan/20 ${isOpen ? 'border-brand-cyan ring-2 ring-brand-cyan/20' : ''}`}
@@ -72,14 +107,25 @@ export default function BrandedDropdown({
                 />
             </button>
 
-            {/* Dropdown Menu */}
-            {isOpen && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100/50 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-left">
+            {/* Portal Dropdown Menu */}
+            {isOpen && typeof document !== 'undefined' && createPortal(
+                <div
+                    id={`dropdown-menu-${name}`}
+                    style={{
+                        top: position.top,
+                        left: position.left,
+                        minWidth: position.width
+                    }}
+                    className="fixed z-[9999] bg-white rounded-xl shadow-xl border border-gray-100/50 p-1.5 animate-in fade-in zoom-in-95 duration-200 origin-top-left"
+                >
                     {options.map((option) => (
                         <button
                             key={option.value}
                             type="button"
-                            onClick={() => handleSelect(option.value)}
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent closing immediately
+                                handleSelect(option.value);
+                            }}
                             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-colors ${value === option.value
                                 ? "bg-gray-50 text-gray-900"
                                 : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
@@ -91,8 +137,9 @@ export default function BrandedDropdown({
                             )}
                         </button>
                     ))}
-                </div>
+                </div>,
+                document.body
             )}
-        </div>
+        </>
     );
 }
