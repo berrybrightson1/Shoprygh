@@ -223,6 +223,32 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                         </span>
                     </div>
 
+                    {/* Desktop Navigation (hidden on mobile) */}
+                    <div className="hidden lg:flex items-center gap-6">
+                        <button
+                            onClick={() => {
+                                window.scrollTo({ top: 0, behavior: "smooth" });
+                                setActiveCategory("All");
+                                setSearchQuery("");
+                            }}
+                            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                        >
+                            Home
+                        </button>
+                        <button
+                            onClick={() => router.push(`/${storeSlug}/wishlist`)}
+                            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                        >
+                            Wishlist
+                        </button>
+                        <Link
+                            href={`/${storeSlug}/settings`}
+                            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                        >
+                            Settings
+                        </Link>
+                    </div>
+
                     {/* Actions */}
                     <div className="flex gap-3">
                         <button
@@ -301,7 +327,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
             </div>
 
             {/* Scrollable Content */}
-            <div className="px-5">
+            <div className="px-5 max-w-[1600px] mx-auto">
                 {/* Section Header */}
                 <div className="flex justify-between items-center mb-6 mt-2">
                     <h2 className="text-lg font-medium text-gray-900 tracking-tight flex items-center gap-2">
@@ -310,13 +336,13 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                     </h2>
                 </div>
 
-                {/* Grid */}
-                <div className="grid grid-cols-2 gap-x-3 gap-y-6 md:gap-x-4 md:gap-y-8">
+                {/* Grid - Responsive: 1 col mobile, 2 col tablet, 3 col desktop, 4 col large */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-6 md:gap-x-5 md:gap-y-8">
                     {filteredProducts.map(p => (
                         <ProductCard key={p.id} product={p} storeSlug={storeSlug} />
                     ))}
                     {filteredProducts.length === 0 && (
-                        <div className="col-span-2 py-16 md:py-24 flex flex-col items-center justify-center text-center">
+                        <div className="col-span-full py-16 md:py-24 flex flex-col items-center justify-center text-center">
                             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
                                 <ShoppingBag className="text-gray-300" size={32} />
                             </div>
@@ -333,8 +359,8 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                 </div>
             </div>
 
-            {/* Bottom Nav - Floating Pill */}
-            <div className="fixed bottom-8 left-0 right-0 flex justify-center z-50 pointer-events-none">
+            {/* Bottom Nav - Floating Pill (Mobile Only) */}
+            <div className="fixed bottom-8 left-0 right-0 flex justify-center z-50 pointer-events-none lg:hidden">
                 <nav className="pointer-events-auto bg-gray-900/90 backdrop-blur-2xl border border-white/10 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] rounded-full px-2 py-2 flex items-center gap-1">
                     <button
                         title="Home"
