@@ -34,7 +34,53 @@ export async function createOrder(
         }
     }
 
-    // 2. Create the Order in DB
+    // 2. Create/Update Customer Record (if phone provided)
+    let customerId: string | undefined;
+    if (customerPhone) {
+        try {
+            // Check if customer exists
+            const existingCustomer = await prisma.customer.findUnique({
+                where: {
+                    storeId_phone: {
+                        storeId: storeId,
+                        phone: customerPhone
+                    }
+                }
+            });
+
+            if (existingCustomer) {
+                // Update existing customer
+                const updatedCustomer = await prisma.customer.update({
+                    where: { id: existingCustomer.id },
+                    data: {
+                        totalSpent: { increment: totalEstimate },
+                        totalOrders: { increment: 1 },
+                        lastOrderAt: new Date(),
+                        name: customerName || existingCustomer.name // Update name if provided
+                    }
+                });
+                customerId = updatedCustomer.id;
+            } else {
+                // Create new customer
+                const newCustomer = await prisma.customer.create({
+                    data: {
+                        storeId: storeId,
+                        name: customerName || null,
+                        phone: customerPhone,
+                        totalSpent: totalEstimate,
+                        totalOrders: 1,
+                        lastOrderAt: new Date()
+                    }
+                });
+                customerId = newCustomer.id;
+            }
+        } catch (error) {
+            console.error("Failed to create/update customer:", error);
+            // Continue with order creation even if customer update fails
+        }
+    }
+
+    // 3. Create the Order in DB
     const order = await prisma.order.create({
         data: {
             storeId, // Link to Store
@@ -42,6 +88,7 @@ export async function createOrder(
             status: "PENDING",
             customerName: customerName || null,
             customerPhone: customerPhone ? (couponCode ? `${customerPhone} (Code: ${couponCode})` : customerPhone) : null,
+            customerId: customerId, // Link to customer if created
             items: {
                 create: items.map(item => ({
                     productId: item.id,
@@ -53,8 +100,9 @@ export async function createOrder(
         }
     });
 
-    // 3. Revalidate Admin Orders page (so it shows up instantly)
+    // 4. Revalidate Admin Pages (so they show up instantly)
     revalidatePath(`/${storeId}/admin/orders`);
+    revalidatePath(`/${storeId}/admin/customers`);
 
     return { success: true, orderId: order.id };
 }
