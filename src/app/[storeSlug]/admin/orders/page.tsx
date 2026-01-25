@@ -179,7 +179,7 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                                     </td>
 
                                     <td className="p-6 pr-10">
-                                        <div className="flex items-center justify-end gap-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500">
+                                        <div className="flex items-center justify-end gap-3">
                                             {order.customerId && (
                                                 <div className="flex items-center gap-2 pr-3 border-r border-gray-100">
                                                     <ReportCustomerButton
@@ -198,7 +198,7 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                                                     }}>
                                                         <button
                                                             title="Mark Fulfillment Complete"
-                                                            className="p-3 bg-white hover:bg-emerald-50 text-gray-300 hover:text-emerald-600 rounded-2xl transition-all border border-gray-100 hover:border-emerald-100 shadow-sm active:scale-95"
+                                                            className="p-3 bg-white hover:bg-emerald-50 text-emerald-600 border border-emerald-200 hover:border-emerald-300 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
                                                         >
                                                             <CheckCircle2 size={18} strokeWidth={2.5} />
                                                         </button>
@@ -212,7 +212,7 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                                                     }}>
                                                         <button
                                                             title="Terminate Pipeline"
-                                                            className="p-3 bg-white hover:bg-orange-50 text-gray-300 hover:text-orange-600 rounded-2xl transition-all border border-gray-100 hover:border-orange-100 shadow-sm active:scale-95"
+                                                            className="p-3 bg-white hover:bg-orange-50 text-orange-600 border border-orange-200 hover:border-orange-300 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
                                                         >
                                                             <XCircle size={18} strokeWidth={2.5} />
                                                         </button>
@@ -225,7 +225,7 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                                                 }}>
                                                     <button
                                                         title="Delete Record"
-                                                        className="p-3 bg-white hover:bg-red-50 text-gray-300 hover:text-red-500 rounded-2xl transition-all border border-gray-100 hover:border-red-100 shadow-sm active:scale-95"
+                                                        className="p-3 bg-white hover:bg-red-50 text-red-500 border border-red-200 hover:border-red-300 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
                                                     >
                                                         <Trash2 size={18} strokeWidth={2.5} />
                                                     </button>
