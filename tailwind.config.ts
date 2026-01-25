@@ -18,6 +18,7 @@ const config: Config = {
         brand: {
           cyan: '#06B6D4',
           orange: '#F97316',
+          purple: '#9333EA',
           dark: '#111827',
           gray: '#F3F4F6'
         }
