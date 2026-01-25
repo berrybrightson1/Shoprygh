@@ -212,7 +212,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
         <div className="min-h-screen bg-white pb-32">
             {/* Header / Top Bar */}
             <div className={`sticky top-0 z-30 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-xl border-b border-gray-100/50 shadow-sm' : 'bg-white'}`}>
-                <div className="max-w-[1600px] mx-auto px-5 lg:px-8 py-4 lg:py-5 flex justify-between items-center">
+                <div className="px-5 lg:px-12 xl:px-20 py-4 lg:py-5 flex justify-between items-center">
                     {/* Logo / Brand */}
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center font-medium text-xs shadow-lg shadow-gray-200">
@@ -274,8 +274,8 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                     </div>
                 </div>
 
-                <div className="max-w-[1600px] mx-auto px-5 lg:px-8 mb-4 lg:mb-6">
-                    <div className="relative group max-w-2xl lg:max-w-3xl">
+                <div className="px-5 lg:px-12 xl:px-20 mb-4 lg:mb-6">
+                    <div className="relative group max-w-2xl">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-900 transition-colors" size={18} />
                         <input
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -288,14 +288,14 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                 </div>
 
                 {/* Categories */}
-                <div className="relative group max-w-[1600px] mx-auto">
+                <div className="relative group">
                     {/* Gradient Masks */}
                     <div className="absolute left-0 top-0 bottom-0 w-6 lg:w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
                     <div className="absolute right-0 top-0 bottom-0 w-6 lg:w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
                     <div
                         ref={(el) => { if (el) window.categoryScrollContainer = el; }}
-                        className="px-5 lg:px-8 overflow-x-auto whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth pb-3"
+                        className="px-5 lg:px-12 xl:px-20 overflow-x-auto whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth pb-3"
                     >
                         <div className="flex gap-2 lg:gap-3 pr-10">
                             {["All", "Diapers", "Feeding", "Clothing", "Toys", "Health", "Bedding", "Bundles"].map((cat) => (
@@ -327,7 +327,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
             </div>
 
             {/* Scrollable Content */}
-            <div className="px-5 lg:px-8 max-w-[1600px] mx-auto mt-6 lg:mt-8">
+            <div className="px-5 lg:px-12 xl:px-20 mt-6 lg:mt-8">
                 {/* Section Header */}
                 <div className="flex justify-between items-center mb-6 lg:mb-8">
                     <h2 className="text-base lg:text-lg font-semibold text-gray-900 tracking-tight flex items-center gap-2.5">
