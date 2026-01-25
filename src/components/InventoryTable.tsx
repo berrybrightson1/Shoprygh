@@ -1,13 +1,14 @@
 "use client";
 
 import { useAdminStore } from "@/store/admin";
-import { Trash2, Save, Package, Check, Download, AlertCircle, Search, Filter, Share2, X } from "lucide-react";
+import { Trash2, Save, Package, Check, Download, AlertCircle, Search, Filter, Share2, X, Upload } from "lucide-react";
 import { updateStock, deleteProduct, updatePrice, updateCategory } from "@/app/[storeSlug]/admin/inventory/actions";
 import { useState, useEffect } from "react";
 import ProductPoster from "./admin/ProductPoster";
 import BrandedSelect from "./shared/BrandedSelect";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
+import BulkImportModal from "./admin/BulkImportModal";
 
 // Helper to auto-submit on change or show save button
 function EditableCell({
@@ -106,6 +107,7 @@ export default function InventoryTable({
     const deleteProductBound = deleteProduct.bind(null, storeId);
 
     const [statusProduct, setStatusProduct] = useState<any>(null);
+    const [showImportModal, setShowImportModal] = useState(false);
 
     const CATEGORIES = [
         "Diapers", "Feeding", "Clothing", "Toys", "Health", "Bedding",
@@ -168,6 +170,15 @@ export default function InventoryTable({
                     >
                         <Filter size={20} className="group-hover:rotate-12 transition-transform" />
                     </button>
+                    {isOwner && (
+                        <button
+                            onClick={() => setShowImportModal(true)}
+                            className="bg-brand-purple hover:bg-purple-700 text-white px-8 py-4 rounded-2xl text-[11px] font-medium uppercase tracking-[0.2em] shadow-xl shadow-purple-500/20 hover:shadow-purple-500/30 hover:-translate-y-0.5 transition-all flex items-center gap-3 flex-1 xl:flex-none justify-center active:scale-95"
+                        >
+                            <Upload size={18} strokeWidth={2} />
+                            Import CSV
+                        </button>
+                    )}
                     <button
                         onClick={handleExport}
                         className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-2xl text-[11px] font-medium uppercase tracking-[0.2em] shadow-xl shadow-black/10 hover:shadow-black/20 hover:-translate-y-0.5 transition-all flex items-center gap-3 flex-1 xl:flex-none justify-center active:scale-95"
@@ -486,6 +497,14 @@ export default function InventoryTable({
                     </div>
                 )
             }
+
+            {/* Bulk Import Modal */}
+            {showImportModal && (
+                <BulkImportModal
+                    storeId={storeId}
+                    onClose={() => setShowImportModal(false)}
+                />
+            )}
         </div >
     );
 }

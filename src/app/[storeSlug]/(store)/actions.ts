@@ -118,6 +118,37 @@ export async function updateOrderStatus(storeId: string, orderId: string, newSta
 
     const oldStatus = order.status;
 
+    // If marking as COMPLETED, check stock availability first
+    if (newStatus === "COMPLETED" && oldStatus !== "COMPLETED") {
+        const insufficientStock: Array<{ name: string; available: number; needed: number }> = [];
+
+        for (const item of order.items) {
+            const product = await prisma.product.findUnique({
+                where: { id: item.productId },
+                select: { name: true, stockQty: true }
+            });
+
+            if (!product) {
+                throw new Error(`Product not found: ${item.name}`);
+            }
+
+            if (product.stockQty < item.quantity) {
+                insufficientStock.push({
+                    name: product.name,
+                    available: product.stockQty,
+                    needed: item.quantity
+                });
+            }
+        }
+
+        if (insufficientStock.length > 0) {
+            const errorMessage = insufficientStock
+                .map(item => `${item.name}: need ${item.needed}, only ${item.available} available`)
+                .join('; ');
+            throw new Error(`Insufficient stock - ${errorMessage}`);
+        }
+    }
+
     // Update order status
     await prisma.order.update({
         where: { id: orderId, storeId },
