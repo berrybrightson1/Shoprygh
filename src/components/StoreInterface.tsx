@@ -211,8 +211,8 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
     return (
         <div className="min-h-screen bg-white pb-32">
             {/* Header / Top Bar */}
-            <div className={`sticky top-0 z-30 transition-all duration-300 ${isScrolled ? 'bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm pt-2 pb-2' : 'bg-white pt-6 pb-2'}`}>
-                <div className="px-5 mb-4 flex justify-between items-center">
+            <div className={`sticky top-0 z-30 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-xl border-b border-gray-100/50 shadow-sm' : 'bg-white'}`}>
+                <div className="max-w-[1600px] mx-auto px-5 lg:px-8 py-4 lg:py-5 flex justify-between items-center">
                     {/* Logo / Brand */}
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center font-medium text-xs shadow-lg shadow-gray-200">
@@ -274,30 +274,30 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                     </div>
                 </div>
 
-                <div className="px-5 mb-4">
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors" size={18} />
+                <div className="max-w-[1600px] mx-auto px-5 lg:px-8 mb-4 lg:mb-6">
+                    <div className="relative group max-w-2xl lg:max-w-3xl">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-900 transition-colors" size={18} />
                         <input
                             onChange={(e) => setSearchQuery(e.target.value)}
                             value={searchQuery}
                             type="text"
-                            placeholder="Find your favorites..."
-                            className="w-full bg-gray-50/80 hover:bg-gray-50 focus:bg-white rounded-[20px] py-3.5 pl-11 pr-4 text-base font-medium text-gray-900 outline-none border border-transparent focus:border-purple-100 focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-gray-400"
+                            placeholder="Search products..."
+                            className="w-full bg-gray-50/50 hover:bg-gray-50 focus:bg-white rounded-2xl py-3.5 lg:py-4 pl-11 pr-4 text-sm lg:text-base font-medium text-gray-900 outline-none border border-gray-100 focus:border-gray-300 transition-all placeholder:text-gray-400"
                         />
                     </div>
                 </div>
 
                 {/* Categories */}
-                <div className="relative group">
+                <div className="relative group max-w-[1600px] mx-auto">
                     {/* Gradient Masks */}
-                    <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-                    <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+                    <div className="absolute left-0 top-0 bottom-0 w-6 lg:w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+                    <div className="absolute right-0 top-0 bottom-0 w-6 lg:w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
                     <div
                         ref={(el) => { if (el) window.categoryScrollContainer = el; }}
-                        className="pl-5 overflow-x-auto whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth pb-2"
+                        className="px-5 lg:px-8 overflow-x-auto whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth pb-3"
                     >
-                        <div className="flex gap-2.5 pr-10">
+                        <div className="flex gap-2 lg:gap-3 pr-10">
                             {["All", "Diapers", "Feeding", "Clothing", "Toys", "Health", "Bedding", "Bundles"].map((cat) => (
                                 <button
                                     key={cat}
@@ -313,9 +313,9 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                                             container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
                                         }
                                     }}
-                                    className={`px-5 py-2.5 rounded-2xl text-xs font-medium transition-all duration-300 flex-shrink-0 border ${activeCategory === cat
-                                        ? "bg-gray-900 text-white border-gray-900 shadow-lg shadow-gray-200 scale-105"
-                                        : "bg-white text-gray-500 border-gray-100/50 hover:border-gray-200 hover:bg-gray-50"
+                                    className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full text-xs lg:text-sm font-medium transition-all duration-300 flex-shrink-0 border ${activeCategory === cat
+                                        ? "bg-gray-900 text-white border-gray-900 shadow-sm"
+                                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                                         }`}
                                 >
                                     {cat}
@@ -327,17 +327,17 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
             </div>
 
             {/* Scrollable Content */}
-            <div className="px-5 max-w-[1600px] mx-auto">
+            <div className="px-5 lg:px-8 max-w-[1600px] mx-auto mt-6 lg:mt-8">
                 {/* Section Header */}
-                <div className="flex justify-between items-center mb-6 mt-2">
-                    <h2 className="text-lg font-medium text-gray-900 tracking-tight flex items-center gap-2">
-                        {activeCategory === "All" ? "Trending Now" : activeCategory}
-                        <span className="text-[10px] font-medium bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{filteredProducts.length}</span>
+                <div className="flex justify-between items-center mb-6 lg:mb-8">
+                    <h2 className="text-base lg:text-lg font-semibold text-gray-900 tracking-tight flex items-center gap-2.5">
+                        {activeCategory === "All" ? "All Products" : activeCategory}
+                        <span className="text-[10px] lg:text-xs font-medium bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">{filteredProducts.length}</span>
                     </h2>
                 </div>
 
-                {/* Grid - Responsive: 1 col mobile, 2 col small, 3 col tablet, 4 col desktop */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-6 md:gap-x-5 md:gap-y-8">
+                {/* Grid - Responsive: 2 col mobile, 2 col small, 3 col tablet, 4 col desktop */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6">
                     {filteredProducts.map(p => (
                         <ProductCard key={p.id} product={p} storeSlug={storeSlug} />
                     ))}
