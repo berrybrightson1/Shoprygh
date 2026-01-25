@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Search, ShoppingBag, Plus, Home, Heart, User, SlidersHorizontal, ArrowRight, UserCircle2, Zap, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ShoppingBag, Plus, Home, Heart, User, SlidersHorizontal, ArrowRight, UserCircle2, Zap, ChevronLeft, ChevronRight, Settings } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import Link from "next/link";
 import CartDrawer from "./CartDrawer";
 import { useLikesStore } from "@/store/likes";
+import { useCurrencyStore } from "@/store/currency";
+import { formatPrice } from "@/utils/currency";
 
 // Quick augmentation for the scroll ref hack
 declare global {
@@ -19,6 +21,7 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
     const addItem = useCartStore((state) => state.addItem);
     const toggleCart = useCartStore((state) => state.toggleCart);
     const { toggleLike, items: likedItems } = useLikesStore();
+    const currency = useCurrencyStore((state) => state.currency);
 
     // Check if liked (using array check instead of selector function to ensure hydration updates trigger re-render)
     const isLiked = likedItems.some(item => item.id === product.id);
@@ -124,7 +127,7 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
 
                     {/* Price Tag */}
                     <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-gray-900 text-xs font-medium px-3 py-1.5 rounded-full z-10 shadow-lg shadow-black/5 pointer-events-none">
-                        ₵{price.toFixed(0)}
+                        {formatPrice(price, currency)}
                     </div>
 
                     {/* Add to Cart Overlay */}
@@ -355,10 +358,10 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                     </button>
 
                     <Link
-                        href={`/${storeSlug}/admin`}
+                        href={`/${storeSlug}/settings`}
                         className="w-12 h-12 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300"
                     >
-                        <UserCircle2 size={20} />
+                        <Settings size={20} />
                     </Link>
                 </nav>
             </div>

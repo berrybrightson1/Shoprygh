@@ -7,6 +7,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useCurrencyStore } from "@/store/currency";
+import { formatPrice, convertPrice } from "@/utils/currency";
 
 export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeOwnerPhone }: { isOpen?: boolean; onClose?: () => void; storeId?: string, storeName?: string, storeOwnerPhone?: string | null }) {
     // access store
@@ -17,6 +19,7 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
     const decreaseItem = useCartStore(state => state.decreaseItem);
     const removeItem = useCartStore(state => state.removeItem);
     const clearCart = useCartStore(state => state.clearCart);
+    const currency = useCurrencyStore(state => state.currency);
 
     // If controlled via props, use props; otherwise use store state
     // Actually StoreInterface controls it via store state but wraps it in <CartDrawer isOpen={isCartOpen} />
@@ -137,7 +140,7 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
                                         <div>
                                             <h3 className="font-medium text-gray-900 line-clamp-2 text-sm leading-relaxed">{item.name}</h3>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <div className="font-medium text-sm text-gray-900">₵{Number(item.priceRetail).toFixed(2)}</div>
+                                                <div className="font-medium text-sm text-gray-900">{formatPrice(Number(item.priceRetail), currency)}</div>
                                             </div>
                                         </div>
 
@@ -229,11 +232,11 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
                             <div className="space-y-3 pt-4 border-t-2 border-dashed border-gray-100">
                                 <div className="flex items-center justify-between text-gray-500 font-medium">
                                     <span>Subtotal</span>
-                                    <span>₵{cartTotal.toFixed(2)}</span>
+                                    <span>{formatPrice(cartTotal, currency)}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-xl font-medium text-gray-900">
                                     <span>Total</span>
-                                    <span>₵{cartTotal.toFixed(2)}</span>
+                                    <span>{formatPrice(cartTotal, currency)}</span>
                                 </div>
                             </div>
 

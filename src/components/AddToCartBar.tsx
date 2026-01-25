@@ -4,6 +4,8 @@ import { useCartStore } from "@/store/cart";
 import { ShoppingBag, Check } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useCurrencyStore } from "@/store/currency";
+import { formatPrice } from "@/utils/currency";
 
 interface Product {
     id: string;
@@ -16,6 +18,7 @@ interface Product {
 export default function AddToCartBar({ product }: { product: Product }) {
     const { addItem, toggleCart, items } = useCartStore();
     const [isAdded, setIsAdded] = useState(false);
+    const currency = useCurrencyStore((state) => state.currency);
 
     const handleAddToCart = () => {
         addItem({
@@ -53,7 +56,7 @@ export default function AddToCartBar({ product }: { product: Product }) {
                             </span>
                         </div>
                     )}
-                    {isAdded ? "Added to Cart" : `Add to Cart - ₵${Number(product.priceRetail).toFixed(2)}`}
+                    {isAdded ? "Added to Cart" : `Add to Cart - ${formatPrice(Number(product.priceRetail), currency)}`}
                 </button>
             </div>
         </div>
