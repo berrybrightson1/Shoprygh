@@ -107,7 +107,10 @@ export default function InventoryTable({
 
     const [statusProduct, setStatusProduct] = useState<any>(null);
 
-    const CATEGORIES = ["Diapers", "Feeding", "Clothing", "Toys", "Health", "Bedding", "Bundles"];
+    const CATEGORIES = [
+        "Diapers", "Feeding", "Clothing", "Toys", "Health", "Bedding",
+        "Electronics", "Beauty", "Home", "Fashion", "Bundles", "General"
+    ];
 
     const handleExport = () => {
         const headers = ["ID", "Name", "Category", "Price", "Stock", "Date Added", "Description"];

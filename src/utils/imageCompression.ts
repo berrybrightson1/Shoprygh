@@ -1,4 +1,4 @@
-export async function compressImage(file: File, maxSizeKB: number = 450): Promise<File> {
+export async function compressImage(file: File, maxSizeKB: number = 100): Promise<File> {
     // If already smaller, return as is
     if (file.size / 1024 <= maxSizeKB) return file;
 

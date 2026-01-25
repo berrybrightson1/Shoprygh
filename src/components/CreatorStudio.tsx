@@ -132,6 +132,7 @@ export default function CreatorStudio({
     const [price, setPrice] = useState("");
     const [priceWholesale, setPriceWholesale] = useState("");
     const [category, setCategory] = useState("Diapers");
+    const [logisticsTier, setLogisticsTier] = useState("Standard Delivery");
     const [description, setDescription] = useState("");
 
     // Images
@@ -336,6 +337,7 @@ export default function CreatorStudio({
                                         setPrice("");
                                         setPriceWholesale("");
                                         setDescription("");
+                                        setLogisticsTier("Standard Delivery");
                                         setSuccessParams(false);
                                         setIsSubmitting(false);
                                     }, 2000);
@@ -498,8 +500,8 @@ export default function CreatorStudio({
                                                 <BrandedSelect
                                                     name="logisticsTier"
                                                     options={["Standard Delivery", "Express Hub", "Warehouse Only"]}
-                                                    value="Standard Delivery"
-                                                    onChange={() => { }} // Internal state handled by name
+                                                    value={logisticsTier}
+                                                    onChange={(val) => setLogisticsTier(val)}
                                                     icon={<Truck size={16} />}
                                                 />
                                             </div>

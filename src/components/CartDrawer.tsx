@@ -8,7 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export default function CartDrawer({ isOpen, onClose, storeId, storeName }: { isOpen?: boolean; onClose?: () => void; storeId?: string, storeName?: string }) {
+export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeOwnerPhone }: { isOpen?: boolean; onClose?: () => void; storeId?: string, storeName?: string, storeOwnerPhone?: string | null }) {
     // access store
     const cart = useCartStore(state => state.items);
     const isOpenStore = useCartStore(state => state.isOpen);
@@ -65,8 +65,8 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName }: { is
             cart.map(item => `• ${item.name} (x${item.quantity}) - ₵${(Number(item.priceRetail) * item.quantity).toFixed(2)}`).join("\n") +
             `\n\n*Total: ₵${cartTotal.toFixed(2)}*`;
 
-        // HARDCODED GLOBAL NUMBER for all stores as requested
-        const ownerPhone = "233551171353";
+        // Use store owner's phone if available, otherwise fallback to platform admin (legacy)
+        const ownerPhone = storeOwnerPhone || "233551171353";
         // Use the cleaned up full international format for the link if needed, or just display it in message
         // The ownerPhone is where the message is SENT TO.
 

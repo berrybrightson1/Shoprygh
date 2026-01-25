@@ -35,7 +35,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
         revenueResult,
         ordersToday,
         totalCustomers,
-        totalProducts,
+        totalStockResult,
         recentOrders,
         auditLogs
     ] = await Promise.all([
@@ -55,9 +55,15 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
         prisma.customer.count({
             where: { storeId }
         }),
-        // 4. Total Inventory Items
-        prisma.product.count({
-            where: { storeId }
+        // 4. Total Inventory Items (Stock Quantity)
+        prisma.product.aggregate({
+            where: {
+                storeId,
+                isArchived: false
+            },
+            _sum: {
+                stockQty: true
+            }
         }),
         // 5. Recent Orders Feed
         prisma.order.findMany({
@@ -81,6 +87,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
     ]);
 
     const totalRevenue = Number(revenueResult._sum.total || 0);
+    const totalInventorySize = Number(totalStockResult._sum.stockQty || 0);
 
     // --- UI Components ---
 
@@ -224,7 +231,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
                 <Link href={`/${storeSlug}/admin/inventory`} className="block group h-full">
                     <AliveStatCard
                         label="Inventory Size"
-                        value={totalProducts}
+                        value={totalInventorySize}
                         color="blue"
                         icon={Package}
                         subtext="Stock Items"

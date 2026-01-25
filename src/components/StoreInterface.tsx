@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Search, ShoppingBag, Plus, Home, Heart, User, SlidersHorizontal, ArrowRight, UserCircle2, Zap } from "lucide-react";
+import { Search, ShoppingBag, Plus, Home, Heart, User, SlidersHorizontal, ArrowRight, UserCircle2, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import Link from "next/link";
 import CartDrawer from "./CartDrawer";
@@ -25,16 +25,80 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
 
     const price = product.priceRetail ? Number(product.priceRetail) : 0;
 
+    // Carousel Logic
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const images = [product.image, ...(product.gallery || [])].filter(Boolean);
+    const hasMultipleImages = images.length > 1;
+
+    // Auto-scroll for carousel if hovered (optional, but requested "slider" usually implies interaction)
+    // For now, let's keep it simple with hover-zones or just standard displaying first image, 
+    // but typically specialized sliders need state. 
+    // Let's implement a simple click-to-advance or hover-to-slide.
+    // Given the user wants "sliders", we'll do dots + touch slide or just buttons.
+    // Let's go with a simple dot navigation + arrows for desktop.
+
     return (
         <div className="group relative flex flex-col h-full animate-in fade-in zoom-in duration-300">
-            <Link href={`/${storeSlug}/product/${product.id}`} className="block">
-                <div className="relative aspect-[4/5] bg-gray-100 rounded-[28px] overflow-hidden mb-3 shadow-sm border border-gray-100">
-                    {/* Image */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={product.image || "/placeholder.png"} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={product.name} />
+            <Link href={`/${storeSlug}/product/${product.id}`} className="block h-full">
+                {/* Image Container - Aspect Ratio 4/5, Full Coverage */}
+                <div className="relative aspect-[4/5] bg-gray-100 rounded-[24px] overflow-hidden mb-3 border-none shadow-sm">
+                    {/* Carousel Images */}
+                    <div className="relative w-full h-full">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src={images[currentImageIndex] || "/placeholder.png"}
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            alt={product.name}
+                        />
+                    </div>
+
+                    {/* Slider Navigation (only if multiple) */}
+                    {hasMultipleImages && (
+                        <>
+                            {/* Discrete Navigation Buttons */}
+                            {currentImageIndex > 0 && (
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation(); // Critical to prevent link click
+                                        setCurrentImageIndex(prev => prev - 1);
+                                    }}
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center text-gray-900 z-20 hover:scale-110 active:scale-95 transition-all opacity-0 group-hover:opacity-100"
+                                    aria-label="Previous image"
+                                >
+                                    <ChevronLeft size={16} strokeWidth={2.5} />
+                                </button>
+                            )}
+
+                            {currentImageIndex < images.length - 1 && (
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setCurrentImageIndex(prev => prev + 1);
+                                    }}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur rounded-full shadow-lg flex items-center justify-center text-gray-900 z-20 hover:scale-110 active:scale-95 transition-all opacity-0 group-hover:opacity-100"
+                                    aria-label="Next image"
+                                >
+                                    <ChevronRight size={16} strokeWidth={2.5} />
+                                </button>
+                            )}
+
+                            {/* Dots */}
+                            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+                                {images.map((_, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`w-1.5 h-1.5 rounded-full shadow-sm transition-all ${idx === currentImageIndex ? 'bg-white scale-125' : 'bg-white/50 backdrop-blur-md'
+                                            }`}
+                                    />
+                                ))}
+                            </div>
+                        </>
+                    )}
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                     {/* Heart Button */}
                     <button
@@ -59,7 +123,7 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
                     </button>
 
                     {/* Price Tag */}
-                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-gray-900 text-xs font-medium px-3 py-1.5 rounded-full z-10 shadow-lg shadow-black/5">
+                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-gray-900 text-xs font-medium px-3 py-1.5 rounded-full z-10 shadow-lg shadow-black/5 pointer-events-none">
                         ₵{price.toFixed(0)}
                     </div>
 
@@ -72,7 +136,8 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
                             addItem({ ...product, priceRetail: price });
                             toggleCart();
                         }}
-                        className="absolute bottom-3 right-3 bg-gray-900 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg shadow-gray-900/20 hover:scale-110 active:scale-95 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10"
+                        // Boosted Z-Index to z-30 to stay above slider controls
+                        className="absolute bottom-3 right-3 bg-gray-900 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg shadow-gray-900/20 hover:scale-110 active:scale-95 transition-all opacity-100 z-30"
                     >
                         <Plus size={18} strokeWidth={3} />
                     </button>
@@ -95,7 +160,7 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
     );
 }
 
-export default function StoreInterface({ initialProducts, storeId, storeSlug, storeName }: { initialProducts: any[], storeId: string, storeSlug: string, storeName: string }) {
+export default function StoreInterface({ initialProducts, storeId, storeSlug, storeName, storeOwnerPhone }: { initialProducts: any[], storeId: string, storeSlug: string, storeName: string, storeOwnerPhone?: string | null }) {
     const router = useRouter();
     const [activeCategory, setActiveCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
@@ -299,7 +364,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
             </div>
 
             {/* Global Cart Drawer */}
-            <CartDrawer isOpen={isCartOpen} onClose={toggleCart} storeId={storeId} storeName={storeName} />
+            <CartDrawer isOpen={isCartOpen} onClose={toggleCart} storeId={storeId} storeName={storeName} storeOwnerPhone={storeOwnerPhone} />
         </div>
     );
 }

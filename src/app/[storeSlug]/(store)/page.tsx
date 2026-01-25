@@ -34,6 +34,7 @@ export default async function StorePage({ params }: Props) {
             costPrice: true,
             image: true,
             category: true,
+            gallery: true,
             createdAt: true,
         }
     });
@@ -55,6 +56,7 @@ export default async function StorePage({ params }: Props) {
             storeId={store.id}
             storeSlug={storeSlug}
             storeName={store.name}
+            storeOwnerPhone={store.ownerPhone}
             initialProducts={serializedProducts}
         />
     );

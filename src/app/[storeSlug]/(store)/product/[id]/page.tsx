@@ -1,9 +1,10 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { ArrowLeft, Truck, ShieldCheck, Star } from "lucide-react";
+import { ArrowLeft, Truck, ShieldCheck, ShoppingBag } from "lucide-react";
 import { notFound } from "next/navigation";
 import AddToCartBar from "@/components/AddToCartBar";
 import CartHeaderButton from "@/components/CartHeaderButton";
+import ProductGallery from "@/components/storefront/ProductGallery";
 
 export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string; storeSlug: string }> }) {
     const { id, storeSlug } = await params;
@@ -14,74 +15,78 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
             name: true,
             description: true,
             image: true,
+            gallery: true,
             category: true,
             priceRetail: true,
-            storeId: true // Required if we need to check store ownership or links
+            storeId: true
         }
     });
 
     if (!product) notFound();
 
+    // Prepare images for gallery
+    const images = [product.image, ...(product.gallery || [])].filter(Boolean) as string[];
+
     return (
         <div className="min-h-screen bg-white pb-32">
             {/* Header */}
-            <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl px-4 py-4 flex items-center gap-4 border-b border-gray-200 shadow-sm">
-                <Link href={`/${storeSlug}`} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition active:scale-95 text-black">
-                    <ArrowLeft size={20} className="stroke-[3px]" />
+            <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl px-4 py-3 flex items-center justify-between border-b border-gray-100">
+                <Link href={`/${storeSlug}`} className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center hover:bg-black hover:text-white transition-all active:scale-95 text-black border border-transparent hover:border-black/5">
+                    <ArrowLeft size={20} strokeWidth={2.5} />
                 </Link>
-                <div className="flex-1">
-                    <h1 className="font-black text-xl text-black line-clamp-1">Product Details</h1>
-                </div>
+                <span className="font-bold text-sm text-black uppercase tracking-widest hidden md:block">Product Details</span>
                 <CartHeaderButton />
             </header>
 
             <main className="max-w-xl mx-auto px-4 pt-6">
-                {/* Image Gallery */}
-                <div className="aspect-square bg-gray-100 rounded-[32px] overflow-hidden shadow-inner relative border border-gray-200 mb-8">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                        src={product.image || "/placeholder.png"}
-                        alt={product.name}
-                        className="w-full h-full object-contain p-8 mix-blend-multiply"
-                    />
-                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur shadow-lg border border-gray-100 px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                        <Star size={14} className="fill-yellow-400 text-yellow-500" />
-                        <span className="text-xs font-black text-black">4.8</span>
-                    </div>
-                </div>
+                {/* Gallery */}
+                <ProductGallery images={images.length > 0 ? images : ["/placeholder.png"]} />
 
-                <div className="space-y-6">
-                    {/* Title & Category Group */}
+                <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-700 delay-100">
+                    {/* Header Group */}
                     <div>
-                        <span className="inline-block px-3 py-1 mb-2 rounded-full bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest">
-                            {product.category}
-                        </span>
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="px-3 py-1 rounded-full bg-black text-white text-[10px] font-bold uppercase tracking-[0.2em] shadow-lg shadow-black/10">
+                                {product.category}
+                            </span>
+                            {/* Stock Status could go here */}
+                        </div>
 
-                        <div className="flex justify-between items-start gap-4">
-                            <h1 className="text-3xl font-black text-black leading-tight flex-1 tracking-tight">{product.name}</h1>
-                            <div className="shrink-0 flex items-baseline gap-0.5">
-                                <span className="text-lg font-bold text-black align-top">₵</span>
-                                <span className="text-4xl font-black text-black tracking-tighter">
-                                    {Number(product.priceRetail).toFixed(2)}
-                                </span>
+                        <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-[1.1] tracking-tight mb-4">
+                            {product.name}
+                        </h1>
+
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-xl font-bold text-gray-900">₵</span>
+                            <span className="text-5xl font-black text-gray-900 tracking-tighter">
+                                {Number(product.priceRetail).toFixed(2)}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Features Grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-black">
+                                <Truck size={16} strokeWidth={2.5} />
                             </div>
+                            <span className="text-xs font-bold text-gray-900 uppercase tracking-wide">Fast Delivery</span>
+                        </div>
+                        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-black">
+                                <ShieldCheck size={16} strokeWidth={2.5} />
+                            </div>
+                            <span className="text-xs font-bold text-gray-900 uppercase tracking-wide">Quality Assured</span>
                         </div>
                     </div>
 
                     {/* Description */}
-                    <div className="prose prose-lg prose-gray">
-                        <p className="text-gray-900 font-medium leading-relaxed text-base border-t-2 border-dashed border-gray-200 pt-6">
-                            {product.description || "No description available for this item."}
-                        </p>
-                    </div>
-
-                    {/* Features */}
-                    <div className="flex flex-wrap gap-3 pt-2">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-black border border-gray-200 rounded-2xl text-xs font-black uppercase tracking-wide">
-                            <Truck size={16} strokeWidth={2.5} /> Fast Delivery
-                        </div>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-black border border-gray-200 rounded-2xl text-xs font-black uppercase tracking-wide">
-                            <ShieldCheck size={16} strokeWidth={2.5} /> Quality Assured
+                    <div>
+                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-3">Description</h3>
+                        <div className="prose prose-base prose-gray max-w-none">
+                            <p className="text-gray-600 font-medium leading-relaxed">
+                                {product.description || "Experience premium quality with this carefully curated item. Designed for modern needs."}
+                            </p>
                         </div>
                     </div>
                 </div>
