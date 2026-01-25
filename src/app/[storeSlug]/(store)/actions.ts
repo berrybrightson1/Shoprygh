@@ -108,12 +108,79 @@ export async function createOrder(
 }
 
 export async function updateOrderStatus(storeId: string, orderId: string, newStatus: string) {
+    // Get the order with its items before updating
+    const order = await prisma.order.findUnique({
+        where: { id: orderId, storeId },
+        include: { items: true }
+    });
+
+    if (!order) throw new Error("Order not found");
+
+    const oldStatus = order.status;
+
+    // Update order status
     await prisma.order.update({
-        where: { id: orderId, storeId }, // Ensure tenancy
+        where: { id: orderId, storeId },
         data: { status: newStatus }
     });
+
+    // If order is being marked as COMPLETED, deduct inventory
+    if (newStatus === "COMPLETED" && oldStatus !== "COMPLETED") {
+        for (const item of order.items) {
+            try {
+                await prisma.product.update({
+                    where: { id: item.productId },
+                    data: {
+                        stockQty: {
+                            decrement: item.quantity
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error(`Failed to deduct stock for product ${item.productId}:`, error);
+                // Continue with other items even if one fails
+            }
+        }
+
+        await logActivity(
+            "INVENTORY_UPDATED",
+            `Stock deducted for order #${orderId.slice(-6)}`,
+            "ORDER",
+            orderId,
+            { items: order.items.map(i => ({ productId: i.productId, quantity: i.quantity })) }
+        );
+    }
+
+    // If order is being changed FROM COMPLETED to something else, restore inventory
+    if (oldStatus === "COMPLETED" && newStatus !== "COMPLETED") {
+        for (const item of order.items) {
+            try {
+                await prisma.product.update({
+                    where: { id: item.productId },
+                    data: {
+                        stockQty: {
+                            increment: item.quantity
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error(`Failed to restore stock for product ${item.productId}:`, error);
+            }
+        }
+
+        await logActivity(
+            "INVENTORY_UPDATED",
+            `Stock restored for order #${orderId.slice(-6)}`,
+            "ORDER",
+            orderId,
+            { items: order.items.map(i => ({ productId: i.productId, quantity: i.quantity })) }
+        );
+    }
+
     await logActivity("ORDER_UPDATED", `Order #${orderId.slice(-6)} status: ${newStatus}`, "ORDER", orderId, { status: newStatus });
     revalidatePath(`/${storeId}/admin/orders`);
+    revalidatePath(`/${storeId}/admin/catalog`);
+    revalidatePath(`/${storeId}/admin/inventory`);
 }
 
 export async function deleteOrder(storeId: string, orderId: string) {

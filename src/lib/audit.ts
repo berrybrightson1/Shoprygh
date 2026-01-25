@@ -15,6 +15,7 @@ export type ActivityAction =
     | "PRODUCT_DELETED"
     | "ARCHIVE_PRODUCT"
     | "STOCK_UPDATED" | "UPDATE_STOCK"
+    | "INVENTORY_UPDATED"
     | "PRICE_UPDATED" | "UPDATE_PRICE"
     | "CATEGORY_UPDATED" | "UPDATE_CATEGORY"
     // Orders
