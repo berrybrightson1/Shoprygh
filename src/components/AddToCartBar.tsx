@@ -16,7 +16,7 @@ interface Product {
 }
 
 export default function AddToCartBar({ product, storePhone, storeName }: { product: Product; storePhone?: string | null; storeName: string }) {
-    const { addItem, items } = useCartStore();
+    const { addItem, toggleCart } = useCartStore(); // Added toggleCart
     const currency = useCurrencyStore((state) => state.currency);
     const [quantity, setQuantity] = useState(1);
 
@@ -27,24 +27,23 @@ export default function AddToCartBar({ product, storePhone, storeName }: { produ
             priceRetail: Number(product.priceRetail),
             category: product.category,
             image: product.image
-        });
-        toast.success(`${product.name} added to cart!`);
+        }, quantity); // Pass quantity
+        toast.success(`${quantity}x ${product.name} added to cart!`);
     };
 
     const handleWhatsAppCheckout = () => {
-        if (!storePhone) {
-            toast.error("Store contact not available");
-            return;
-        }
+        // Add item(s) to cart logic
+        addItem({
+            id: product.id,
+            name: product.name,
+            priceRetail: Number(product.priceRetail),
+            category: product.category,
+            image: product.image
+        }, quantity);
 
-        const currencySymbol = getCurrencySymbol(currency);
-        const price = formatPrice(Number(product.priceRetail), currency);
-        const total = formatPrice(Number(product.priceRetail) * quantity, currency);
-
-        const message = `Hi! I'd like to order:\n\n📦 *${product.name}*\n🏷️ Category: ${product.category}\n💰 Price: ${price}\n🔢 Quantity: ${quantity}\n💵 Total: ${total}\n\nFrom: ${storeName}`;
-
-        const whatsappUrl = `https://wa.me/${storePhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
+        // Open Cart Drawer for user to complete details
+        toggleCart();
+        toast.success("Added to bag. Please confirm details to checkout.");
     };
 
     return (

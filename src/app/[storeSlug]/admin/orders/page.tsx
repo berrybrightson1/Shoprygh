@@ -3,6 +3,7 @@ import { deleteOrder, updateOrderStatus } from "@/app/[storeSlug]/(store)/action
 import { Trash2, CheckCircle2, XCircle, Clock, ShoppingBag } from "lucide-react";
 import { revalidatePath } from "next/cache";
 import ReportCustomerButton from "@/components/admin/ReportCustomerButton";
+import DeleteOrderButton from "@/components/admin/DeleteOrderButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -219,17 +220,10 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                                                     </form>
                                                 )}
 
-                                                <form action={async () => {
-                                                    "use server";
-                                                    await deleteOrderWithStore(order.id);
-                                                }}>
-                                                    <button
-                                                        title="Delete Record"
-                                                        className="p-3 bg-white hover:bg-red-50 text-red-500 border border-red-200 hover:border-red-300 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
-                                                    >
-                                                        <Trash2 size={18} strokeWidth={2.5} />
-                                                    </button>
-                                                </form>
+                                                <DeleteOrderButton
+                                                    orderId={order.id}
+                                                    deleteAction={deleteOrderWithStore}
+                                                />
                                             </div>
                                         </div>
                                     </td>
@@ -302,17 +296,12 @@ export default async function OrdersPage({ params }: { params: Promise<{ storeSl
                                         </button>
                                     </form>
                                 )}
-                                <form action={async () => {
-                                    "use server";
-                                    await deleteOrderWithStore(order.id);
-                                }} className="flex-none">
-                                    <button
-                                        title="Delete Order"
-                                        className="p-4 bg-gray-50 text-gray-400 rounded-3xl border border-gray-100 hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all active:scale-95"
-                                    >
-                                        <Trash2 size={20} strokeWidth={2.5} />
-                                    </button>
-                                </form>
+                                <div className="flex-none">
+                                    <DeleteOrderButton
+                                        orderId={order.id}
+                                        deleteAction={deleteOrderWithStore}
+                                    />
+                                </div>
                             </div>
                         </div>
                     ))

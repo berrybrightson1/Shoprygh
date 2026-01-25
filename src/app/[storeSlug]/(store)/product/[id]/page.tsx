@@ -27,5 +27,11 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
 
     if (!product) notFound();
 
-    return <ProductDetailsClient product={product} storeSlug={storeSlug} storeId={product.storeId} storePhone={product.store.ownerPhone} storeName={product.store.name} />;
+    // Serialize Decimal to number to prevent Client Component error
+    const serializedProduct = {
+        ...product,
+        priceRetail: Number(product.priceRetail)
+    };
+
+    return <ProductDetailsClient product={serializedProduct} storeSlug={storeSlug} storeId={product.storeId} storePhone={product.store.ownerPhone} storeName={product.store.name} />;
 }

@@ -370,7 +370,10 @@ export default function InventoryTable({
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                    ), { duration: Infinity });
+                                                    ), {
+                                                        duration: Infinity,
+                                                        className: "!bg-transparent !border-0 !shadow-none !p-0 !min-w-0 !w-auto"
+                                                    });
                                                 }}
                                                 className="p-3 bg-white hover:bg-red-50 text-red-500 border border-red-100 hover:border-red-200 rounded-xl transition-all active:scale-95 shadow-sm hover:shadow-md"
                                                 title="Delete Product"
