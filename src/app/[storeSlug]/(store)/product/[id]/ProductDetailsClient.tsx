@@ -66,6 +66,33 @@ export default function ProductDetailsClient({ product, storeSlug, storeId, stor
                         </div>
                     </div>
 
+                    {/* Stock Availability */}
+                    {product.stockQty !== undefined && (
+                        <div className={`p-4 rounded-2xl border ${product.stockQty === 0
+                                ? 'bg-red-50 border-red-200'
+                                : product.stockQty < 10
+                                    ? 'bg-orange-50 border-orange-200'
+                                    : 'bg-green-50 border-green-200'
+                            }`}>
+                            {product.stockQty === 0 ? (
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+                                    <span className="text-sm font-bold text-red-700">Out of Stock</span>
+                                </div>
+                            ) : product.stockQty < 10 ? (
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-orange-600 animate-pulse" />
+                                    <span className="text-sm font-bold text-orange-700">Only {product.stockQty} left in stock - Order soon!</span>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-600" />
+                                    <span className="text-sm font-bold text-green-700">In Stock</span>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Description */}
                     <div>
                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-3">Description</h3>

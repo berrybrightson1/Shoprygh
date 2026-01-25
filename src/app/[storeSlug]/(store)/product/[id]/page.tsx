@@ -15,6 +15,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
             category: true,
             priceRetail: true,
             storeId: true,
+            stockQty: true,
             store: {
                 select: {
                     ownerPhone: true,

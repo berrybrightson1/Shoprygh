@@ -104,6 +104,13 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
+                    {/* Low Stock Badge */}
+                    {product.stockQty !== undefined && product.stockQty > 0 && product.stockQty < 10 && (
+                        <div className="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full z-10 shadow-lg animate-pulse">
+                            Only {product.stockQty} left!
+                        </div>
+                    )}
+
                     {/* Heart Button */}
                     <button
                         onClick={(e) => {
