@@ -66,25 +66,58 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
 
         setIsLoading(true);
 
-        // Construct WhatsApp Message
-        const message = `*New Order from ${storeName || 'Shopry App'}*\n\n` +
-            `*Customer:* ${customerName.trim()}\n` +
-            `*Phone:* +233${phoneCleanup}\n\n` +
-            `*Order Details:*\n` +
-            cart.map(item => `• ${item.name} (x${item.quantity}) - ₵${(Number(item.priceRetail) * item.quantity).toFixed(2)}`).join("\n") +
-            `\n\n*Total: ₵${cartTotal.toFixed(2)}*`;
+        try {
+            // Create order in database first
+            const { createOrder } = await import(`@/app/[storeSlug]/(store)/actions`);
 
-        // Use store owner's phone if available, otherwise fallback to platform admin (legacy)
-        const ownerPhone = storeOwnerPhone || "233551171353";
-        // Use the cleaned up full international format for the link if needed, or just display it in message
-        // The ownerPhone is where the message is SENT TO.
+            const orderData = cart.map(item => ({
+                id: item.id,
+                name: item.name,
+                priceRetail: Number(item.priceRetail),
+                quantity: item.quantity
+            }));
 
-        const whatsappUrl = `https://wa.me/${ownerPhone}?text=${encodeURIComponent(message)}`;
+            const result = await createOrder(
+                storeId || '',
+                orderData,
+                cartTotal,
+                `+233${phoneCleanup}`,
+                undefined, // no coupon for now
+                customerName.trim() // customer name
+            );
 
-        window.open(whatsappUrl, '_blank');
-        setIsLoading(false);
-        clearCart();
-        effectiveOnClose();
+            if (!result.success) {
+                throw new Error('Failed to create order');
+            }
+
+            // Construct WhatsApp Message
+            const message = `*New Order from ${storeName || 'Shopry App'}*\n\n` +
+                `*Customer:* ${customerName.trim()}\n` +
+                `*Phone:* +233${phoneCleanup}\n` +
+                `*Order ID:* #${result.orderId.slice(-6)}\n\n` +
+                `*Order Details:*\n` +
+                cart.map(item => `• ${item.name} (x${item.quantity}) - ₵${(Number(item.priceRetail) * item.quantity).toFixed(2)}`).join("\n") +
+                `\n\n*Total: ₵${cartTotal.toFixed(2)}*`;
+
+            // Use store owner's phone
+            const ownerPhone = storeOwnerPhone || "233551171353";
+            const whatsappUrl = `https://wa.me/${ownerPhone}?text=${encodeURIComponent(message)}`;
+
+            // Open WhatsApp
+            window.open(whatsappUrl, '_blank');
+
+            // Show success message
+            toast.success("Order created successfully!");
+
+            // Clear cart and close drawer
+            clearCart();
+            effectiveOnClose();
+        } catch (error) {
+            console.error('Checkout error:', error);
+            toast.error("Failed to create order. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

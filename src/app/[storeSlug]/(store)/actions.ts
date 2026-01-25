@@ -11,7 +11,14 @@ export type CartItemSnapshot = {
     quantity: number;
 };
 
-export async function createOrder(storeId: string, items: CartItemSnapshot[], totalEstimate: number, customerPhone?: string, couponCode?: string) {
+export async function createOrder(
+    storeId: string,
+    items: CartItemSnapshot[],
+    totalEstimate: number,
+    customerPhone?: string,
+    couponCode?: string,
+    customerName?: string
+) {
     if (!items.length) throw new Error("Cart is empty");
     if (!storeId) throw new Error("Store ID is required");
 
@@ -33,6 +40,7 @@ export async function createOrder(storeId: string, items: CartItemSnapshot[], to
             storeId, // Link to Store
             total: totalEstimate,
             status: "PENDING",
+            customerName: customerName || null,
             customerPhone: customerPhone ? (couponCode ? `${customerPhone} (Code: ${couponCode})` : customerPhone) : null,
             items: {
                 create: items.map(item => ({
