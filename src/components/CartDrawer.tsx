@@ -219,54 +219,58 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
                         )}
                     </div>
 
+                    {cart.length > 0 && (
+                        <div className="p-5 border-t border-gray-100 bg-gray-50/50 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <label className="block text-xs font-medium uppercase text-gray-900 tracking-widest">
+                                    Contact Information
+                                </label>
+                                <span className="text-[10px] font-medium text-gray-500 bg-gray-50 border border-gray-100/50 px-2 py-0.5 rounded-full">
+                                    For {storeName || 'Store'}
+                                </span>
+                            </div>
+
+                            <div className="space-y-3">
+                                {/* Name Input */}
+                                <input
+                                    type="text"
+                                    placeholder="Business Name / Buyer Name (Required)"
+                                    className="w-full px-4 py-3.5 bg-white border border-gray-200/50 rounded-xl font-medium text-gray-900 outline-none focus:border-gray-900 focus:ring-4 focus:ring-gray-900/5 transition placeholder:text-gray-400 placeholder:font-normal"
+                                    value={customerName}
+                                    onChange={(e) => setCustomerName(e.target.value)}
+                                    required
+                                />
+
+                                {/* Phone Input with Prefix */}
+                                <div className="relative flex items-center">
+                                    <div className="absolute left-0 top-0 bottom-0 bg-gray-50 border border-r-0 border-gray-200/50 rounded-l-xl px-3 flex items-center justify-center font-medium text-gray-400 text-sm w-[60px]">
+                                        +233
+                                    </div>
+                                    <input
+                                        type="tel"
+                                        placeholder="XX XXX XXXX"
+                                        className="w-full pl-[72px] pr-4 py-3.5 bg-white border border-gray-200/50 rounded-xl font-medium text-gray-900 outline-none focus:border-gray-900 focus:ring-4 focus:ring-gray-900/5 transition placeholder:text-gray-400 placeholder:font-normal"
+                                        value={customerPhone}
+                                        onChange={(e) => {
+                                            // Only allow digits
+                                            const val = e.target.value.replace(/\D/g, '');
+                                            setCustomerPhone(val);
+                                        }}
+                                        maxLength={10}
+                                        required
+                                    />
+                                </div>
+                                <p className="text-[11px] font-medium text-gray-500">
+                                    Complete these details to proceed to WhatsApp checkout.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Footer */}
                     {cart.length > 0 && (
                         <div className="border-t border-gray-100 p-5 space-y-6 bg-white safe-area-bottom">
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <label className="block text-xs font-medium uppercase text-gray-900 tracking-widest">
-                                        Contact Information
-                                    </label>
-                                    <span className="text-[10px] font-medium text-gray-500 bg-gray-50 border border-gray-100/50 px-2 py-0.5 rounded-full">
-                                        For {storeName || 'Store'}
-                                    </span>
-                                </div>
 
-                                <div className="space-y-3">
-                                    {/* Name Input */}
-                                    <input
-                                        type="text"
-                                        placeholder="Business Name / Buyer Name (Required)"
-                                        className="w-full px-4 py-3.5 bg-white border border-gray-200/50 rounded-xl font-medium text-gray-900 outline-none focus:border-gray-900 focus:ring-4 focus:ring-gray-900/5 transition placeholder:text-gray-400 placeholder:font-normal"
-                                        value={customerName}
-                                        onChange={(e) => setCustomerName(e.target.value)}
-                                        required
-                                    />
-
-                                    {/* Phone Input with Prefix */}
-                                    <div className="relative flex items-center">
-                                        <div className="absolute left-0 top-0 bottom-0 bg-gray-50 border border-r-0 border-gray-200/50 rounded-l-xl px-3 flex items-center justify-center font-medium text-gray-400 text-sm w-[60px]">
-                                            +233
-                                        </div>
-                                        <input
-                                            type="tel"
-                                            placeholder="XX XXX XXXX"
-                                            className="w-full pl-[72px] pr-4 py-3.5 bg-white border border-gray-200/50 rounded-xl font-medium text-gray-900 outline-none focus:border-gray-900 focus:ring-4 focus:ring-gray-900/5 transition placeholder:text-gray-400 placeholder:font-normal"
-                                            value={customerPhone}
-                                            onChange={(e) => {
-                                                // Only allow digits
-                                                const val = e.target.value.replace(/\D/g, '');
-                                                setCustomerPhone(val);
-                                            }}
-                                            maxLength={10}
-                                            required
-                                        />
-                                    </div>
-                                    <p className="text-[11px] font-medium text-gray-500">
-                                        Complete these details to proceed to WhatsApp checkout.
-                                    </p>
-                                </div>
-                            </div>
 
                             <div className="space-y-3 pt-4 border-t-2 border-dashed border-gray-100">
                                 <div className="flex items-center justify-between text-gray-500 font-medium">
