@@ -48,22 +48,22 @@ export default function AddToCartBar({ product, storePhone, storeName }: { produ
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100/50 safe-area-bottom z-50">
-            <div className="max-w-xl mx-auto space-y-3">
+        <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-white border-t border-gray-100/50 safe-area-bottom z-50">
+            <div className="max-w-xl mx-auto space-y-2 sm:space-y-3">
                 {/* Quantity Selector */}
-                <div className="flex items-center justify-between bg-gray-50 rounded-2xl p-3">
-                    <span className="text-sm font-bold text-gray-600 uppercase tracking-wider">Quantity</span>
-                    <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between bg-gray-50 rounded-xl sm:rounded-2xl p-2 sm:p-3">
+                    <span className="text-xs sm:text-sm font-bold text-gray-600 uppercase tracking-wider">Qty</span>
+                    <div className="flex items-center gap-2 sm:gap-3">
                         <button
                             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                            className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-900 font-bold hover:bg-gray-900 hover:text-white transition-all active:scale-95"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-900 font-bold hover:bg-gray-900 hover:text-white transition-all active:scale-95 text-sm"
                         >
                             −
                         </button>
-                        <span className="text-lg font-black text-gray-900 w-8 text-center">{quantity}</span>
+                        <span className="text-base sm:text-lg font-black text-gray-900 w-6 sm:w-8 text-center">{quantity}</span>
                         <button
                             onClick={() => setQuantity(quantity + 1)}
-                            className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-900 font-bold hover:bg-gray-900 hover:text-white transition-all active:scale-95"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-900 font-bold hover:bg-gray-900 hover:text-white transition-all active:scale-95 text-sm"
                         >
                             +
                         </button>
@@ -71,20 +71,22 @@ export default function AddToCartBar({ product, storePhone, storeName }: { produ
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <button
                         onClick={handleAddToCart}
-                        className="flex-1 bg-gray-900 text-white font-bold py-4 rounded-full shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 bg-gray-900 text-white font-bold py-3 sm:py-4 rounded-full shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
-                        <ShoppingBag size={20} />
-                        Add to Cart
+                        <ShoppingBag size={18} className="sm:w-5 sm:h-5" />
+                        <span className="hidden sm:inline">Add to Cart</span>
+                        <span className="sm:hidden">Add</span>
                     </button>
                     <button
                         onClick={handleWhatsAppCheckout}
-                        className="flex-[2] bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-full shadow-xl shadow-green-600/20 active:scale-95 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 sm:flex-[2] bg-green-600 hover:bg-green-700 text-white font-bold py-3 sm:py-4 rounded-full shadow-xl shadow-green-600/20 active:scale-95 transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
-                        <MessageCircle size={20} />
-                        Order via WhatsApp
+                        <MessageCircle size={18} className="sm:w-5 sm:h-5" />
+                        <span className="hidden sm:inline">Order via WhatsApp</span>
+                        <span className="sm:hidden">WhatsApp Order</span>
                     </button>
                 </div>
             </div>
