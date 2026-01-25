@@ -16,7 +16,7 @@ export default function ProductDetailsClient({ product, storeSlug, storeId, stor
     const images = [product.image, ...(product.gallery || [])].filter(Boolean) as string[];
 
     return (
-        <div className="min-h-screen bg-white pb-40">
+        <div className="min-h-screen bg-white pb-56">
             {/* Header */}
             <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl px-4 py-3 flex items-center justify-between border-b border-gray-100">
                 <Link href={`/${storeSlug}`} className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center hover:bg-black hover:text-white transition-all active:scale-95 text-black border border-transparent hover:border-black/5">
@@ -94,7 +94,7 @@ export default function ProductDetailsClient({ product, storeSlug, storeId, stor
                     )}
 
                     {/* Description */}
-                    <div>
+                    <div className="mb-8">
                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-3">Description</h3>
                         <div className="prose prose-base prose-gray max-w-none">
                             <p className="text-gray-600 font-medium leading-relaxed">
