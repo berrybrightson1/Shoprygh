@@ -9,6 +9,7 @@ import CartDrawer from "./CartDrawer";
 import { useLikesStore } from "@/store/likes";
 import { useCurrencyStore } from "@/store/currency";
 import { formatPrice } from "@/utils/currency";
+import { toast } from "sonner";
 
 // Quick augmentation for the scroll ref hack
 declare global {
@@ -137,7 +138,9 @@ function ProductCard({ product, storeSlug }: { product: any; storeSlug: string }
                             e.preventDefault();
                             e.stopPropagation();
                             addItem({ ...product, priceRetail: price });
-                            toggleCart();
+                            toast.success(`${product.name} added to cart!`, {
+                                duration: 2000,
+                            });
                         }}
                         // Boosted Z-Index to z-30 to stay above slider controls
                         className="absolute bottom-3 right-3 bg-gray-900 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg shadow-gray-900/20 hover:scale-110 active:scale-95 transition-all opacity-100 z-30"

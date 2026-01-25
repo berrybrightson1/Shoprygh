@@ -1,11 +1,11 @@
 "use client";
 
 import { useCartStore } from "@/store/cart";
-import { ShoppingBag, Check } from "lucide-react";
+import { MessageCircle, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCurrencyStore } from "@/store/currency";
-import { formatPrice } from "@/utils/currency";
+import { formatPrice, getCurrencySymbol } from "@/utils/currency";
 
 interface Product {
     id: string;
@@ -15,10 +15,10 @@ interface Product {
     image: string | null;
 }
 
-export default function AddToCartBar({ product }: { product: Product }) {
-    const { addItem, toggleCart, items } = useCartStore();
-    const [isAdded, setIsAdded] = useState(false);
+export default function AddToCartBar({ product, storePhone, storeName }: { product: Product; storePhone?: string | null; storeName: string }) {
+    const { addItem, items } = useCartStore();
     const currency = useCurrencyStore((state) => state.currency);
+    const [quantity, setQuantity] = useState(1);
 
     const handleAddToCart = () => {
         addItem({
@@ -28,36 +28,65 @@ export default function AddToCartBar({ product }: { product: Product }) {
             category: product.category,
             image: product.image
         });
+        toast.success(`${product.name} added to cart!`);
+    };
 
-        // Visual feedback
-        setIsAdded(true);
-        setTimeout(() => setIsAdded(false), 2000);
+    const handleWhatsAppCheckout = () => {
+        if (!storePhone) {
+            toast.error("Store contact not available");
+            return;
+        }
 
-        // Open cart to show user
-        // toggleCart(); // User requested to keep it closed: "saved for later shopping"
+        const currencySymbol = getCurrencySymbol(currency);
+        const price = formatPrice(Number(product.priceRetail), currency);
+        const total = formatPrice(Number(product.priceRetail) * quantity, currency);
+
+        const message = `Hi! I'd like to order:\n\n📦 *${product.name}*\n🏷️ Category: ${product.category}\n💰 Price: ${price}\n🔢 Quantity: ${quantity}\n💵 Total: ${total}\n\nFrom: ${storeName}`;
+
+        const whatsappUrl = `https://wa.me/${storePhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100/50 safe-area-bottom">
-            <div className="max-w-xl mx-auto flex gap-4">
-                <button
-                    onClick={handleAddToCart}
-                    className={`flex-1 font-medium py-4 rounded-full shadow-xl active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 ${isAdded
-                        ? "bg-green-600 text-white shadow-green-200"
-                        : "bg-black text-white shadow-black/20"
-                        }`}
-                >
-                    {isAdded ? <Check size={20} /> : (
-                        <div className="relative">
-                            <ShoppingBag size={20} />
-                            {/* Badge */}
-                            <span className="absolute -top-2 -right-2 bg-white text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
-                                {items.reduce((acc, i) => acc + i.quantity, 0)}
-                            </span>
-                        </div>
-                    )}
-                    {isAdded ? "Added to Cart" : `Add to Cart - ${formatPrice(Number(product.priceRetail), currency)}`}
-                </button>
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100/50 safe-area-bottom z-50">
+            <div className="max-w-xl mx-auto space-y-3">
+                {/* Quantity Selector */}
+                <div className="flex items-center justify-between bg-gray-50 rounded-2xl p-3">
+                    <span className="text-sm font-bold text-gray-600 uppercase tracking-wider">Quantity</span>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                            className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-900 font-bold hover:bg-gray-900 hover:text-white transition-all active:scale-95"
+                        >
+                            −
+                        </button>
+                        <span className="text-lg font-black text-gray-900 w-8 text-center">{quantity}</span>
+                        <button
+                            onClick={() => setQuantity(quantity + 1)}
+                            className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-900 font-bold hover:bg-gray-900 hover:text-white transition-all active:scale-95"
+                        >
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3">
+                    <button
+                        onClick={handleAddToCart}
+                        className="flex-1 bg-gray-900 text-white font-bold py-4 rounded-full shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2"
+                    >
+                        <ShoppingBag size={20} />
+                        Add to Cart
+                    </button>
+                    <button
+                        onClick={handleWhatsAppCheckout}
+                        className="flex-[2] bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-full shadow-xl shadow-green-600/20 active:scale-95 transition-all flex items-center justify-center gap-2"
+                    >
+                        <MessageCircle size={20} />
+                        Order via WhatsApp
+                    </button>
+                </div>
             </div>
         </div>
     );

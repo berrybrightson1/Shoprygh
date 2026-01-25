@@ -14,11 +14,17 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
             gallery: true,
             category: true,
             priceRetail: true,
-            storeId: true
+            storeId: true,
+            store: {
+                select: {
+                    ownerPhone: true,
+                    name: true
+                }
+            }
         }
     });
 
     if (!product) notFound();
 
-    return <ProductDetailsClient product={product} storeSlug={storeSlug} />;
+    return <ProductDetailsClient product={product} storeSlug={storeSlug} storePhone={product.store.ownerPhone} storeName={product.store.name} />;
 }

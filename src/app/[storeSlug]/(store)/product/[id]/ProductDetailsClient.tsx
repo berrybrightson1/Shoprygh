@@ -10,7 +10,7 @@ import ProductGallery from "@/components/storefront/ProductGallery";
 import { useCurrencyStore } from "@/store/currency";
 import { formatPrice, getCurrencySymbol } from "@/utils/currency";
 
-export default function ProductDetailsClient({ product, storeSlug }: { product: any; storeSlug: string }) {
+export default function ProductDetailsClient({ product, storeSlug, storePhone, storeName }: { product: any; storeSlug: string; storePhone?: string | null; storeName: string }) {
     const currency = useCurrencyStore((state) => state.currency);
     const images = [product.image, ...(product.gallery || [])].filter(Boolean) as string[];
 
@@ -78,13 +78,17 @@ export default function ProductDetailsClient({ product, storeSlug }: { product: 
             </main>
 
             {/* Bottom Bar */}
-            <AddToCartBar product={{
-                id: product.id,
-                name: product.name,
-                category: product.category,
-                priceRetail: Number(product.priceRetail),
-                image: product.image
-            }} />
+            <AddToCartBar
+                product={{
+                    id: product.id,
+                    name: product.name,
+                    category: product.category,
+                    priceRetail: Number(product.priceRetail),
+                    image: product.image
+                }}
+                storePhone={storePhone}
+                storeName={storeName}
+            />
         </div>
     );
 }
