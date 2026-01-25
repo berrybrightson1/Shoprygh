@@ -6,6 +6,7 @@ import { ArrowLeft, Truck, ShieldCheck, ShoppingBag } from "lucide-react";
 import { notFound } from "next/navigation";
 import AddToCartBar from "@/components/AddToCartBar";
 import CartHeaderButton from "@/components/CartHeaderButton";
+import CartDrawer from "@/components/CartDrawer";
 import ProductGallery from "@/components/storefront/ProductGallery";
 import { useCurrencyStore } from "@/store/currency";
 import { formatPrice, getCurrencySymbol } from "@/utils/currency";
@@ -89,6 +90,9 @@ export default function ProductDetailsClient({ product, storeSlug, storePhone, s
                 storePhone={storePhone}
                 storeName={storeName}
             />
+
+            {/* Cart Drawer */}
+            <CartDrawer storeName={storeName} storeOwnerPhone={storePhone} />
         </div>
     );
 }
