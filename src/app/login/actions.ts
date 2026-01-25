@@ -101,7 +101,7 @@ export async function login(formData: FormData) {
                 // const session = await encrypt(sessionPayload);
                 // (await cookies()).set("session", session, { expires, httpOnly: true });
 
-                const redirectTo = `/${result.store?.slug}/admin/inventory`;
+                const redirectTo = `/${result.store?.slug}/admin`;
                 await logActivity("LOGIN", "Orphaned account self-healed", "USER", result.id);
 
                 return { success: true, url: redirectTo };
@@ -126,7 +126,7 @@ export async function login(formData: FormData) {
             redirectTo = '/platform-admin';
             await logActivity("LOGIN", "Super Admin logged in", "USER", user.id);
         } else if (user.store) {
-            redirectTo = `/${user.store.slug}/admin/inventory`;
+            redirectTo = `/${user.store.slug}/admin`;
             await logActivity("LOGIN", `User logged into store: ${user.store.name}`, "STORE", user.store.id);
         } else {
             await logActivity("LOGIN", "User logged in (No Store)", "USER", user.id);

@@ -54,7 +54,7 @@ function EditableCell({
                     type={type}
                     value={value}
                     onChange={handleChange}
-                    className="bg-transparent font-medium text-gray-900 w-full outline-none border-b-2 border-transparent focus:border-brand-cyan/30 hover:border-gray-100/50 text-sm py-1.5 transition-all tabular-nums"
+                    className="bg-transparent font-medium text-gray-900 w-full outline-none border-b-2 border-transparent focus:border-brand-cyan/30 hover:border-gray-100/50 text-base md:text-sm py-1.5 transition-all tabular-nums"
                 />
             )}
 
@@ -135,7 +135,7 @@ export default function InventoryTable({
     };
 
     return (
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100">
             {/* Table Header / Toolbar */}
             <div className="p-8 lg:p-10 border-b border-gray-50 bg-white flex flex-col xl:flex-row justify-between items-center gap-6">
                 <div className="flex flex-col sm:flex-row items-center gap-8 w-full xl:w-auto">
@@ -153,7 +153,7 @@ export default function InventoryTable({
                         <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/search:text-brand-cyan transition-colors" />
                         <input
                             placeholder="Search catalog ID, name or SKU..."
-                            className="bg-gray-50/50 border border-gray-200/50 pl-12 pr-4 py-4 rounded-2xl text-[13px] font-medium text-gray-900 outline-none focus:border-brand-cyan/30 focus:bg-white focus:ring-4 focus:ring-brand-cyan/5 transition-all w-full placeholder:text-gray-300 shadow-sm"
+                            className="bg-gray-50/50 border border-gray-200/50 pl-12 pr-4 py-4 rounded-2xl text-base md:text-[13px] font-medium text-gray-900 outline-none focus:border-brand-cyan/30 focus:bg-white focus:ring-4 focus:ring-brand-cyan/5 transition-all w-full placeholder:text-gray-300 shadow-sm"
                         />
                     </div>
                 </div>
@@ -320,12 +320,24 @@ export default function InventoryTable({
 
                                             <button
                                                 onClick={() => {
-                                                    const formData = new FormData();
-                                                    formData.append("id", p.id);
-                                                    toast.promise(deleteProductBound(formData), {
-                                                        loading: `Deleting ${p.name}...`,
-                                                        success: `${p.name} has been removed`,
-                                                        error: "Failed to remove product"
+                                                    toast("Are you sure?", {
+                                                        description: "This action cannot be undone.",
+                                                        action: {
+                                                            label: "Delete",
+                                                            onClick: () => {
+                                                                const formData = new FormData();
+                                                                formData.append("id", p.id);
+                                                                toast.promise(deleteProductBound(formData), {
+                                                                    loading: `Deleting ${p.name}...`,
+                                                                    success: `${p.name} has been removed`,
+                                                                    error: "Failed to remove product"
+                                                                });
+                                                            }
+                                                        },
+                                                        cancel: {
+                                                            label: "Cancel",
+                                                            onClick: () => { }
+                                                        }
                                                     });
                                                 }}
                                                 className="p-3 bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-xl transition-all active:scale-95"

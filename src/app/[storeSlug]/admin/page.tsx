@@ -15,11 +15,11 @@ import {
     Clock,
     Package,
     ChevronRight,
-    Activity
+    Activity,
+    Store
 } from "lucide-react";
 
-import MobileActivityDrawer from "@/components/admin/MobileActivityDrawer";
-import MobileSystemLogsDrawer from "@/components/admin/MobileSystemLogsDrawer";
+
 
 export default async function AdminDashboard({ params }: { params: Promise<{ storeSlug: string }> }) {
     const session = await getSession();
@@ -84,208 +84,272 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
 
     // --- UI Components ---
 
-    const StatCard = ({ label, value, color, icon: Icon, subtext, trend }: { label: string; value: string | number; color: string; icon: any; subtext?: string, trend?: string }) => {
-        const colorClasses: Record<string, string> = {
-            cyan: "text-brand-cyan bg-cyan-50",
-            orange: "text-brand-orange bg-orange-50",
-            purple: "text-purple-600 bg-purple-50",
-            green: "text-emerald-600 bg-emerald-50",
-            red: "text-red-600 bg-red-50",
-            gray: "text-gray-400 bg-gray-50",
-            blue: "text-blue-600 bg-blue-50",
+    // --- Helpers ---
+    const getTimeBasedGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning";
+        if (hour < 18) return "Good Afternoon";
+        return "Good Evening";
+    };
+
+    // Simple SVG Sparkline Generator (Visual Only for now)
+    const Sparkline = ({ color }: { color: string }) => {
+        const points = "0,20 10,15 20,18 30,12 40,16 50,10 60,14 70,5 80,10 90,2 100,5";
+        return (
+            <svg viewBox="0 0 100 25" className="w-full h-12 opacity-30" preserveAspectRatio="none">
+                <path
+                    d={`M${points}`}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                    className="animate-pulse" // Subtle pulse
+                />
+                <path
+                    d={`M0,25 L${points} L100,25 Z`}
+                    fill={color}
+                    fillOpacity="0.1"
+                />
+            </svg>
+        );
+    };
+
+    const AliveStatCard = ({ label, value, color, icon: Icon, subtext, trend }: { label: string; value: string | number; color: string; icon: any; subtext?: string, trend?: string }) => {
+        const colorStyles: Record<string, { bg: string, text: string, hex: string }> = {
+            cyan: { bg: "bg-cyan-50", text: "text-brand-cyan", hex: "#06b6d4" }, // cyan-500
+            orange: { bg: "bg-orange-50", text: "text-brand-orange", hex: "#f97316" }, // orange-500
+            purple: { bg: "bg-purple-50", text: "text-purple-600", hex: "#9333ea" }, // purple-600
+            blue: { bg: "bg-blue-50", text: "text-blue-600", hex: "#2563eb" }, // blue-600
         };
 
-        return (
-            <div className="bg-white rounded-[32px] p-6 border border-gray-100 shadow-2xl shadow-gray-200/50 hover:shadow-gray-300/60 transition-all duration-500 group relative overflow-hidden flex flex-col justify-between min-h-[180px]">
-                {/* Visual Accent */}
-                <div className={`absolute top-0 right-0 w-24 h-24 blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none rounded-full ${colorClasses[color].split(' ')[1]}`} />
+        const style = colorStyles[color];
 
-                <div className="flex items-start justify-between relative z-10">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-sm border border-white ${colorClasses[color]}`}>
-                        <Icon size={22} strokeWidth={2.5} />
+        return (
+            <div className="relative overflow-hidden bg-white/70 backdrop-blur-xl rounded-[32px] p-6 border border-white/50 shadow-xl shadow-gray-200/40 hover:shadow-2xl hover:shadow-brand-cyan/10 transition-all duration-500 group flex flex-col justify-between min-h-[160px]">
+                {/* Background Ambient Glow */}
+                <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-[50px] opacity-20 pointer-events-none transition-opacity group-hover:opacity-40 ${style.bg.replace("bg-", "bg-")}`} style={{ backgroundColor: style.hex }} />
+
+                {/* Header: Label & Icon */}
+                <div className="flex justify-between items-start relative z-10">
+                    <div className="flex flex-col gap-1">
+                        <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none">{label}</span>
+                        {subtext && <span className="text-[10px] text-gray-300 font-medium uppercase tracking-wider">{subtext}</span>}
                     </div>
-                    {trend && (
-                        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
-                            <TrendingUp size={10} strokeWidth={3} />
-                            <span className="text-[10px] font-black uppercase tracking-tighter">{trend}</span>
-                        </div>
-                    )}
+
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${style.bg} ${style.text} shadow-sm border border-white/50 group-hover:scale-110 transition-transform duration-500`}>
+                        <Icon size={18} strokeWidth={2.5} />
+                    </div>
                 </div>
 
-                <div className="relative z-10">
-                    <div className="flex items-center gap-2 mb-1">
-                        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em]">{label}</p>
-                        {subtext && <span className="text-[9px] font-medium text-gray-300 uppercase">/ {subtext}</span>}
+                {/* Footer: Value & Trend */}
+                <div className="relative z-10 mt-auto">
+                    <div className="flex items-end justify-between">
+                        <span className="text-4xl lg:text-5xl font-medium text-gray-900 tracking-tighter leading-none">{value}</span>
+
+                        {trend && (
+                            <div className="flex items-center gap-1 min-w-0 bg-white/50 px-2 py-1 rounded-lg backdrop-blur-sm">
+                                <TrendingUp size={14} className="text-emerald-500" strokeWidth={3} />
+                                <span className="text-[11px] font-bold text-emerald-600 tracking-tight">{trend}</span>
+                            </div>
+                        )}
                     </div>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-4xl font-medium text-gray-900 tracking-tight leading-none">
-                            {value}
-                        </span>
-                    </div>
+                </div>
+
+                {/* Sparkline at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none opacity-50 mask-image-gradient-b">
+                    <Sparkline color={style.hex} />
                 </div>
             </div>
         );
     };
 
     return (
-        <div className="max-w-[1600px] mx-auto space-y-12 pb-24 lg:pb-8">
-            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
-                <div className="md:pl-0">
-                    <div className="flex items-center gap-2 mb-3">
-                        <div className="w-2 h-2 rounded-full bg-brand-cyan animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
-                        <span className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.3em]">Live Overview</span>
+        <div className="max-w-[1600px] mx-auto space-y-10 pb-24 lg:pb-8 relative">
+            {/* Ambient Background Lights */}
+            <div className="fixed top-0 left-0 w-full h-[500px] bg-gradient-to-b from-brand-cyan/5 to-transparent pointer-events-none -z-10" />
+            <div className="fixed top-[-20%] right-[-10%] w-[600px] h-[600px] bg-brand-purple/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2 pt-4">
+                <div className="md:pl-0 relative">
+                    {/* Decorative label: Vibe Coded Signature Style */}
+                    {/* Decorative label: Premium White Pill */}
+                    {/* Decorative label: Premium White Pill */}
+                    <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] mb-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
+                        <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.4)] animate-pulse" />
+                        <span className="text-[11px] font-bold text-gray-600 uppercase tracking-widest">{getTimeBasedGreeting()}</span>
                     </div>
-                    <h1 className="text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight">
-                        Store Cockpit
+
+                    <h1 className="text-4xl lg:text-6xl font-medium text-gray-900 tracking-tighter mb-2">
+                        {session.name}
                     </h1>
-                    <p className="text-gray-500 font-medium mt-3 ml-0.5 text-sm lg:text-base opacity-80">Operational hub for your commerce engine.</p>
+                    <p className="text-gray-500 font-medium text-base lg:text-lg max-w-lg leading-relaxed">
+                        Here's your command center for today. Inventory health is <span className="text-emerald-600 font-bold">Good</span>.
+                    </p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Link href={`/${storeSlug}/admin/inventory`} className="px-6 py-3.5 bg-black text-white rounded-3xl font-medium text-xs uppercase tracking-widest shadow-xl shadow-black/10 hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
-                        <Plus size={16} strokeWidth={3} />
-                        Add Product
+
+                <div className="flex items-center gap-4">
+                    <Link href={`/${storeSlug}/admin/inventory`} className="group relative px-8 py-4 bg-gray-900 text-white rounded-[24px] font-bold text-xs uppercase tracking-widest shadow-2xl shadow-gray-900/20 hover:scale-105 active:scale-95 transition-all overflow-hidden flex items-center gap-3">
+                        <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-black opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <Plus size={18} strokeWidth={3} className="relative z-10" />
+                        <span className="relative z-10">Add Product</span>
                     </Link>
                 </div>
             </header>
 
             {/* Premium Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <StatCard
-                    label="Revenue"
+                <AliveStatCard
+                    label="Total Revenue"
                     value={`₵${totalRevenue.toLocaleString()}`}
                     color="cyan"
                     icon={Wallet}
                     subtext="Lifetime"
                     trend="+12%"
                 />
-                <StatCard
-                    label="Orders"
+                <AliveStatCard
+                    label="Orders Today"
                     value={ordersToday}
                     color="orange"
                     icon={ShoppingBag}
-                    subtext="Today"
+                    subtext="Daily Volume"
                 />
-                <StatCard
-                    label="Active Base"
+                <AliveStatCard
+                    label="Active Members"
                     value={totalCustomers}
                     color="purple"
                     icon={Users}
                     subtext="Total Users"
                 />
-                <Link href={`/${storeSlug}/admin/inventory`} className="block group">
-                    <StatCard
-                        label="Inventory Items"
+                <Link href={`/${storeSlug}/admin/inventory`} className="block group h-full">
+                    <AliveStatCard
+                        label="Inventory Size"
                         value={totalProducts}
                         color="blue"
                         icon={Package}
-                        subtext="Total Products"
+                        subtext="Stock Items"
                     />
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                {/* Main Content Area: Integrated Hub */}
-                <div className="xl:col-span-2 space-y-6">
-                    <div className="bg-white rounded-[40px] border border-gray-100 shadow-2xl shadow-gray-200/50 overflow-hidden flex flex-col min-h-[600px]">
-                        {/* Hub Header */}
-                        <div className="p-8 lg:p-10 border-b border-gray-50 flex items-center justify-between bg-white relative z-10">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                {/* Main Feed: Timeline Style */}
+                <div className="xl:col-span-8 flex flex-col gap-6">
+                    <div className="bg-white/80 backdrop-blur-2xl rounded-[40px] border border-white/60 shadow-xl shadow-gray-100/50 p-8 lg:p-10 min-h-[600px] relative overflow-hidden">
+                        <div className="flex items-center justify-between mb-10 relative z-10">
                             <div>
-                                <h2 className="text-2xl font-medium text-gray-900 tracking-tight flex items-center gap-3">
-                                    Recent Orders
-                                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-orange-500 ring-4 ring-orange-100 animate-pulse" />
-                                </h2>
-                                <p className="text-xs text-gray-400 font-medium mt-1 uppercase tracking-widest">Real-time fulfillment stream</p>
+                                <h2 className="text-2xl font-medium text-gray-900 tracking-tight">Activity Feed</h2>
+                                <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Live Transaction Stream</p>
                             </div>
-                            <Link href={`/${storeSlug}/admin/orders`} className="p-4 bg-gray-50 rounded-2xl text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-all active:scale-95 group">
-                                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                            <Link href={`/${storeSlug}/admin/orders`} className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-all">
+                                <ArrowRight size={18} />
                             </Link>
                         </div>
 
-                        {/* Hub Scrollable Feed */}
-                        <div className="flex-1 overflow-y-auto no-scrollbar bg-gray-50/10">
+                        {/* Dotted Line Background */}
+                        <div className="absolute left-[39px] top-32 bottom-10 w-px border-l-2 border-dashed border-gray-100 z-0 hidden sm:block" />
+
+                        <div className="space-y-8 relative z-10">
                             {recentOrders.length === 0 ? (
-                                <div className="p-20 text-center flex flex-col items-center justify-center h-full">
-                                    <div className="w-24 h-24 bg-white rounded-[32px] shadow-xl shadow-gray-100 border border-gray-50 flex items-center justify-center mb-6 ring-4 ring-gray-50/50">
-                                        <ShoppingBag size={40} className="text-gray-200" />
-                                    </div>
-                                    <p className="font-black text-2xl text-gray-900 tracking-tight">No Sales Yet</p>
-                                    <p className="text-sm text-gray-400 font-bold mt-2 uppercase tracking-wide">Ready for your first conversion?</p>
+                                <div className="text-center py-20 opacity-50">
+                                    <ShoppingBag size={48} className="mx-auto text-gray-300 mb-4" />
+                                    <p className="text-gray-900 font-medium">No recent activity</p>
                                 </div>
                             ) : (
-                                <div className="divide-y divide-gray-100/50">
-                                    {recentOrders.map(order => (
-                                        <Link key={order.id} href={`/${storeSlug}/admin/orders/${order.id}`} className="p-8 lg:px-10 hover:bg-white hover:shadow-[0_0_80px_rgba(0,0,0,0.02)] transition-all flex items-center justify-between group cursor-pointer relative overflow-hidden">
-                                            <div className="absolute left-0 top-0 w-1 h-full bg-brand-cyan transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+                                recentOrders.map((order, i) => (
+                                    <Link key={order.id} href={`/${storeSlug}/admin/orders/${order.id}`} className="group relative flex items-start gap-6 sm:gap-8 hover:bg-gray-50/50 p-4 -mx-4 rounded-[28px] transition-colors">
+                                        {/* Timeline Node */}
+                                        <div className="hidden sm:flex relative z-10 shrink-0 w-12 h-12 rounded-[18px] bg-white border border-gray-100 shadow-sm items-center justify-center text-gray-900 text-lg font-bold group-hover:scale-110 group-hover:border-brand-cyan/30 group-hover:text-brand-cyan transition-all duration-300">
+                                            {order.customerName?.charAt(0) || "?"}
+                                        </div>
 
-                                            <div className="flex items-center gap-6">
-                                                <div className="w-16 h-16 rounded-[24px] bg-white border border-gray-100 shadow-lg shadow-gray-200/50 flex items-center justify-center font-medium text-2xl text-gray-900 group-hover:rotate-6 transition-transform">
-                                                    {order.customerName?.charAt(0) || "?"}
-                                                </div>
-                                                <div>
-                                                    <p className="font-medium text-gray-900 text-xl tracking-tight group-hover:text-brand-cyan transition-colors">{order.customerName || "Guest Customer"}</p>
-                                                    <div className="flex items-center gap-3 mt-1.5">
-                                                        <span className="text-[10px] font-medium uppercase text-gray-400 tracking-widest bg-gray-100 px-2 py-1 rounded-md">{order.items.length} Units</span>
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-gray-200" />
-                                                        <span className="text-[10px] font-medium uppercase text-gray-400 tracking-widest">{new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                                    </div>
-                                                </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                                <h3 className="font-medium text-lg text-gray-900 tracking-tight group-hover:text-brand-cyan transition-colors truncate">
+                                                    New Order from <span className="font-bold">{order.customerName || "Guest"}</span>
+                                                </h3>
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest shrink-0 whitespace-nowrap bg-gray-100/50 px-2 py-1 rounded-lg">
+                                                    {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
                                             </div>
+                                            <div className="flex items-center gap-3 mt-2">
+                                                <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${order.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                                    order.status === 'PENDING' ? 'bg-orange-50 text-orange-600 border-orange-100' :
+                                                        'bg-gray-100 text-gray-500 border-gray-200'
+                                                    }`}>
+                                                    {order.status}
+                                                </span>
+                                                <span className="text-xs text-gray-400 font-medium">•</span>
+                                                <span className="text-xs text-gray-500 font-medium">{order.items.length} items</span>
+                                            </div>
+                                        </div>
 
-                                            <div className="text-right">
-                                                <p className="font-medium text-2xl text-gray-900 tracking-tight">₵{Number(order.total).toFixed(2)}</p>
-                                                <div className="mt-2 text-right">
-                                                    <span className={`text-[10px] font-medium uppercase tracking-[0.2em] px-3 py-1.5 rounded-2xl border ${order.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
-                                                        order.status === 'PENDING' ? 'bg-orange-50 text-orange-700 border-orange-100' :
-                                                            'bg-gray-50 text-gray-600 border-gray-100 opacity-60'
-                                                        }`}>
-                                                        {order.status}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    ))}
-                                </div>
+                                        <div className="text-right shrink-0">
+                                            <div className="font-medium text-xl text-gray-900 tracking-tight">₵{Number(order.total).toFixed(2)}</div>
+                                        </div>
+                                    </Link>
+                                ))
                             )}
                         </div>
-
-                        {/* Hub Footer */}
-                        {recentOrders.length > 0 && (
-                            <div className="p-6 bg-white border-t border-gray-50 text-center">
-                                <Link href={`/${storeSlug}/admin/orders`} className="inline-flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-black uppercase tracking-[0.2em] transition-all">
-                                    Full Transaction History
-                                    <ChevronRight size={14} strokeWidth={3} />
-                                </Link>
-                            </div>
-                        )}
                     </div>
                 </div>
 
-                {/* Quick Actions Panel: Integrated Hub */}
-                <div className="space-y-6">
-                    <div className="bg-white rounded-[40px] border border-gray-100 shadow-2xl shadow-gray-200/50 p-8 lg:p-10 flex flex-col gap-8 h-full">
-                        <div>
-                            <h2 className="text-2xl font-medium text-gray-900 tracking-tight">Rapid Entry</h2>
-                            <p className="text-[11px] text-gray-400 font-medium mt-1 uppercase tracking-widest">Optimized workflows</p>
+                {/* Side Panel: Quick Actions */}
+                <div className="xl:col-span-4 space-y-6">
+                    <div className="bg-gradient-to-br from-gray-900 to-black text-white rounded-[40px] p-8 lg:p-10 shadow-2xl shadow-gray-900/20 relative overflow-hidden min-h-[400px] flex flex-col">
+                        {/* Decorative blobs */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/20 blur-[80px] rounded-full pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-purple/20 blur-[80px] rounded-full pointer-events-none" />
+
+                        <div className="relative z-10 mb-8">
+                            <h2 className="text-2xl font-medium tracking-tight text-white">Quick Actions</h2>
+                            <p className="text-white/40 text-xs font-bold uppercase tracking-widest mt-1">Shortcuts</p>
                         </div>
 
-                        <div className="flex flex-col gap-3">
-                            <ActionLink
-                                href={`/${storeSlug}/admin/inventory`}
-                                icon={<Plus size={22} />}
-                                label="Inventory"
-                                description="Add catalog items"
-                                color="cyan"
-                            />
+                        <div className="grid grid-cols-1 gap-3 relative z-10">
+                            <Link href={`/${storeSlug}`} target="_blank" className="flex items-center gap-4 p-4 rounded-[24px] bg-white/10 hover:bg-white/20 border border-white/5 backdrop-blur-md transition-all group active:scale-95">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-400 text-black flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
+                                    <Store size={20} className="stroke-[2.5]" />
+                                </div>
+                                <div>
+                                    <div className="font-bold text-sm text-white">Visit Storefront</div>
+                                    <div className="text-[10px] text-white/50 font-medium uppercase tracking-wider">Live Preview</div>
+                                </div>
+                                <ArrowRight size={16} className="ml-auto text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                            </Link>
+                            <Link href={`/${storeSlug}/admin/settings`} className="flex items-center gap-4 p-4 rounded-[24px] bg-white/10 hover:bg-white/20 border border-white/5 backdrop-blur-md transition-all group active:scale-95">
+                                <div className="w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                    <Wallet size={20} className="stroke-[2.5]" />
+                                </div>
+                                <div>
+                                    <div className="font-bold text-sm text-white">Billing</div>
+                                    <div className="text-[10px] text-white/50 font-medium uppercase tracking-wider">Settings</div>
+                                </div>
+                            </Link>
                         </div>
 
-                        {/* Decoration Area */}
-                        <div className="mt-4 p-8 rounded-[32px] bg-gray-50/50 border border-gray-100/50 flex flex-col items-center text-center">
-                            <div className="w-16 h-16 rounded-[24px] bg-white shadow-xl shadow-gray-200 border border-gray-50 mb-4 flex items-center justify-center">
-                                <Activity size={24} className="text-gray-300" />
+                        <div className="mt-auto pt-8 relative z-10">
+                            <div className="p-5 rounded-[24px] bg-white/5 border border-white/5 backdrop-blur-sm">
+                                <div className="flex items-center gap-3 mb-2">
+                                    {recentOrders.length > 0 ? (
+                                        <>
+                                            <TrendingUp size={16} className="text-brand-cyan" />
+                                            <span className="text-xs font-bold text-white uppercase tracking-widest">Trend</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <AlertCircle size={16} className="text-brand-orange" />
+                                            <span className="text-xs font-bold text-white uppercase tracking-widest">Tip</span>
+                                        </>
+                                    )}
+                                </div>
+                                <p className="text-sm text-white/70 leading-relaxed font-medium">
+                                    {recentOrders.length > 0
+                                        ? "Most orders happen between 6PM and 9PM. Consider scheduling checks then."
+                                        : "Your store is ready. Share your link to get your first order!"
+                                    }
+                                </p>
                             </div>
-                            <p className="text-[10px] font-medium text-gray-300 uppercase tracking-[0.2em] leading-relaxed max-w-[150px]">
-                                Use the cockpit to monitor live store traffic.
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -294,24 +358,5 @@ export default async function AdminDashboard({ params }: { params: Promise<{ sto
     );
 }
 
-function ActionLink({ href, icon, label, description, color }: { href: string, icon: any, label: string, description: string, color: string }) {
-    const colorClasses: Record<string, string> = {
-        cyan: "bg-cyan-50 text-brand-cyan",
-        orange: "bg-orange-50 text-brand-orange",
-        purple: "bg-purple-50 text-purple-600",
-        gray: "bg-gray-100 text-gray-400",
-    };
-
-    return (
-        <Link href={href} className="group w-full flex items-center gap-5 p-5 rounded-[32px] bg-gray-50/30 border border-gray-100/50 hover:bg-white hover:shadow-xl hover:shadow-gray-200/40 hover:border-gray-100 transition-all duration-300 active:scale-95">
-            <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-sm border border-white ${colorClasses[color]}`}>
-                {icon}
-            </div>
-            <div className="flex-1 min-w-0 text-left">
-                <span className="font-medium text-gray-900 block group-hover:text-black transition tracking-tight">{label}</span>
-                <span className="text-[11px] text-gray-400 font-medium uppercase tracking-widest mt-0.5 block">{description}</span>
-            </div>
-            <ChevronRight size={18} className="text-gray-200 group-hover:text-black transition group-hover:translate-x-1" />
-        </Link>
-    );
-}
+// Helper (Moved inside page used to be standalone but keeping file clean)
+// Removed old ActionLink component as it is replaced by unique Quick Action cards

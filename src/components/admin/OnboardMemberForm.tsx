@@ -65,8 +65,8 @@ export default function OnboardMemberForm({ storeId, createUserAction }: Onboard
                         name="password"
                         type="text"
                         required
-                        defaultValue="Anaya123!"
-                        className="w-full bg-gray-50 border border-gray-200/50 rounded-2xl py-4 px-4 font-medium text-gray-900 focus:border-brand-cyan/30 focus:bg-white outline-none transition-all shadow-sm font-mono text-sm tracking-widest"
+                        placeholder="Set temporary password"
+                        className="w-full bg-gray-50 border border-gray-200/50 rounded-2xl py-4 px-4 font-medium text-gray-900 focus:border-brand-cyan/30 focus:bg-white outline-none transition-all shadow-sm font-mono text-sm tracking-widest text-base"
                     />
                 </div>
                 <button type="submit" className="w-full bg-black hover:bg-brand-cyan hover:text-black text-white font-medium py-5 rounded-2xl transition-all shadow-xl shadow-black/10 uppercase tracking-[0.2em] text-[11px] active:scale-95 group mt-4">

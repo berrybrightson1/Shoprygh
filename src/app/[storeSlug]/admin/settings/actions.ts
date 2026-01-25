@@ -21,7 +21,23 @@ export async function updateStoreTier(formData: FormData) {
     }
 
     // Verify Paystack Setup
+    // Verify Paystack Setup
     const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
+
+    // DEVELOPMENT BYPASS
+    if (!PAYSTACK_SECRET && process.env.NODE_ENV === 'development') {
+        console.warn("⚠️ DEV MODE: Bypassing Payment Gateway (Missing Secret Key)");
+        // Simulate successful payment flow
+        await prisma.store.update({
+            where: { id: storeId },
+            data: { tier: newTier },
+        });
+        await logActivity("UPDATE_PLAN", `Dev Bypass: Updated plan to ${newTier}`, "STORE", storeId, { oldTier: currentTier, newTier });
+        const store = await prisma.store.findUnique({ where: { id: storeId }, select: { slug: true } });
+        redirect(`/${store?.slug}/admin/settings?success=true&dev=true`);
+        return;
+    }
+
     if (!PAYSTACK_SECRET) {
         console.error("Missing PAYSTACK_SECRET_KEY");
         // Fallback for dev without keys or user notification

@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield, Sparkles, Wallet, Tag, Truck, PanelLeftClose, ChevronRight, LayoutDashboard, BadgeCheck, Lock, Settings } from "lucide-react";
+import { Package, ShoppingBag, Users, BarChart, Store, ChevronUp, LogOut, Menu, Shield, Sparkles, Wallet, Tag, Truck, PanelLeftClose, ChevronRight, LayoutDashboard, BadgeCheck, Lock, Settings, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 import { logout } from "@/app/[storeSlug]/admin/login/actions";
+import { useUIStore } from "@/store/ui";
 
 // Import MobileSystemLogsDrawer at top
 // import MobileSystemLogsDrawer from "@/components/admin/MobileSystemLogsDrawer";
@@ -25,7 +26,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
     return (
         <>
             {/* Mobile Header Bar */}
-            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-2xl text-gray-900 z-30 flex items-center px-6 justify-between border-b border-gray-100/50">
+            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-2xl text-gray-900 z-30 flex items-center px-6 justify-between border-b border-gray-100/50">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => setIsOpen(true)}
@@ -41,13 +42,16 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                 </div>
 
                 <div className="md:hidden">
-                    <Link href={`/${storeSlug}/admin/settings`} className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200 active:scale-95 transition-transform">
+                    <button
+                        onClick={() => useUIStore.getState().toggleRightSidebar()}
+                        className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200 active:scale-95 transition-transform"
+                    >
                         <img
                             src={currentUser.image || `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(currentUser.name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9`}
                             alt={currentUser.name}
                             className="w-full h-full object-cover"
                         />
-                    </Link>
+                    </button>
                 </div>
             </div>
 
@@ -70,7 +74,7 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
 
             {/* SIDEBAR MAIN */}
             {/* Note: On desktop (md), we remove 'fixed' and let it be a flex item in the layout */}
-            <aside className={`fixed inset-y-0 left-0 z-40 w-80 bg-gray-50/50 border-r border-gray-100 flex flex-col h-screen text-gray-600 transition-all duration-300 ease-in-out md:relative md:flex shrink-0 ${isOpen ? "translate-x-0" : "-translate-x-full"} ${isDesktopHidden ? 'md:w-0 md:overflow-hidden' : 'md:w-80 md:translate-x-0'}`}>
+            <aside className={`fixed inset-y-0 left-0 z-40 w-80 bg-white border-r border-gray-100 flex flex-col h-screen text-gray-600 transition-all duration-300 ease-in-out md:relative md:flex shrink-0 ${isOpen ? "translate-x-0" : "-translate-x-full"} ${isDesktopHidden ? 'md:w-0 md:overflow-hidden' : 'md:w-80 md:translate-x-0'}`}>
 
                 {/* Header */}
                 <div className="p-8 pb-4 flex items-center gap-4">
@@ -118,10 +122,18 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
 
                     <NavLink
                         href={`/${storeSlug}/admin/inventory`}
-                        icon={<Package size={20} />}
-                        label="Inventory"
-                        description="Manage products and categories"
+                        icon={<Sparkles size={20} />}
+                        label="Creator Studio"
+                        description="Add new products"
                         active={pathname?.startsWith(`/${storeSlug}/admin/inventory`)}
+                    />
+
+                    <NavLink
+                        href={`/${storeSlug}/admin/catalog`}
+                        icon={<Package size={20} />}
+                        label="Catalog"
+                        description="View and manage inventory"
+                        active={pathname?.startsWith(`/${storeSlug}/admin/catalog`)}
                     />
 
                     <NavLink
@@ -155,12 +167,14 @@ export default function AdminSidebar({ user, storeTier = 'HUSTLER', latestUpdate
                         active={pathname?.startsWith(`/${storeSlug}/admin/customers`)}
                     />
 
+
                     {/* Updates Tab with Indicator */}
                     <UpdatesNavLink
                         href={`/${storeSlug}/admin/updates`}
                         latestUpdateDate={latestUpdateDate}
                         active={pathname?.startsWith(`/${storeSlug}/admin/updates`)}
                     />
+
 
                     <div className="h-6" />
                     <div className="px-4 text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] mb-4">Preferences</div>

@@ -71,7 +71,7 @@ export default function LoginPage() {
                                 required
                                 defaultValue=""
                                 placeholder="yourname@gmail.com"
-                                className="w-full border border-gray-200 rounded-2xl px-4 py-3 md:px-5 md:py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400 text-sm md:text-base"
+                                className="w-full border border-gray-200 rounded-2xl px-4 py-3 md:px-5 md:py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400 text-base"
                             />
                         </div>
 
@@ -83,7 +83,7 @@ export default function LoginPage() {
                                     type={showPassword ? "text" : "password"}
                                     required
                                     placeholder="••••••••"
-                                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 md:px-5 md:py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400 pr-12 text-sm md:text-base"
+                                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 md:px-5 md:py-4 outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan bg-gray-50/50 focus:bg-white transition-all font-bold text-gray-900 placeholder:font-normal placeholder:text-gray-400 pr-12 text-base"
                                 />
                                 <button
                                     type="button"

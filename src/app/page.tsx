@@ -22,9 +22,9 @@ export default function PlatformLanding() {
 
             {/* Hero Section */}
             <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-12 md:py-20 lg:py-32 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-white overflow-hidden">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 border border-gray-200 text-xs font-bold uppercase tracking-wider text-gray-600 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    Powering Ghanaian Businesses
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.4)] animate-pulse" />
+                    <span className="text-[11px] font-bold text-gray-600 uppercase tracking-widest">Powering Ghanaian Businesses</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tight text-gray-900 mb-6 max-w-4xl animate-in fade-in slide-in-from-bottom-8 duration-700 leading-tight">

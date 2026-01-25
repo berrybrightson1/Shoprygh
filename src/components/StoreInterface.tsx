@@ -175,7 +175,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                             value={searchQuery}
                             type="text"
                             placeholder="Find your favorites..."
-                            className="w-full bg-gray-50/80 hover:bg-gray-50 focus:bg-white rounded-[20px] py-3.5 pl-11 pr-4 text-sm font-medium text-gray-900 outline-none border border-transparent focus:border-purple-100 focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-gray-400"
+                            className="w-full bg-gray-50/80 hover:bg-gray-50 focus:bg-white rounded-[20px] py-3.5 pl-11 pr-4 text-base font-medium text-gray-900 outline-none border border-transparent focus:border-purple-100 focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-gray-400"
                         />
                     </div>
                 </div>

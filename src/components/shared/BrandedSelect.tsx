@@ -1,6 +1,5 @@
-"use client";
-
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown, Check } from "lucide-react";
 
 interface Option {
@@ -29,6 +28,7 @@ export default function BrandedSelect({
 }: BrandedSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
 
     const normalizedOptions: Option[] = options.map(opt =>
         typeof opt === 'string' ? { label: opt, value: opt } : opt
@@ -36,16 +36,33 @@ export default function BrandedSelect({
 
     const selectedOption = normalizedOptions.find(opt => opt.value === value);
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
+    useLayoutEffect(() => {
+        if (!isOpen) return;
+
+        const updatePosition = () => {
+            if (containerRef.current) {
+                const rect = containerRef.current.getBoundingClientRect();
+                setCoords({
+                    top: rect.bottom + window.scrollY + 8,
+                    left: rect.left + window.scrollX,
+                    width: rect.width
+                });
             }
         };
 
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+        updatePosition();
+        window.addEventListener("resize", updatePosition);
+        window.addEventListener("scroll", updatePosition, true);
+
+        return () => {
+            window.removeEventListener("resize", updatePosition);
+            window.removeEventListener("scroll", updatePosition, true);
+        };
+    }, [isOpen]);
+
+    // Close on simple click outside logic (simpler via backdrop)
+
+    // Close on simple click outside logic (simpler via backdrop)
 
     return (
         <div ref={containerRef} className={`relative ${className}`}>
@@ -69,28 +86,46 @@ export default function BrandedSelect({
                 />
             </button>
 
-            {isOpen && (
-                <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white border border-gray-100 rounded-[24px] shadow-2xl shadow-black/10 z-[60] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                    <div className="max-h-[300px] overflow-y-auto no-scrollbar p-2">
-                        {normalizedOptions.map((opt) => (
-                            <button
-                                key={opt.value}
-                                type="button"
-                                onClick={() => {
-                                    onChange(opt.value);
-                                    setIsOpen(false);
-                                }}
-                                className={`w-full text-left px-4 py-3.5 rounded-xl text-sm font-medium transition-all flex items-center justify-between gap-3 ${value === opt.value
-                                    ? 'bg-brand-cyan/10 text-brand-cyan'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                    }`}
-                            >
-                                <span className="truncate">{opt.label}</span>
-                                {value === opt.value && <Check size={16} strokeWidth={3} className="shrink-0" />}
-                            </button>
-                        ))}
+            {isOpen && coords.width > 0 && typeof document !== 'undefined' && createPortal(
+                <>
+                    {/* Transparent Backdrop to handle click outside */}
+                    <div
+                        className="fixed inset-0 z-[59]"
+                        onClick={() => setIsOpen(false)}
+                    />
+
+                    {/* Positioned Dropdown */}
+                    <div
+                        style={{
+                            top: coords.top,
+                            left: coords.left,
+                            width: coords.width,
+                            position: 'absolute'
+                        }}
+                        className="bg-white border border-gray-100 rounded-[24px] shadow-2xl shadow-black/10 z-[60] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top"
+                    >
+                        <div className="max-h-[300px] overflow-y-auto no-scrollbar p-2">
+                            {normalizedOptions.map((opt) => (
+                                <button
+                                    key={opt.value}
+                                    type="button"
+                                    onClick={() => {
+                                        onChange(opt.value);
+                                        setIsOpen(false);
+                                    }}
+                                    className={`w-full text-left px-4 py-3.5 rounded-xl text-sm font-medium transition-all flex items-center justify-between gap-3 ${value === opt.value
+                                        ? 'bg-brand-cyan/10 text-brand-cyan'
+                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                >
+                                    <span className="truncate">{opt.label}</span>
+                                    {value === opt.value && <Check size={16} strokeWidth={3} className="shrink-0" />}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                </>,
+                document.body
             )}
         </div>
     );

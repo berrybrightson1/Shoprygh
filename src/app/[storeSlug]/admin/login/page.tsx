@@ -5,7 +5,7 @@ import { login } from './actions';
 export default async function LoginPage() {
     const session = await getSession();
     if (session) {
-        redirect('/admin/inventory');
+        redirect(`/${session.storeSlug}/admin`);
     }
 
     return (
@@ -27,7 +27,7 @@ export default async function LoginPage() {
                             type="email"
                             required
                             placeholder="admin@anayakids.com"
-                            className="w-full bg-white text-black font-bold border border-gray-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-brand-cyan/20 transition placeholder:text-gray-400"
+                            className="w-full bg-white text-black font-bold border border-gray-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-brand-cyan/20 transition placeholder:text-gray-400 text-base"
                         />
                     </div>
                     <div>
@@ -37,7 +37,7 @@ export default async function LoginPage() {
                             type="password"
                             required
                             placeholder="••••••••"
-                            className="w-full bg-white text-black font-bold border border-gray-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-brand-cyan/20 transition placeholder:text-gray-400"
+                            className="w-full bg-white text-black font-bold border border-gray-200 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-brand-cyan/20 transition placeholder:text-gray-400 text-base"
                         />
                     </div>
 

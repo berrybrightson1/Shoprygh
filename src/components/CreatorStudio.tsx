@@ -126,7 +126,7 @@ export default function CreatorStudio({
 }) {
     // --- State ---
     const borderClass = "border-gray-200/50 focus:border-brand-cyan/30 hover:border-gray-300/50";
-    const inputClass = "w-full bg-gray-50/50 hover:bg-white focus:bg-white border border-gray-200/50 focus:border-brand-cyan/30 rounded-2xl px-5 py-4 font-normal text-gray-900 text-sm outline-none transition-all placeholder:text-gray-300 shadow-sm focus:ring-4 focus:ring-brand-cyan/5";
+    const inputClass = "w-full bg-gray-50/50 hover:bg-white focus:bg-white border border-gray-200/50 focus:border-brand-cyan/30 rounded-2xl px-5 py-4 font-normal text-gray-900 text-base md:text-sm outline-none transition-all placeholder:text-gray-300 shadow-sm focus:ring-4 focus:ring-brand-cyan/5";
 
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
@@ -494,7 +494,7 @@ export default function CreatorStudio({
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="block text-[10px] font-medium text-gray-400 uppercase tracking-widest ml-1">Logistics Tier</label>
+                                                <label className="block text-[10px] font-medium text-gray-400 uppercase tracking-widest ml-1">Fulfillment Method</label>
                                                 <BrandedSelect
                                                     name="logisticsTier"
                                                     options={["Standard Delivery", "Express Hub", "Warehouse Only"]}
@@ -565,7 +565,7 @@ export default function CreatorStudio({
                                             value={description}
                                             onChange={e => setDescription(e.target.value)}
                                             placeholder="Write a compelling story for this product..."
-                                            className="w-full bg-gray-50 border border-gray-200/50 rounded-[32px] px-5 py-4 md:px-8 md:py-6 min-h-[150px] md:min-h-[180px] resize-none font-normal text-gray-900 text-sm md:text-[15px] outline-none leading-relaxed focus:border-brand-cyan/30 focus:bg-white focus:ring-4 focus:ring-brand-cyan/5 transition-all shadow-sm"
+                                            className="w-full bg-gray-50 border border-gray-200/50 rounded-[32px] px-5 py-4 md:px-8 md:py-6 min-h-[150px] md:min-h-[180px] resize-none font-normal text-gray-900 text-base md:text-[15px] outline-none leading-relaxed focus:border-brand-cyan/30 focus:bg-white focus:ring-4 focus:ring-brand-cyan/5 transition-all shadow-sm"
                                         />
                                     </div>
                                 </div>

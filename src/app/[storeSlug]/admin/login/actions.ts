@@ -36,7 +36,7 @@ export async function login(formData: FormData) {
     // No need to set cookies manually, Supabase client handled it.
     await logActivity("LOGIN", `Store Admin logged in to ${user.store.name}`, "STORE", user.store.id);
 
-    redirect(`/${user.store.slug}/admin/inventory`);
+    redirect(`/${user.store.slug}/admin`);
 }
 
 export async function logout() {
