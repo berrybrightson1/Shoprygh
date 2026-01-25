@@ -173,7 +173,7 @@ export default function InventoryTable({
                     {isOwner && (
                         <button
                             onClick={() => setShowImportModal(true)}
-                            className="bg-brand-purple hover:bg-purple-700 text-white px-8 py-4 rounded-2xl text-[11px] font-medium uppercase tracking-[0.2em] shadow-xl shadow-purple-500/20 hover:shadow-purple-500/30 hover:-translate-y-0.5 transition-all flex items-center gap-3 flex-1 xl:flex-none justify-center active:scale-95"
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-2xl text-[11px] font-medium uppercase tracking-[0.2em] shadow-xl shadow-purple-500/20 hover:shadow-purple-500/30 hover:-translate-y-0.5 transition-all flex items-center gap-3 flex-1 xl:flex-none justify-center active:scale-95"
                         >
                             <Upload size={18} strokeWidth={2} />
                             Import CSV
@@ -334,26 +334,43 @@ export default function InventoryTable({
 
                                             <button
                                                 onClick={() => {
-                                                    toast.error(`Delete ${p.name}?`, {
-                                                        description: "This action cannot be undone. All product data will be permanently deleted.",
-                                                        duration: 10000,
-                                                        action: {
-                                                            label: "Yes, Delete",
-                                                            onClick: () => {
-                                                                const formData = new FormData();
-                                                                formData.append("id", p.id);
-                                                                toast.promise(deleteProductBound(formData), {
-                                                                    loading: `Deleting ${p.name}...`,
-                                                                    success: `${p.name} has been removed`,
-                                                                    error: "Failed to remove product"
-                                                                });
-                                                            }
-                                                        },
-                                                        cancel: {
-                                                            label: "Cancel",
-                                                            onClick: () => toast.success("Deletion cancelled")
-                                                        }
-                                                    });
+                                                    toast.custom((t) => (
+                                                        <div className="bg-white rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)] p-6 w-[340px] border border-gray-100 flex flex-col gap-4 animate-in slide-in-from-bottom-5 fade-in duration-300">
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center shrink-0">
+                                                                    <Trash2 className="text-red-500" size={20} strokeWidth={2.5} />
+                                                                </div>
+                                                                <div>
+                                                                    <h4 className="text-sm font-bold text-gray-900 mb-0.5">Delete Product?</h4>
+                                                                    <p className="text-[11px] font-medium text-gray-400">Permanently remove <span className="text-gray-900">{p.name}</span></p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="flex items-center gap-2 mt-1">
+                                                                <button
+                                                                    onClick={() => toast.dismiss(t)}
+                                                                    className="flex-1 py-3 rounded-xl text-xs font-bold text-gray-900 bg-gray-50 hover:bg-gray-100 transition-colors"
+                                                                >
+                                                                    Cancel
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        const formData = new FormData();
+                                                                        formData.append("id", p.id);
+                                                                        toast.promise(deleteProductBound(formData), {
+                                                                            loading: `Deleting ${p.name}...`,
+                                                                            success: `${p.name} deleted`,
+                                                                            error: "Failed to delete"
+                                                                        });
+                                                                        toast.dismiss(t);
+                                                                    }}
+                                                                    className="flex-1 py-3 rounded-xl text-xs font-bold text-white bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20 transition-all hover:scale-[1.02] active:scale-95"
+                                                                >
+                                                                    Delete Item
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ), { duration: Infinity });
                                                 }}
                                                 className="p-3 bg-white hover:bg-red-50 text-red-500 border border-red-100 hover:border-red-200 rounded-xl transition-all active:scale-95 shadow-sm hover:shadow-md"
                                                 title="Delete Product"
