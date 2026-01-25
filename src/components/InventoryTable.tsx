@@ -6,6 +6,8 @@ import { updateStock, deleteProduct, updatePrice, updateCategory } from "@/app/[
 import { useState, useEffect } from "react";
 import ProductPoster from "./admin/ProductPoster";
 import BrandedSelect from "./shared/BrandedSelect";
+import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Helper to auto-submit on change or show save button
 function EditableCell({
@@ -69,9 +71,33 @@ function EditableCell({
     );
 }
 
-export default function InventoryTable({ products, storeId, storeName, storeSlug }: { products: any[], storeId: string, storeName: string, storeSlug: string }) {
+export default function InventoryTable({
+    products,
+    storeId,
+    storeName,
+    storeSlug,
+    pagination
+}: {
+    products: any[],
+    storeId: string,
+    storeName: string,
+    storeSlug: string,
+    pagination?: {
+        currentPage: number,
+        totalPages: number,
+        totalItems: number
+    }
+}) {
     const { currentUser } = useAdminStore();
     const isOwner = currentUser?.role === 'Owner Access';
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const handlePageChange = (newPage: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('page', newPage.toString());
+        router.push(`?${params.toString()}`);
+    };
 
     // Bind actions to store
     const updateStockBound = updateStock.bind(null, storeId);
@@ -109,7 +135,7 @@ export default function InventoryTable({ products, storeId, storeName, storeSlug
     };
 
     return (
-        <div className="bg-white rounded-[40px] shadow-2xl shadow-gray-200/50 border border-gray-100 overflow-hidden animate-in slide-in-from-bottom-6 duration-700">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
             {/* Table Header / Toolbar */}
             <div className="p-8 lg:p-10 border-b border-gray-50 bg-white flex flex-col xl:flex-row justify-between items-center gap-6">
                 <div className="flex flex-col sm:flex-row items-center gap-8 w-full xl:w-auto">
@@ -163,7 +189,7 @@ export default function InventoryTable({ products, storeId, storeName, storeSlug
                     </thead>
                     <tbody className="divide-y divide-gray-50">
                         {products.map((p) => (
-                            <tr key={p.id} className="group hover:bg-white hover:shadow-[0_0_80px_rgba(0,0,0,0.02)] transition-all cursor-default">
+                            <tr key={p.id} className="group hover:bg-gray-50/30 transition-colors cursor-default">
                                 <td className="p-6 pl-10">
                                     <div className="flex items-center gap-6">
                                         <div className="relative">
@@ -171,7 +197,7 @@ export default function InventoryTable({ products, storeId, storeName, storeSlug
                                             <img
                                                 src={p.image || "/placeholder.png"}
                                                 alt={p.name}
-                                                className="w-16 h-16 rounded-[24px] object-cover shadow-lg bg-white border border-gray-100 group-hover:rotate-3 group-hover:scale-105 transition-all duration-500"
+                                                className="w-16 h-16 rounded-xl object-cover bg-white border border-gray-100"
                                             />
                                             {p.stockQty < 5 && (
                                                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse shadow-sm" />
@@ -292,16 +318,21 @@ export default function InventoryTable({ products, storeId, storeName, storeSlug
                                                 <Share2 size={18} strokeWidth={2.5} />
                                             </button>
 
-                                            <form action={deleteProductBound}>
-                                                <input type="hidden" name="id" value={p.id} />
-                                                <button
-                                                    type="submit"
-                                                    className="p-3 bg-gray-50 hover:bg-white hover:shadow-xl hover:shadow-red-100 text-gray-400 hover:text-red-500 rounded-2xl transition-all active:scale-95 border border-transparent hover:border-red-50"
-                                                    title="Delete Product"
-                                                >
-                                                    <Trash2 size={18} strokeWidth={2.5} />
-                                                </button>
-                                            </form>
+                                            <button
+                                                onClick={() => {
+                                                    const formData = new FormData();
+                                                    formData.append("id", p.id);
+                                                    toast.promise(deleteProductBound(formData), {
+                                                        loading: `Deleting ${p.name}...`,
+                                                        success: `${p.name} has been removed`,
+                                                        error: "Failed to remove product"
+                                                    });
+                                                }}
+                                                className="p-3 bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-xl transition-all active:scale-95"
+                                                title="Delete Product"
+                                            >
+                                                <Trash2 size={18} strokeWidth={2.5} />
+                                            </button>
                                         </div>
                                     </td>
                                 )}
@@ -324,97 +355,122 @@ export default function InventoryTable({ products, storeId, storeName, storeSlug
                 </table>
             </div>
 
-            {/* Status Maker Modal - Professional Redesign */}
-            {statusProduct && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[100] flex items-center justify-center p-4 animate-in fade-in duration-500">
-                    <div className="bg-white rounded-[48px] shadow-2xl max-w-lg w-full relative animate-in zoom-in-95 slide-in-from-bottom-12 duration-700 overflow-hidden border border-white/20">
-                        {/* Close Button */}
-                        <button
-                            onClick={() => setStatusProduct(null)}
-                            title="Close"
-                            aria-label="Close"
-                            className="absolute top-8 right-8 p-3 bg-black/5 hover:bg-black/10 rounded-full transition-all z-20 active:scale-95"
-                        >
-                            <X size={20} className="text-gray-900" />
-                        </button>
-
-                        {/* Top Section - Poster Preview Mockup */}
-                        <div className="bg-[#0f0f0f] p-10 relative overflow-hidden">
-                            {/* Decorative Background Elements */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
-                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-purple/10 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
-
-                            {/* Phone Frame Mockup */}
-                            <div className="mx-auto w-48 bg-black rounded-[40px] p-2 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] border border-white/10">
-                                <div className="bg-white rounded-[32px] overflow-hidden aspect-[9/16] relative">
-                                    {/* Mini Poster Preview */}
-                                    <div className="h-[65%] relative group">
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img
-                                            src={statusProduct.image || "/placeholder.png"}
-                                            alt={statusProduct.name}
-                                            className="w-full h-full object-cover"
-                                        />
-                                        <div className="absolute top-4 left-4 flex flex-col gap-1">
-                                            <div className="bg-black/80 backdrop-blur-md text-white text-[7px] px-2.5 py-1 rounded-full font-medium uppercase tracking-widest border border-white/10">
-                                                {statusProduct.storeName}
-                                            </div>
-                                        </div>
-                                        <div className="absolute bottom-4 right-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white text-[8px] px-3 py-1 rounded-full font-medium shadow-lg">
-                                            NEW ARRIVAL
-                                        </div>
-                                    </div>
-                                    <div className="h-[35%] flex flex-col items-center justify-center px-4 bg-white relative">
-                                        <div className="w-8 h-1 bg-gray-100 rounded-full absolute top-2" />
-                                        <p className="text-[10px] font-medium text-gray-900 text-center truncate w-full mb-1 uppercase tracking-tight">{statusProduct.name}</p>
-                                        <div className="text-brand-orange text-xl font-medium tabular-nums">
-                                            ₵{statusProduct.price.toFixed(0)}
-                                        </div>
-                                        <div className="mt-2 flex items-center gap-1">
-                                            {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-1 h-1 rounded-full bg-brand-cyan/30" />)}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <p className="text-center text-white/40 text-[10px] font-medium uppercase tracking-[0.3em] mt-8">Studio Preview</p>
-                        </div>
-
-                        {/* Bottom Section - Info & Action */}
-                        <div className="p-10">
-                            {/* Title */}
-                            <div className="text-center mb-8">
-                                <h2 className="text-2xl font-medium text-gray-900 tracking-tight mb-2">Social Orchestrator</h2>
-                                <p className="text-sm text-gray-400 font-medium uppercase tracking-widest">Generate high-fidelity marketing assets</p>
-                            </div>
-
-                            {/* Features - Horizontal */}
-                            <div className="grid grid-cols-3 gap-4 mb-10">
-                                <div className="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100/50">
-                                    <div className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-1">Ratio</div>
-                                    <div className="text-sm font-medium text-gray-900">9:16</div>
-                                </div>
-                                <div className="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100/50">
-                                    <div className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-1">Quality</div>
-                                    <div className="text-sm font-medium text-gray-900">4K HD</div>
-                                </div>
-                                <div className="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100/50">
-                                    <div className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-1">Format</div>
-                                    <div className="text-sm font-medium text-gray-900">PNG</div>
-                                </div>
-                            </div>
-
-                            {/* Download Button */}
-                            <div className="relative group">
-                                <div className="absolute -inset-1 bg-gradient-to-r from-brand-cyan to-brand-purple rounded-[28px] blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                                <ProductPoster product={statusProduct} />
-                            </div>
-
-                            <p className="text-center text-[10px] text-gray-400 font-medium mt-6 uppercase tracking-widest opacity-60">Ready for WhatsApp & Instagram Stories</p>
-                        </div>
-                    </div>
+            {/* Pagination Footer */}
+            {pagination && pagination.totalPages > 1 && (
+                <div className="p-6 border-t border-gray-50 bg-gray-50/30 flex items-center justify-between">
+                    <button
+                        onClick={() => handlePageChange(pagination.currentPage - 1)}
+                        disabled={pagination.currentPage <= 1}
+                        className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-xs font-medium text-gray-400 disabled:opacity-50 hover:text-gray-900 hover:border-gray-200 transition-all shadow-sm"
+                    >
+                        Previous
+                    </button>
+                    <span className="text-xs font-medium text-gray-400 uppercase tracking-widest">
+                        Page {pagination.currentPage} of {pagination.totalPages}
+                    </span>
+                    <button
+                        onClick={() => handlePageChange(pagination.currentPage + 1)}
+                        disabled={pagination.currentPage >= pagination.totalPages}
+                        className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-xs font-medium text-gray-400 disabled:opacity-50 hover:text-gray-900 hover:border-gray-200 transition-all shadow-sm"
+                    >
+                        Next
+                    </button>
                 </div>
             )}
-        </div>
+
+            {/* Status Maker Modal - Professional Redesign */}
+            {
+                statusProduct && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[100] flex items-center justify-center p-4 animate-in fade-in duration-500">
+                        <div className="bg-white rounded-[48px] shadow-2xl max-w-lg w-full relative animate-in zoom-in-95 slide-in-from-bottom-12 duration-700 overflow-hidden border border-white/20">
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setStatusProduct(null)}
+                                title="Close"
+                                aria-label="Close"
+                                className="absolute top-8 right-8 p-3 bg-black/5 hover:bg-black/10 rounded-full transition-all z-20 active:scale-95"
+                            >
+                                <X size={20} className="text-gray-900" />
+                            </button>
+
+                            {/* Top Section - Poster Preview Mockup */}
+                            <div className="bg-[#0f0f0f] p-10 relative overflow-hidden">
+                                {/* Decorative Background Elements */}
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
+                                <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-purple/10 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
+
+                                {/* Phone Frame Mockup */}
+                                <div className="mx-auto w-48 bg-black rounded-[40px] p-2 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] border border-white/10">
+                                    <div className="bg-white rounded-[32px] overflow-hidden aspect-[9/16] relative">
+                                        {/* Mini Poster Preview */}
+                                        <div className="h-[65%] relative group">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={statusProduct.image || "/placeholder.png"}
+                                                alt={statusProduct.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <div className="absolute top-4 left-4 flex flex-col gap-1">
+                                                <div className="bg-black/80 backdrop-blur-md text-white text-[7px] px-2.5 py-1 rounded-full font-medium uppercase tracking-widest border border-white/10">
+                                                    {statusProduct.storeName}
+                                                </div>
+                                            </div>
+                                            <div className="absolute bottom-4 right-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white text-[8px] px-3 py-1 rounded-full font-medium shadow-lg">
+                                                NEW ARRIVAL
+                                            </div>
+                                        </div>
+                                        <div className="h-[35%] flex flex-col items-center justify-center px-4 bg-white relative">
+                                            <div className="w-8 h-1 bg-gray-100 rounded-full absolute top-2" />
+                                            <p className="text-[10px] font-medium text-gray-900 text-center truncate w-full mb-1 uppercase tracking-tight">{statusProduct.name}</p>
+                                            <div className="text-brand-orange text-xl font-medium tabular-nums">
+                                                ₵{statusProduct.price.toFixed(0)}
+                                            </div>
+                                            <div className="mt-2 flex items-center gap-1">
+                                                {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-1 h-1 rounded-full bg-brand-cyan/30" />)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p className="text-center text-white/40 text-[10px] font-medium uppercase tracking-[0.3em] mt-8">Studio Preview</p>
+                            </div>
+
+                            {/* Bottom Section - Info & Action */}
+                            <div className="p-10">
+                                {/* Title */}
+                                <div className="text-center mb-8">
+                                    <h2 className="text-2xl font-medium text-gray-900 tracking-tight mb-2">Social Orchestrator</h2>
+                                    <p className="text-sm text-gray-400 font-medium uppercase tracking-widest">Generate high-fidelity marketing assets</p>
+                                </div>
+
+                                {/* Features - Horizontal */}
+                                <div className="grid grid-cols-3 gap-4 mb-10">
+                                    <div className="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100/50">
+                                        <div className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-1">Ratio</div>
+                                        <div className="text-sm font-medium text-gray-900">9:16</div>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100/50">
+                                        <div className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-1">Quality</div>
+                                        <div className="text-sm font-medium text-gray-900">4K HD</div>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100/50">
+                                        <div className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-1">Format</div>
+                                        <div className="text-sm font-medium text-gray-900">PNG</div>
+                                    </div>
+                                </div>
+
+                                {/* Download Button */}
+                                <div className="relative group">
+                                    <div className="absolute -inset-1 bg-gradient-to-r from-brand-cyan to-brand-purple rounded-[28px] blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                                    <ProductPoster product={statusProduct} />
+                                </div>
+
+                                <p className="text-center text-[10px] text-gray-400 font-medium mt-6 uppercase tracking-widest opacity-60">Ready for WhatsApp & Instagram Stories</p>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     );
 }

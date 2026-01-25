@@ -34,19 +34,19 @@ export default function ProductCardList({ products, onEdit }: ProductCardListPro
             {products.map((product) => (
                 <div
                     key={product.id}
-                    className="bg-white p-4 rounded-[32px] border border-gray-100 shadow-xl shadow-gray-200/50 flex items-center gap-5 active:scale-[0.98] transition-all relative overflow-hidden group"
+                    className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-5 relative overflow-hidden group"
                 >
                     {/* Decorative Hint */}
                     <div className="absolute top-0 left-0 w-1 h-full bg-brand-cyan opacity-0 group-active:opacity-100 transition-opacity" />
 
                     {/* Image */}
-                    <div className="relative w-20 h-20 shrink-0 bg-gray-50 rounded-[24px] overflow-hidden border border-gray-100 shadow-inner">
+                    <div className="relative w-20 h-20 shrink-0 bg-gray-50 rounded-lg overflow-hidden border border-gray-100 shadow-inner">
                         {product.image ? (
                             <Image
                                 src={product.image}
                                 alt={product.name}
                                 fill
-                                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                className="object-cover"
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-300">

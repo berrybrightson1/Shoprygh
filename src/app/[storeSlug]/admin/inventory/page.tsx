@@ -13,10 +13,11 @@ export const dynamic = 'force-dynamic';
 interface Props {
     params: Promise<{
         storeSlug: string;
-    }>
+    }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function InventoryPage({ params }: Props) {
+export default async function InventoryPage({ params, searchParams }: Props) {
     const { storeSlug } = await params;
 
     const store = await prisma.store.findUnique({
@@ -27,26 +28,43 @@ export default async function InventoryPage({ params }: Props) {
         notFound();
     }
 
-    // Fetch products strictly for this store
-    const data = await prisma.product.findMany({
-        where: {
-            storeId: store.id,
-            isArchived: false
-        },
-        orderBy: { createdAt: "desc" },
-        select: {
-            id: true,
-            name: true,
-            stockQty: true,
-            priceRetail: true,
-            priceWholesale: true,
-            costPrice: true,
-            image: true,
-            category: true,
-            sku: true,
-            createdAt: true
-        }
-    });
+    const searchParamsValues = await searchParams;
+    const page = Number(searchParamsValues?.page) || 1;
+    const LIMIT = 20;
+    const skip = (page - 1) * LIMIT;
+
+    // Fetch products strictly for this store with pagination
+    const [data, totalItems] = await Promise.all([
+        prisma.product.findMany({
+            where: {
+                storeId: store.id,
+                isArchived: false
+            },
+            take: LIMIT,
+            skip: skip,
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                name: true,
+                stockQty: true,
+                priceRetail: true,
+                priceWholesale: true,
+                costPrice: true,
+                image: true,
+                category: true,
+                sku: true,
+                createdAt: true
+            }
+        }),
+        prisma.product.count({
+            where: {
+                storeId: store.id,
+                isArchived: false
+            }
+        })
+    ]);
+
+    const totalPages = Math.ceil(totalItems / LIMIT);
 
     // --- FIX FOR VERCEL DIGEST ERROR ---
     const products = data.map(p => ({
@@ -97,7 +115,17 @@ export default async function InventoryPage({ params }: Props) {
 
                 {/* Live Inventory Table (Desktop) */}
                 <div className="hidden md:block">
-                    <InventoryTable products={products} storeId={store.id} storeName={store.name} storeSlug={storeSlug} />
+                    <InventoryTable
+                        products={products}
+                        storeId={store.id}
+                        storeName={store.name}
+                        storeSlug={storeSlug}
+                        pagination={{
+                            currentPage: page,
+                            totalPages: totalPages,
+                            totalItems: totalItems
+                        }}
+                    />
                 </div>
 
                 {/* Mobile Card List */}
