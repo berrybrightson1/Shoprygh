@@ -124,7 +124,7 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
         <Drawer.Root open={effectiveIsOpen} onOpenChange={(open: boolean) => !open && effectiveOnClose()} direction="right">
             <Drawer.Portal>
                 <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50 transition-opacity backdrop-blur-sm" />
-                <Drawer.Content className="fixed bottom-0 right-0 h-full w-full max-w-md bg-white z-50 flex flex-col shadow-2xl outline-none transition-transform sm:max-w-lg border-l border-gray-100">
+                <Drawer.Content className="fixed inset-y-0 right-0 w-full max-w-md bg-white z-50 flex flex-col shadow-2xl outline-none transition-transform sm:max-w-lg border-l border-gray-100">
                     <Drawer.Title className="sr-only">Your Cart</Drawer.Title>
 
                     {/* Header */}
