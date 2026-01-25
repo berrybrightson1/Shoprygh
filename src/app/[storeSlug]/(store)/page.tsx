@@ -35,6 +35,7 @@ export default async function StorePage({ params }: Props) {
             image: true,
             category: true,
             gallery: true,
+            stockQty: true,
             createdAt: true,
         }
     });

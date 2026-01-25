@@ -16,7 +16,7 @@ export default function ProductDetailsClient({ product, storeSlug, storeId, stor
     const images = [product.image, ...(product.gallery || [])].filter(Boolean) as string[];
 
     return (
-        <div className="min-h-screen bg-white pb-32">
+        <div className="min-h-screen bg-white pb-40">
             {/* Header */}
             <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl px-4 py-3 flex items-center justify-between border-b border-gray-100">
                 <Link href={`/${storeSlug}`} className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center hover:bg-black hover:text-white transition-all active:scale-95 text-black border border-transparent hover:border-black/5">
@@ -69,10 +69,10 @@ export default function ProductDetailsClient({ product, storeSlug, storeId, stor
                     {/* Stock Availability */}
                     {product.stockQty !== undefined && (
                         <div className={`p-4 rounded-2xl border ${product.stockQty === 0
-                                ? 'bg-red-50 border-red-200'
-                                : product.stockQty < 10
-                                    ? 'bg-orange-50 border-orange-200'
-                                    : 'bg-green-50 border-green-200'
+                            ? 'bg-red-50 border-red-200'
+                            : product.stockQty < 10
+                                ? 'bg-orange-50 border-orange-200'
+                                : 'bg-green-50 border-green-200'
                             }`}>
                             {product.stockQty === 0 ? (
                                 <div className="flex items-center gap-2">
