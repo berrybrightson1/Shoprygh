@@ -327,17 +327,18 @@ export default function InventoryTable({
                                                     storeName: storeName,
                                                     storeSlug: storeSlug
                                                 })}
-                                                className="p-3 bg-gray-50 hover:bg-white hover:shadow-xl hover:shadow-orange-100 text-gray-400 hover:text-brand-orange rounded-2xl transition-all active:scale-95 border border-transparent hover:border-orange-50"
+                                                className="p-3 bg-white hover:bg-orange-50 text-brand-orange border border-orange-100 hover:border-orange-200 rounded-2xl transition-all active:scale-95 shadow-sm hover:shadow-md"
                                             >
                                                 <Share2 size={18} strokeWidth={2.5} />
                                             </button>
 
                                             <button
                                                 onClick={() => {
-                                                    toast("Are you sure?", {
-                                                        description: "This action cannot be undone.",
+                                                    toast.error(`Delete ${p.name}?`, {
+                                                        description: "This action cannot be undone. All product data will be permanently deleted.",
+                                                        duration: 10000,
                                                         action: {
-                                                            label: "Delete",
+                                                            label: "Yes, Delete",
                                                             onClick: () => {
                                                                 const formData = new FormData();
                                                                 formData.append("id", p.id);
@@ -350,11 +351,11 @@ export default function InventoryTable({
                                                         },
                                                         cancel: {
                                                             label: "Cancel",
-                                                            onClick: () => { }
+                                                            onClick: () => toast.success("Deletion cancelled")
                                                         }
                                                     });
                                                 }}
-                                                className="p-3 bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-xl transition-all active:scale-95"
+                                                className="p-3 bg-white hover:bg-red-50 text-red-500 border border-red-100 hover:border-red-200 rounded-xl transition-all active:scale-95 shadow-sm hover:shadow-md"
                                                 title="Delete Product"
                                             >
                                                 <Trash2 size={18} strokeWidth={2.5} />
