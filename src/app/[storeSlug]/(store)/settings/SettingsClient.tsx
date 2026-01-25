@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowLeft, User, Globe, Bell, Phone, MapPin } from "lucide-react";
 import { useCurrencyStore, Currency } from "@/store/currency";
 import BrandedSelect from "@/components/shared/BrandedSelect";
+import ContactSellerModal from "@/components/ContactSellerModal";
+import { useState } from "react";
 
 interface Props {
     params: Promise<{ storeSlug: string }>;
@@ -21,6 +23,7 @@ interface Props {
 export default function SettingsClient({ store, params }: { store: Props['store'], params: { storeSlug: string } }) {
     const { currency, setCurrency } = useCurrencyStore();
     const { storeSlug } = params;
+    const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
     const currencyOptions = ["GHS (₵)", "USD ($)", "EUR (€)", "GBP (£)"];
     const currencyMap: Record<string, Currency> = {
@@ -125,17 +128,16 @@ export default function SettingsClient({ store, params }: { store: Props['store'
                     <div className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 divide-y divide-gray-50">
 
                         {/* Contact */}
-                        <a
-                            href={store.ownerPhone ? `https://wa.me/${store.ownerPhone}` : '#'}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-4 flex items-center justify-between group cursor-pointer hover:bg-gray-50 transition-colors"
+                        <button
+                            onClick={() => store.ownerPhone && setIsContactModalOpen(true)}
+                            disabled={!store.ownerPhone}
+                            className="w-full p-4 flex items-center justify-between group cursor-pointer hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center">
                                     <Phone size={18} strokeWidth={2.5} />
                                 </div>
-                                <div>
+                                <div className="text-left">
                                     <p className="text-sm font-semibold text-gray-900">Contact Seller</p>
                                     {store.ownerPhone ? (
                                         <p className="text-xs text-gray-400">+{store.ownerPhone}</p>
@@ -144,7 +146,7 @@ export default function SettingsClient({ store, params }: { store: Props['store'
                                     )}
                                 </div>
                             </div>
-                        </a>
+                        </button>
 
                         {/* Address */}
                         <div className="p-4 flex items-center justify-between">
@@ -168,6 +170,16 @@ export default function SettingsClient({ store, params }: { store: Props['store'
                     <p className="text-[10px] text-gray-300 mt-1">v1.2.0</p>
                 </div>
             </div>
+
+            {/* Contact Seller Modal */}
+            {store.ownerPhone && (
+                <ContactSellerModal
+                    isOpen={isContactModalOpen}
+                    onClose={() => setIsContactModalOpen(false)}
+                    storeName={store.name}
+                    phone={store.ownerPhone}
+                />
+            )}
         </div>
     );
 }

@@ -171,6 +171,7 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
     const cartItems = useCartStore((state) => state.items);
     const toggleCart = useCartStore((state) => state.toggleCart);
     const isCartOpen = useCartStore((state) => state.isOpen);
+    const setStoreId = useCartStore((state) => state.setStoreId);
     const [mounted, setMounted] = useState(false);
 
     // Header Scroll Effect
@@ -178,10 +179,12 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
 
     useEffect(() => {
         setMounted(true);
+        // Initialize cart with current store ID
+        setStoreId(storeId);
         const handleScroll = () => setIsScrolled(window.scrollY > 10);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [storeId, setStoreId]);
 
     const filteredProducts = initialProducts
         .filter(p => {

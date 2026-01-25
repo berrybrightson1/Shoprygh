@@ -144,7 +144,7 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                         <div>
                             <label htmlFor="phone" className="block text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
                                 <Phone size={16} className="text-gray-500" />
-                                Contact Phone
+                                Contact Phone *
                             </label>
                             <input
                                 type="tel"
@@ -152,9 +152,11 @@ export default function ProfileEditor({ store }: ProfileEditorProps) {
                                 name="phone"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
+                                required
                                 className="w-full px-4 py-2.5 md:py-3 border border-gray-200 md:border-2 rounded-lg md:rounded-xl focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange text-gray-900 transition-all placeholder:text-gray-400"
                                 placeholder="+233 24 123 4567"
                             />
+                            <p className="text-xs text-gray-500 mt-2">Required for WhatsApp checkout</p>
                         </div>
 
                         {/* Address */}

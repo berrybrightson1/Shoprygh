@@ -15,10 +15,12 @@ interface CartItem extends Product {
 
 interface CartState {
     items: CartItem[]
+    currentStoreId: string | null
     addItem: (product: Product) => void
     removeItem: (productId: string) => void
     decreaseItem: (productId: string) => void
     clearCart: () => void
+    setStoreId: (storeId: string) => void
     checkoutWhatsApp: () => void
     isOpen: boolean
     toggleCart: () => void
@@ -28,8 +30,18 @@ export const useCartStore = create<CartState>()(
     persist(
         (set, get) => ({
             items: [],
+            currentStoreId: null,
             isOpen: false,
             toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+            setStoreId: (storeId: string) => {
+                const currentStoreId = get().currentStoreId;
+                // If switching to a different store, clear the cart
+                if (currentStoreId && currentStoreId !== storeId) {
+                    set({ items: [], currentStoreId: storeId });
+                } else {
+                    set({ currentStoreId: storeId });
+                }
+            },
             addItem: (product) => set((state) => {
                 const existing = state.items.find(i => i.id === product.id)
                 if (existing) {
@@ -79,6 +91,11 @@ export const useCartStore = create<CartState>()(
         }),
         {
             name: 'cart-storage',
+            // Use partialize to create store-specific storage
+            partialize: (state) => ({
+                items: state.items,
+                currentStoreId: state.currentStoreId,
+            }),
         }
     )
 )
