@@ -41,11 +41,11 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
     const handleCheckout = async () => {
         if (cart.length === 0) return;
 
-        // Check if store has WhatsApp number configured
-        if (!storeOwnerPhone) {
-            toast.error("This store hasn't set up WhatsApp checkout yet. Please contact the store owner.");
-            return;
-        }
+        // Check if store has WhatsApp number configured (or use fallback)
+        // if (!storeOwnerPhone) {
+        //     toast.error("This store hasn't set up WhatsApp checkout yet. Please contact the store owner.");
+        //     return;
+        // }
 
         // Smart Phone Logic
         let phoneCleanup = customerPhone.replace(/\D/g, ''); // Remove non-digits
