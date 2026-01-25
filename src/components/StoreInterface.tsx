@@ -336,8 +336,8 @@ export default function StoreInterface({ initialProducts, storeId, storeSlug, st
                     </h2>
                 </div>
 
-                {/* Grid - Responsive: 1 col mobile, 2 col tablet, 3 col desktop, 4 col large */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-6 md:gap-x-5 md:gap-y-8">
+                {/* Grid - Responsive: 1 col mobile, 2 col small, 3 col tablet, 4 col desktop */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-6 md:gap-x-5 md:gap-y-8">
                     {filteredProducts.map(p => (
                         <ProductCard key={p.id} product={p} storeSlug={storeSlug} />
                     ))}
