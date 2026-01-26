@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { useCurrencyStore } from "@/store/currency";
 import { formatPrice, convertPrice } from "@/utils/currency";
 
+import { useMediaQuery } from "@/hooks/use-media-query";
+
 export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeOwnerPhone }: { isOpen?: boolean; onClose?: () => void; storeId?: string, storeName?: string, storeOwnerPhone?: string | null }) {
     // access store
     const cart = useCartStore(state => state.items);
@@ -20,12 +22,7 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
     const removeItem = useCartStore(state => state.removeItem);
     const clearCart = useCartStore(state => state.clearCart);
     const currency = useCurrencyStore(state => state.currency);
-
-    // If controlled via props, use props; otherwise use store state
-    // Actually StoreInterface controls it via store state but wraps it in <CartDrawer isOpen={isCartOpen} />
-    // But StoreInterface gets isCartOpen FROM the store too.
-    // So we can just rely on store state if we want, or respect props.
-    // Given the previous code ignored props, let's respect the store for now as primary source of truth to match StoreInterface.
+    const isDesktop = useMediaQuery("(min-width: 768px)");
 
     // Derived state
     const effectiveIsOpen = isOpen !== undefined ? isOpen : isOpenStore;
@@ -41,12 +38,7 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
     const handleCheckout = async () => {
         if (cart.length === 0) return;
 
-        // Check if store has WhatsApp number configured (or use fallback)
-        // if (!storeOwnerPhone) {
-        //     toast.error("This store hasn't set up WhatsApp checkout yet. Please contact the store owner.");
-        //     return;
-        // }
-
+        // ... (existing logic) ...
         // Smart Phone Logic
         let phoneCleanup = customerPhone.replace(/\D/g, ''); // Remove non-digits
         if (phoneCleanup.startsWith('0') && phoneCleanup.length === 10) {
@@ -121,10 +113,26 @@ export default function CartDrawer({ isOpen, onClose, storeId, storeName, storeO
     };
 
     return (
-        <Drawer.Root open={effectiveIsOpen} onOpenChange={(open: boolean) => !open && effectiveOnClose()} direction="right">
+        <Drawer.Root
+            open={effectiveIsOpen}
+            onOpenChange={(open: boolean) => !open && effectiveOnClose()}
+            direction={isDesktop ? "right" : "bottom"}
+            shouldScaleBackground={!isDesktop} // Add scaling effect on mobile for true drawer feel
+        >
             <Drawer.Portal>
                 <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50 transition-opacity backdrop-blur-sm" />
-                <Drawer.Content className="fixed inset-y-0 right-0 w-full h-[100dvh] max-w-md bg-white z-50 flex flex-col shadow-2xl outline-none transition-transform sm:max-w-lg border-l border-gray-100">
+                <Drawer.Content
+                    className={`
+                        fixed z-50 bg-white shadow-2xl outline-none flex flex-col
+                        ${isDesktop
+                            ? "inset-y-0 right-0 h-full w-full max-w-md border-l border-gray-100"
+                            : "bottom-0 left-0 right-0 max-h-[96vh] rounded-t-[10px] border-t border-gray-100" // Mobile Bottom Sheet
+                        }
+                    `}
+                >
+                    {!isDesktop && (
+                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-2 mt-4" />
+                    )}
                     <Drawer.Title className="sr-only">Your Cart</Drawer.Title>
 
                     {/* Header */}
